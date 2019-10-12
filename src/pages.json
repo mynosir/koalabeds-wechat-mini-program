@@ -1,0 +1,48 @@
+{
+    "pages": [
+        {
+            "path": "pages/index/home/home"
+        },
+        {
+            "path": "pages/index/tickets/tickets"
+        },
+        {
+            "path": "pages/index/my/my"
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "Koalabeds",
+        "navigationBarBackgroundColor": "#0bb9ee",
+        "backgroundColor": "#F8F8F8",
+        "backgroundColorTop": "#0bb9ee",
+        "backgroundColorBottom": "#0bb9ee",
+        "app-plus": {
+          "animationType": "pop-in"
+        }
+    },
+    "tabBar": {
+        "color": "#707070",
+        "selectedColor": "#0bb9ee",
+        "borderStyle": "black",
+        "backgroundColor": "#ffffff",
+        "list": [{
+                "pagePath": "pages/index/home/home",
+                "iconPath": "static/home.png",
+                "selectedIconPath": "static/homeHL.png",
+                "text": "Home"
+            },
+            {
+                "pagePath": "pages/index/tickets/tickets",
+                "iconPath": "static/tickets.png",
+                "selectedIconPath": "static/ticketsHL.png",
+                "text": "Tickets"
+            }, {
+                "pagePath": "pages/index/my/my",
+                "iconPath": "static/my.png",
+                "selectedIconPath": "static/myHL.png",
+                "text": "My Booking"
+            }
+        ]
+    }
+}
