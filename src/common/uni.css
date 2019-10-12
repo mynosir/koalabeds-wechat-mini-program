@@ -16,6 +16,12 @@ progress, checkbox-group{
 form {
 	width: 100%;
 }
+button[type=primary]{
+	background-color:#0bb9ee
+}
+button[type=primary]:hover, button[type=primary]:active{
+	background-color:#0bb9ee
+}
 .uni-flex {
 	display: flex;
 	flex-direction: row;

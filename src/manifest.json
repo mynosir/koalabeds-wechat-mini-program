@@ -1,6 +1,6 @@
 {
     "name" : "koalabeds",
-    "appid" : "wx18cda3bfbb701cb7", 
+    "appid" : "koalabeds", 
     "uniStatistics": {  
         "enable": false
     },  
@@ -77,7 +77,7 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx18cda3bfbb701cb7",
         "setting" : {
             "urlCheck" : false
         },
