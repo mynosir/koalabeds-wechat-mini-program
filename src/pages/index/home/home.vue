@@ -48,11 +48,22 @@
             </uni-card>
         </view>
         <view>
-            <panel-image v-for="i in 6" :key="i" title="Hotel Title" :imgUrl="tempImg" goUrl="/pages/hotel/detail"></panel-image>
+            <panel-image v-for="i in 6" :key="i" title="Hotel Title" :imgUrl="tempImg" goUrl="/pages/hotel/detail/detail"></panel-image>
             <uni-load-more iconType="spinner" :status="loadmoreStatus" />
         </view>
         <!-- 优惠券弹框 -->
-        <uni-popup ref="popup" :type="type" @change="change">{{ content }}</uni-popup>
+        <uni-popup ref="popup" type="center">
+            <view>
+                <view class="popup-close" @tap="closePopup">
+                    <uni-icons type="close" color="#ccc" size="30" />
+                </view>
+                <view class="popup-content" >
+                    <view class="ticke-box" v-for="i in 6" :key="i">
+                        <ticket></ticket>
+                    </view>
+                </view>
+            </view>
+        </uni-popup>
 
         <!-- 日期选择 -->
         <calendar @change="dateChange" :modal="true" :show="showCaledar"></calendar>
@@ -65,6 +76,8 @@
     import calendar from '@/components/date-picker/date-picker.vue'
     import panelImage from '@/components/panel-image/panel-image.vue'
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue'
+	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniIcons from '@/components/uni-icons/uni-icons.vue'
     
     export default {
         components: {
@@ -73,7 +86,9 @@
             Ticket,
             calendar,
             panelImage,
-            uniLoadMore
+            uniLoadMore,
+            uniPopup,
+            uniIcons
         },
         computed: {  
             i18n () {  
@@ -122,6 +137,9 @@
         },
         onHide() {
         },
+        mounted(){
+            this.showPop()
+        },
         methods: {
             search(){
 
@@ -138,6 +156,12 @@
             },
             toggleCalendar(){
                 this.showCaledar = !this.showCaledar
+            },
+            showPop(){
+                this.$refs['popup'].open()
+            },
+            closePopup(){
+                this.$refs['popup'].close()
             }
         }
     };
@@ -188,5 +212,8 @@
     .recommend-text{
         font-size: 20upx;
         text-align: center
+    }
+    .popup-content .ticke-box{
+        margin-bottom:20upx
     }
 </style>

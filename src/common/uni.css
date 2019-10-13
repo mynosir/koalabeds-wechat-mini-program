@@ -42,6 +42,9 @@ button[type=primary]:hover, button[type=primary]:active{
 .uni-center{
 	text-align:center;
 }
+.uni-right{
+	text-align:right;
+}
 .uni-inline-item{
 	display: flex;
 	flex-direction: row;
@@ -345,6 +348,9 @@ radio-group label, checkbox-group label{
 .uni-card-link {
 	color: #007AFF;
 }
+.uni-media-list-extra{
+	text-align: right;
+}
 
 /* 列表 */
 .uni-list {
@@ -560,8 +566,8 @@ radio-group label, checkbox-group label{
 	margin-left: 20upx;
 }
 .uni-media-list-logo {
-	height: 84upx;
-	width: 84upx;
+	height: 162rpx;
+	width: 162rpx;
 	margin-right: 20upx;
 }
 .uni-media-list-logo image {
@@ -949,13 +955,14 @@ radio-group label, checkbox-group label{
 }
 
 .uni-product-price-original {
-    color: #e80080;
+    color: #0bb9ee;
 }
 
 .uni-product-price-favour {
     color: #888888;
     text-decoration: line-through;
-    margin-left: 10upx;
+	margin-left: 10upx;
+	font-size:20upx;
 }
 
 .uni-product-tip {
@@ -1450,4 +1457,22 @@ radio-group label, checkbox-group label{
     top: 50%;
     left: 0;
     transform: translateY(50%);
+}
+.popup-close{
+	position: absolute;
+	right:20upx;
+	top:20upx;
+}
+.popup-content{
+	max-height:700upx;
+	overflow: scroll;
+	padding:40upx 80upx 20upx
+}
+
+
+.koa-icon-image{
+	width:42upx;
+	height:42upx;
+	margin-right:42upx;
+	border:none
 }
