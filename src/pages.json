@@ -1,13 +1,16 @@
 {
     "pages": [
         {
-            "path": "pages/index/home/home"
+            "path": "pages/index/my/my"
+        },
+        {
+            "path": "pages/index/my/my-booking"
         },
         {
             "path": "pages/index/tickets/tickets"
         },
         {
-            "path": "pages/index/my/my"
+            "path": "pages/index/home/home"
         }
     ],
     "globalStyle": {
