@@ -1,6 +1,12 @@
 {
     "pages": [
         {
+            "path": "pages/hotel/order/order"
+        },
+        {
+            "path": "pages/hotel/detail/detail"
+        },
+        {
             "path": "pages/index/home/home"
         },
         {
@@ -8,6 +14,9 @@
         },
         {
             "path": "pages/index/my/my"
+        },
+        {
+            "path": "pages/common/reviews/reviews"
         }
     ],
     "globalStyle": {

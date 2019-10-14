@@ -1,11 +1,10 @@
 import Vue from 'vue'
-import VueI18n from 'vue-i18n'  
 
 import App from './App'
 import store from './store'
 import i18n from './i18n'
 
-Vue.use(VueI18n) 
+
 Vue.config.productionTip = false
 
 Vue.prototype.$store = store
@@ -17,6 +16,14 @@ Vue.prototype.$backgroundAudioData = {
 
 Vue.prototype._i18n = i18n
 App.mpType = 'app'
+
+//国际化
+Vue.mixin({
+	onLoad(){
+		let title = this.$t('global.title')
+		console.log(this)
+	}
+})
 
 const app = new Vue({
 	i18n,
