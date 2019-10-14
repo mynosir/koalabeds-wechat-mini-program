@@ -117,7 +117,6 @@
 	.uni-card__title {
 		display: flex;
 		padding: 20upx;
-		border-bottom: 1px #f5f5f5 solid
 	}
 
 	.uni-card__title-header {
@@ -247,8 +246,13 @@
 
 	.uni-card--full {
 		margin: 0;
-		border-left: none;
-		border-right: none;
+		border: none;
 		border-radius: 0
+	}
+	.uni-card--full .uni-card__header:after{
+		background: #fff
+	}
+	.uni-card--full .uni-card__content--pd, .uni-card--full .uni-card__header{
+		padding: 0
 	}
 </style>

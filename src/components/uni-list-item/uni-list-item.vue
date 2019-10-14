@@ -1,20 +1,27 @@
 <template>
 	<view :class="disabled ? 'uni-list-item--disabled' : ''" :hover-class="disabled || showSwitch ? '' : 'uni-list-item--hover'" class="uni-list-item" @click="onClick">
-		<view class="uni-list-item__container">
+		<view class="uni-list-item__container" :class="showFull ? 'uni-list-item__container__full' : ''" >
 			<view v-if="thumb" class="uni-list-item__icon">
 				<image :src="thumb" class="uni-list-item__icon-img" />
 			</view>
 			<view v-else-if="showExtraIcon" class="uni-list-item__icon">
 				<uni-icons :color="extraIcon.color" :size="extraIcon.size" :type="extraIcon.type" class="uni-icon-wrapper" />
 			</view>
-			<view class="uni-list-item__content">
+			<view class="uni-list-item__content" v-if="title != ''">
 				<view class="uni-list-item__content-title">{{ title }}</view>
 				<view v-if="note" class="uni-list-item__content-note">{{ note }}</view>
 			</view>
-			<view v-if="showBadge || showArrow || showSwitch" class="uni-list-item__extra">
+			<view class="uni-list-item__content"  v-else>
+				<view class="uni-list-item__content-title">
+					<slot></slot>
+				</view>
+			</view>
+			<view v-if="showBadge || showArrow || showSwitch || showDesc || showExtra" class="uni-list-item__extra">
+				<text  v-if="showDesc" style="color:#ccc;" class="uni-ellipsis">{{desc}}</text>
 				<uni-badge v-if="showBadge" :type="badgeType" :text="badgeText" />
 				<switch v-if="showSwitch" :disabled="disabled" :checked="switchChecked" @change="onSwitchChange" />
 				<uni-icons v-if="showArrow" :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
+				<slot name="extra"></slot>
 			</view>
 		</view>
 	</view>
@@ -31,8 +38,7 @@
 		},
 		props: {
 			title: {
-				type: String,
-				default: ''
+				type: String
 			}, // 列表标题
 			note: {
 				type: String,
@@ -92,6 +98,19 @@
 						size: 20
 					}
 				}
+			},
+			desc:{
+				type: String,
+				default: ''
+			},
+			showExtra:{
+				type:Boolean
+			},
+			showDesc:{
+				type:Boolean
+			},
+			showFull:{
+				type:Boolean
 			}
 		},
 		data() {
@@ -138,6 +157,9 @@
 		flex-direction: row;
 		justify-content: space-between;
 		align-items: center
+	}
+	.uni-list-item__container__full{
+		padding: 0;
 	}
 
 	.uni-list-item__container:after {

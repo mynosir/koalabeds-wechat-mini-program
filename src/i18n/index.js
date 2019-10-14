@@ -1,8 +1,16 @@
+
+import Vue from 'vue'
+import VueI18n from 'vue-i18n'  
+
 import enUS from './enUS'
 import zhCN from './zhCN'
 
-export default {
+Vue.use(VueI18n) 
+
+export default new VueI18n({
     locale: 'en-US', 
-    'en-US': enUS,
-    'zh-CN': zhCN
-}
+    messages:{
+        'en-US': enUS,
+        'zh-CN': zhCN
+    }
+})

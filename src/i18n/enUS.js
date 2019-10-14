@@ -4,7 +4,9 @@ export default {
     },
     pages: {
         home: {
-            title: 'Koalabeds'
+            title: 'Koalabeds',
+            couponTitle: 'Get your coupon',
+            recommendTitle: 'Recommend'
         }
     },
     tabBar: {
