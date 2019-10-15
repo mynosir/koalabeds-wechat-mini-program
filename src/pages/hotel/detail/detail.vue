@@ -261,10 +261,4 @@
     .date-text--value{
         margin-right:20upx
     }
-    .popup-title{
-        background: #f0f0f0;
-        padding:12upx 30upx;
-        margin:-30upx;
-        font-size:40upx
-    }
 </style>

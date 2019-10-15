@@ -1476,3 +1476,9 @@ radio-group label, checkbox-group label{
 	margin-right:42upx;
 	border:none
 }
+.popup-title{
+	background: #f0f0f0;
+	padding:12upx 30upx;
+	margin:-30upx;
+	font-size:40upx
+}
