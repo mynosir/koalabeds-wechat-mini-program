@@ -236,7 +236,9 @@
                 this.showCaledar = !this.showCaledar
             },
             goBook(value){
-                console.log(value)
+                uni.navigateTo({
+                    url: '/pages/hotel/order/order'
+                })
             },
             showPop(value){
                 this.selectRoom = value

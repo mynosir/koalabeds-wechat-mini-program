@@ -1,13 +1,16 @@
 {
     "pages": [
         {
-            "path": "pages/hotel/order/order"
+            "path": "pages/index/home/home"
+        },
+        {
+            "path": "pages/hotel/search/search"
         },
         {
             "path": "pages/hotel/detail/detail"
         },
         {
-            "path": "pages/index/home/home"
+            "path": "pages/hotel/order/order"
         },
         {
             "path": "pages/index/tickets/tickets"
@@ -17,6 +20,12 @@
         },
         {
             "path": "pages/common/reviews/reviews"
+        },
+        {
+            "path": "pages/common/search/search"
+        },
+        {
+            "path": "pages/common/result/result"
         }
     ],
     "globalStyle": {

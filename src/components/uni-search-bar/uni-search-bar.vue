@@ -10,7 +10,8 @@
 				<uni-icons color="#999999" class="icon-search" type="search" size="18" />
 				<text class="placeholder">{{ placeholder }}</text>
 			</view>
-			<text class="uni-searchbar-form__cancel" @click="cancel">取消</text>
+			<text v-if="!hideCancel" class="uni-searchbar-form__cancel" @click="cancel">Cancel</text>
+			<text v-if="showSearch" class="uni-searchbar-form__cancel active" @click="search">Search</text>
 		</view>
 	</view>
 </template>
@@ -34,7 +35,13 @@
 			clearButton: {
 				type: String,
 				default: 'auto'
-			}
+			},
+			hideCancel:{
+				type: Boolean
+			},
+			showSearch:{
+				type: Boolean
+			},
 		},
 		data() {
 			return {
@@ -53,6 +60,11 @@
 			searchClick() {
 				this.searchVal = ''
 				this.show = true
+			},
+			search(){
+				this.$emit('search', {
+					value: this.searchVal
+				})
 			},
 			clear() {
 				this.searchVal = ''
@@ -148,6 +160,9 @@
 		line-height: 64rpx;
 		color: #333;
 		white-space: nowrap
+	}
+	.uni-searchbar-form__cancel.active{
+		color: #0bb9ee;
 	}
 
 	.uni-searchbar-form.hide .uni-searchbar-form__box {

@@ -4,14 +4,14 @@
             <view class="page-section swiper">
                 <view class="page-section-spacing">
                     <swiper class="swiper" :indicator-dots="swiperSetting.indicatordots" :autoplay="swiperSetting.autoplay" :interval="swiperSetting.interval" :duration="swiperSetting.duration">
-                        <swiper-item v-for="(item, index) in imglist" :key="index">
+                        <swiper-item v-for="(item, index) in imglist" :key="index" @tap="goHotel">
                             <image style="width: 100%; " :src="item"></image>
                         </swiper-item>
                     </swiper>
                 </view>
             </view>
             <view class="uni-panel uni-panel-h">
-                <uni-search-bar placeholder="Search location or hotel name" @confirm="search" @input="input" @cancel="cancel" />
+                <uni-search-bar placeholder="Search location or hotel name" />
                 <view class="uni-flex koa-date-home" @tap="toggleCalendar">
                     <view class="uni-center uni-flex-item">
                         <view class="koa-date--text">{{startDate}}</view>
@@ -23,7 +23,7 @@
                         <view class="koa-date--desc">Check Out</view>
                     </view>
                 </view>
-                <button type="primary">Search</button>
+                <button type="primary" @tap="goSearch">Search</button>
             </view>
         </view>
         <view class="uni-panel uni-panel-h">
@@ -38,7 +38,7 @@
         <view class="uni-panel uni-panel-h">
             <uni-card :title="i18n.recommendTitle" :isFull="true" :isShadow="false">
                 <view class="panel-scroll" :scroll-x="true" >
-                    <view class="recommend-box" v-for="i in 6" :key="i">
+                    <view class="recommend-box" v-for="i in 6" :key="i" @tap="goHotel">
                         <view class="recommend-image">
                             <image :src="tempImg"></image>
                         </view>
@@ -48,7 +48,7 @@
             </uni-card>
         </view>
         <view>
-            <panel-image v-for="i in 6" :key="i" title="Hotel Title" :imgUrl="tempImg" goUrl="/pages/hotel/detail/detail"></panel-image>
+            <panel-image  @click="goHotel" v-for="i in 6" :key="i" title="Hotel Title" :imgUrl="tempImg" goUrl="/pages/hotel/detail/detail"></panel-image>
             <uni-load-more iconType="spinner" :status="loadmoreStatus" />
         </view>
         <!-- 优惠券弹框 -->
@@ -141,14 +141,6 @@
             this.showPop()
         },
         methods: {
-            search(){
-
-            },
-            input(){
-
-            },
-            cancel(){
-            },
             dateChange({ choiceDate, dayCount }){
                 this.startDate = new Date(choiceDate[0].dateTime).toString().substr(4,6)
                 this.endDate = new Date(choiceDate[1].dateTime).toString().substr(4,6)
@@ -162,6 +154,16 @@
             },
             closePopup(){
                 this.$refs['popup'].close()
+            },
+            goSearch(){
+                uni.navigateTo({
+                    url: "/pages/hotel/search/search"
+                });
+            },
+            goHotel(){
+                uni.navigateTo({
+                    url: "/pages/hotel/detail/detail"
+                });
             }
         }
     };
