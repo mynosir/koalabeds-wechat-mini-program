@@ -1,5 +1,5 @@
 <template>
-	<view :class="{'koa-ticket--used': isUsed === true || isUsed === 'true'}" class="koa-ticket">
+	<view :class="{'koa-ticket--used': isUsed === true || isUsed === 'true'}" class="koa-ticket" @click="onClick">
 		<view class="koa-ticket--price">￥{{price}}</view>
 		<view class="koa-ticket-desc">
 			<view class="koa-ticket--full">With purchase ￥{{fullPrice}}</view>
@@ -33,6 +33,7 @@
 		},
 		methods: {
 			onClick() {
+				console.log('test')
 				this.$emit('click')
 			}
 		}

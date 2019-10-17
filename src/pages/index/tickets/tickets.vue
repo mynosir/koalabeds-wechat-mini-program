@@ -1,6 +1,6 @@
 <template>
     <view class="uni-container">
-        <panel-image v-for="i in 6" :key="i" title="Hotel Title" :imgUrl="tempImg" goUrl="/pages/hotel/detail"></panel-image>
+        <panel-image v-for="i in 6" :key="i" title="Hotel Title" :imgUrl="tempImg" goUrl="/pages/ticket/detail/detail"></panel-image>
         <uni-load-more iconType="spinner" :status="loadmoreStatus" />
     </view>
 </template>

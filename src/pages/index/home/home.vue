@@ -62,6 +62,7 @@
                         <ticket></ticket>
                     </view>
                 </view>
+                <button type="primary"  @tap="closePopup">Get It All</button>
             </view>
         </uni-popup>
 
@@ -215,7 +216,7 @@
         font-size: 20upx;
         text-align: center
     }
-    .popup-content .ticke-box{
+    .popup-content, .popup-content .ticke-box{
         margin-bottom:20upx
     }
 </style>

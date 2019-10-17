@@ -8,7 +8,7 @@ const store = new Vuex.Store({
 		hasLogin: false,
 		loginProvider: "",
 		openid: null,
-		testvuex:false
+		selectedAddress: null
 	},
 	mutations: {
 		login(state, provider) {
@@ -22,11 +22,9 @@ const store = new Vuex.Store({
 		setOpenid(state, openid) {
 			state.openid = openid
 		},
-		setTestTrue(state){
-			state.testvuex = true
-		},
-		setTestFalse(state){
-			state.testvuex = false
+		setSelectedAddress(state, address){
+			console.log('update store address:', state, address)
+			state.selectedAddress = address
 		}
 	},
 	actions: {

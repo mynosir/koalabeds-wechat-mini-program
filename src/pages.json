@@ -1,19 +1,32 @@
 {
-    "pages": [
-        {
+    "pages": [{
             "path": "pages/index/home/home"
+        },
+        {
+            "path": "pages/hotel/detail/detail"
+        }, {
+            "path": "pages/common/contact/list"
+        }, {
+            "path": "pages/common/contact/detail"
+        }, {
+            "path": "pages/common/address/list"
+        }, {
+            "path": "pages/common/address/detail"
+        },
+        {
+            "path": "pages/ticket/book/book"
+        },
+        {
+            "path": "pages/index/tickets/tickets"
+        },
+        {
+            "path": "pages/ticket/detail/detail"
         },
         {
             "path": "pages/hotel/search/search"
         },
         {
-            "path": "pages/hotel/detail/detail"
-        },
-        {
-            "path": "pages/hotel/order/order"
-        },
-        {
-            "path": "pages/index/tickets/tickets"
+            "path": "pages/hotel/book/book"
         },
         {
             "path": "pages/index/my/my"
@@ -36,7 +49,7 @@
         "backgroundColorTop": "#0bb9ee",
         "backgroundColorBottom": "#0bb9ee",
         "app-plus": {
-          "animationType": "pop-in"
+            "animationType": "pop-in"
         }
     },
     "tabBar": {
