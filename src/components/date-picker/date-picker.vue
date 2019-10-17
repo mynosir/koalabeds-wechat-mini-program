@@ -1,15 +1,15 @@
 <template>
 	<view>
 		<view class="order-time" @tap="showCalendar()" v-if="!modal">
-			<view class="time-viewer" v-if="singleDate">{{ choiceDate[0].year }}年{{ choiceDate[0].month }}月{{ choiceDate[0].day }}日</view>
+			<view class="time-viewer" v-if="singleDate">{{ choiceDate[0].year }}/{{ choiceDate[0].month }}/{{ choiceDate[0].day }}</view>
 			<view class="time-viewer" v-else>
-				<text class="goInHotel">入住</text>
-				<text class="date-wrappper">{{ choiceDate[0].month }}月{{ choiceDate[0].day }}日</text>
-				<text class="goInHotel2" v-if="choiceDate[0].year + '' + choiceDate[0].month + '' + choiceDate[0].day == today">今天</text>
-				<text class="left-hotel">离店</text>
-				<text class="date-wrappper">{{ choiceDate[1].month }}月{{ choiceDate[1].day }}日</text>
+				<text class="goInHotel">CheckIn</text>
+				<text class="date-wrappper">{{ choiceDate[0].month }}/{{ choiceDate[0].day }}</text>
+				<text class="goInHotel2" v-if="choiceDate[0].year + '' + choiceDate[0].month + '' + choiceDate[0].day == today">Today</text>
+				<text class="left-hotel">CheckOut</text>
+				<text class="date-wrappper">{{ choiceDate[1].month }}/{{ choiceDate[1].day }}</text>
 				<text class="goInHotel2" v-if="choiceDate[choiceDate.length - 1].year + '' + choiceDate[choiceDate.length - 1].month + '' + choiceDate[choiceDate.length - 1].day == tomorrow">
-					明天
+					Tomorrow
 				</text>
 				<text class="sumCount">{{ dayCount2 }}</text>
 			</view>
@@ -22,7 +22,7 @@
 			<view class="layer-content" :class="{ choiceDate: choice === true || singleDate }">
 				<view class="layer-header">
 					<view class="layer-close" @tap="hideCalendar(false)"></view>
-					<text class="layer-title">选择日期</text>
+					<text class="layer-title">Choose Date</text>
 				</view>
 				<!--  -->
 				<view class="layer-body">
@@ -33,7 +33,7 @@
 					<scroll-view class="layer-list" scroll-y="true">
 						<view v-for="(monthData, index) in date" :key="index" class="month">
 							<view class="month-title" :class="'m-' + monthData[0].year + '-' + monthData[0].month" :style="'z-index:' + index">
-								{{ monthData[0].year + '年' + monthData[0].month + '月' }}
+								{{ monthData[0].year + ' ' + monthNameArr[monthData[0].month-1] }}
 							</view>
 							<view class="month-content">
 								<view v-for="(data, index2) in monthData" :key="index2" class="day" :data-index="index" :data-indexs="index2"
@@ -51,11 +51,11 @@
 											{{ data.re != today && data.re != tomorrow && data.re != afterTomorrow ? data.act.subject : '' }}
 										</text>
 										<text class="day-txt">
-											{{ data.re == today ? '今天' : data.re == tomorrow ? '明天' : data.re == afterTomorrow ? '后天' : data.day }}
+											{{ data.day }}
 										</text>
 										<text class="day-tip">{{ data.act.tip }}</text>
 									</view>
-									<view class="beginTip" v-if="choice === false  &&  !singleDate">请选择离店日期</view>
+									<view class="beginTip" v-if="choice === false  &&  !singleDate">Choose CheckOut</view>
 									<view class="endTip" v-if="choice">{{ dayCount2 }}</view>
 								</view>
 							</view>
@@ -64,7 +64,7 @@
 				</view>
 				<!--  -->
 				<view class="layer-footer">
-					<view class="submitBtn" @tap="submitbtn" v-if="choice === true || singleDate">完成</view>
+					<view class="submitBtn" @tap="submitbtn" v-if="choice === true || singleDate">Done It</view>
 				</view>
 			</view>
 		</view>
@@ -78,28 +78,28 @@
 				date: [],
 				weeks: [],
 				dayCount: 1,
-				dayCount2: '共1晚',
+				dayCount2: '1 Night',
 				festival: {
-					'101': '元旦',
-					'214': '情人节',
-					'308': '妇女节',
-					'312': '植树节',
-					'315': '消费者权益日',
-					'401': '愚人节',
-					'405': '清明节',
-					'501': '劳动节',
-					'504': '青年节',
-					'512': '护士节',
-					'601': '儿童节',
-					'701': '建党节',
-					'801': '建军节',
-					'910': '教师节',
-					'928': '孔子诞辰',
-					'1001': '国庆节',
-					'1006': '老人节',
-					'1024': '联合国日',
-					'1224': '平安夜',
-					'1225': '圣诞节'
+					// '101': '元旦',
+					// '214': '情人节',
+					// '308': '妇女节',
+					// '312': '植树节',
+					// '315': '消费者权益日',
+					// '401': '愚人节',
+					// '405': '清明节',
+					// '501': '劳动节',
+					// '504': '青年节',
+					// '512': '护士节',
+					// '601': '儿童节',
+					// '701': '建党节',
+					// '801': '建军节',
+					// '910': '教师节',
+					// '928': '孔子诞辰',
+					// '1001': '国庆节',
+					// '1006': '老人节',
+					// '1024': '联合国日',
+					// '1224': '平安夜',
+					// '1225': '圣诞节'
 				},
 				haveOrder: [],
 				dateFlag: {},
@@ -109,7 +109,8 @@
 				choiceDateArr: [],
 				tomorrow: "",
 				afterTomorrow: "",
-				weekNameArr: ['日', '一', '二', '三', '四', '五', '六'],
+				weekNameArr: ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'],
+				monthNameArr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
 				animation: null,
 				animationData: null,
 				curScrollTop: 0,
@@ -273,7 +274,7 @@
 				this.dateFlag = {};
 				this.choice = '';
 				this.dayCount = this.bak_dayCount;
-				this.dayCount2 = '共' + this.dayCount + '晚';
+				this.dayCount2 =  this.dayCount + ' Night';
 				//
 				this.date = JSON.parse(JSON.stringify(this.bak_date));
 				this.weeks = JSON.parse(JSON.stringify(this.bak_weeks));
@@ -507,7 +508,7 @@
 				let endIndex2 = end_day - 1;
 				//
 				dataAll2[startIndex1][startIndex2].selected = 1;
-				dataAll2[startIndex1][startIndex2].act.tip = '入住';
+				dataAll2[startIndex1][startIndex2].act.tip = 'CheckIn';
 				dataAll2[startIndex1][startIndex2].act.defaultStr = 1;
 				this.choiceDate.push(dataAll2[startIndex1][startIndex2]);
 
@@ -515,7 +516,7 @@
 				if (startIndex1 == endIndex1 && endIndex2 - startIndex2 == 1) {
 					if (dataAll2[startIndex1][startIndex2 + 1]) {
 						dataAll2[startIndex1][startIndex2 + 1].selected = 1;
-						dataAll2[startIndex1][startIndex2 + 1].act.tip = '离店';
+						dataAll2[startIndex1][startIndex2 + 1].act.tip = 'CheckOut';
 						dataAll2[startIndex1][startIndex2 + 1].act.defaultStr = 1;
 						this.choiceDate.push(dataAll2[startIndex1][startIndex2 + 1]);
 					} else {
@@ -527,7 +528,7 @@
 
 				if (islastDay) {
 					dataAll2[endIndex1][endIndex2].selected = 1;
-					dataAll2[endIndex1][endIndex2].act.tip = '离店';
+					dataAll2[endIndex1][endIndex2].act.tip = 'CheckOut';
 					dataAll2[endIndex1][endIndex2].act.defaultStr = 1;
 					this.choiceDate.push(dataAll2[endIndex1][endIndex2]);
 				}
@@ -603,7 +604,7 @@
 					if (isUserClick) return;
 				}
 				curDate.selected = 1;
-				curDate.act.tip = '入住';
+				curDate.act.tip = 'CheckIn';
 				if (this.dateFlag.date && curDate.dateTime < this.dateFlag.date.dateTime) {
 					var flagIndex = this.dateFlag.index;
 					var flagIndexs = this.dateFlag.indexs;
@@ -622,7 +623,7 @@
 					if (this.dateFlag.index == index && this.dateFlag.indexs == indexs) {
 						return;
 					}
-					curDate.act.tip = '离店';
+					curDate.act.tip = 'CheckOut';
 					//
 					var that = this;
 					var dateFlagDateTime = that.dateFlag.date.dateTime;
@@ -658,7 +659,7 @@
 									dataItem.act.tip = '';
 									dataItem.selected = 0;
 								} else {
-									dataItem.act.tip = '入住';
+									dataItem.act.tip = 'CheckIn';
 								}
 							});
 						});
@@ -686,7 +687,7 @@
 						this.choice = true;
 						// console.log('count', count);
 						this.dayCount = count + 1;
-						this.dayCount2 = '共' + (count + 1) + '晚';
+						this.dayCount2 =  (count + 1) + ' Night';
 					}
 				} else {
 					var that = this;
@@ -697,7 +698,7 @@
 								dataItem.selected = 0;
 								dataItem.act.tip = '';
 							} else {
-								dataItem.act.tip = '入住';
+								dataItem.act.tip = 'CheckIn';
 							}
 						});
 					});
@@ -736,7 +737,7 @@
 * 主题颜色请修改这里
 * 
 * */
-	$themeColor: #f93f4a;
+	$themeColor: #0bb9ee;
 
 	/*  #ifndef  H5  */
 	view {

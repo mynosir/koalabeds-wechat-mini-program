@@ -3,35 +3,29 @@
 		<view v-if="maskShow && !insert" :class="{ 'ani-mask-show': aniMaskShow }" class="uni-calendar__mask" />
 		<view v-if="maskShow || insert" :class="{ 'ani-calendar-show': aniMaskShow, 'uni-calendar__static': insert }" class="uni-calendar__box">
 			<view v-if="!insert" class="uni-calendar__nav">
-				<view class="uni-calendar__nav-item" @click="close">取消</view>
-				<view class="uni-calendar__nav-item" @click="confirm">确认</view>
+				<view class="uni-calendar__nav-item" @click="close">cancel</view>
+				<view class="uni-calendar__nav-item" @click="confirm">confirm</view>
 			</view>
 			<view class="uni-calendar__wrapper">
 				<view class="uni-calenda__content">
 					<view class="uni-calendar__panel">
 						<view class="uni-calendar__date-befor" @tap="dataBefor(-1, 'month')"><text class="iconfont icon-jiantou" /></view>
 						<view class="uni-calendar__panel-box">
-							<view>{{ canlender.year }}年</view>
-							<view>{{ canlender.month }}月</view>
+							<view>{{ monthNameArr[canlender.month] }}</view>
+							<view style="margin-left:20upx">{{ canlender.year }}</view>
 						</view>
 						<view class="uni-calendar__date-after uni-calendar__rollback" @tap="dataBefor(1, 'month')"><text class="iconfont icon-jiantou " /></view>
-						<view class="uni-calendar__backtoday" @tap="backtoday">回到今天</view>
+						<view class="uni-calendar__backtoday" @tap="backtoday">Back Today</view>
 					</view>
 					<view v-if="isLunar" class="uni-calendar__day-detail">
-						<view>{{ canlender.year + '年' + canlender.month + '月' + canlender.date + '日 （' + canlender.lunar.astro + ')' }}</view>
+						<view>{{ canlender.year + '-' + canlender.month + '-' + canlender.date + ' （' + canlender.lunar.astro + ')' }}</view>
 						<view>
 							{{ canlender.lunar.gzYear + '年' + canlender.lunar.gzMonth + '月' + canlender.lunar.gzDay + '日 (' + canlender.lunar.Animal + '年)' }}
 							{{ canlender.lunar.IMonthCn + canlender.lunar.IDayCn }} {{ canlender.lunar.isTerm ? canlender.lunar.Term : '' }}
 						</view>
 					</view>
 					<view class="uni-calendar__header">
-						<view class="uni-calendar__week">日</view>
-						<view class="uni-calendar__week">一</view>
-						<view class="uni-calendar__week">二</view>
-						<view class="uni-calendar__week">三</view>
-						<view class="uni-calendar__week">四</view>
-						<view class="uni-calendar__week">五</view>
-						<view class="uni-calendar__week">六</view>
+						<view class="uni-calendar__week" v-for="w in weekNameArr" :key="w">{{w}}</view>
 					</view>
 					<uni-calendar-item :canlender="canlender" :lunar="isLunar" @selectDays="selectDays" />
 				</view>
@@ -115,6 +109,8 @@
 			 * 随机数值是在旧编译器下使用的，旧编译器模式已经不推荐使用，后续直接废掉随机数值的写法。
 			 */
 			return {
+				weekNameArr: ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'],
+				monthNameArr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
 				maskShow: false, // 显示日历
 				aniMaskShow: false,
 				dateShow: false, // 日期是否选择

@@ -47,7 +47,7 @@
 
 <script>
 //来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
-var graceChecker = require("../../../common/graceChecker.js");
+const graceChecker = require("../../../common/graceChecker.js");
 import { mapState, mapMutations } from "vuex";
 
 import uniList from "@/components/uni-list/uni-list.vue";

@@ -96,6 +96,8 @@ import uniList from "@/components/uni-list/uni-list.vue";
 import uniListItem from "@/components/uni-list-item/uni-list-item.vue";
 import uniCalendar from "@/components/uni-calendar/uni-calendar.vue";
 import uniNumberBox from "@/components/uni-number-box/uni-number-box.vue";
+
+const Utils = require("../../../common/util.js");
 export default {
   components: {
     uniList,
@@ -104,22 +106,9 @@ export default {
     uniNumberBox
   },
   data() {
-    function getDate(date, AddMonthCount = 0, AddDayCount = 0) {
-      if (typeof date !== "object") {
-        date = date.replace(/-/g, "/");
-      }
-      let dd = new Date(date);
-      dd.setMonth(dd.getMonth() + AddMonthCount); // 获取AddDayCount天后的日期
-      dd.setDate(dd.getDate() + AddDayCount); // 获取AddDayCount天后的日期
-      let y = dd.getFullYear();
-      let m =
-        dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1; // 获取当前月份的日期，不足10补0
-      let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate(); // 获取当前几号，不足10补0
-      return y + "-" + m + "-" + d;
-    }
     return {
       validDate: "",
-      startDate: getDate(new Date(), -1),
+      startDate: Utils.getDate(new Date(), -1),
       date: "",
       imglist: [
         "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
@@ -166,6 +155,6 @@ export default {
 <style>
 @import "../../../common/uni-nvue.css";
 .koa-ticket-detail .uni-list-item__extra {
-  width: 40%;
+  max-width: 40%;
 }
 </style>
