@@ -1,9 +1,9 @@
 {
-    "pages": [
+    "pages": [{
+            "path": "pages/index/home/home"
+        },
         {
             "path": "pages/ticket/detail/detail"
-        },{
-            "path": "pages/index/home/home"
         },
         {
             "path": "pages/hotel/detail/detail"
