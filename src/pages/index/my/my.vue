@@ -152,7 +152,7 @@
     			},
 
           goDetailPage(u) {
-            let url = "/pages/index/my/"+u
+            let url = "/pages/my/"+u+"/"+u
             uni.navigateTo({
                 url: url
             })
