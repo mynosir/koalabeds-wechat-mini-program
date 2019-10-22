@@ -24,9 +24,9 @@
 			</view>
 
       <uni-list>
-        <uni-list-item @click='goDetailPage("my-booking")' title="Hotel Booking" thumb="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" />
-        <uni-list-item @click='goDetailPage("my-ticket")' title="My ticket" thumb="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" />
-  			<uni-list-item @click='goDetailPage("my-coupon")' title="My CouPon" thumb="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" />
+        <uni-list-item @click='goDetailPage("my-booking")' title="Hotel Booking" thumb="/static/booking.png" />
+        <uni-list-item @click='goDetailPage("my-ticket")' title="My ticket" thumb="/static/ticketsHL.png" />
+  			<uni-list-item @click='goDetailPage("my-coupon")' title="My CouPon" thumb="/static/coupon.png" />
   		</uni-list>
     </view>
 </template>
