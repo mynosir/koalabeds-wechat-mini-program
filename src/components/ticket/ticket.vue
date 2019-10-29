@@ -10,7 +10,7 @@
       <view class="koa-ticket--valid">Valid {{valid}} days</view>
     </view>
     <view class="koa-ticket--line"></view>
-    <view class="koa-ticket--btn">{{isGetted ? 'GETTED' : 'GET IT'}}</view>
+    <view class="koa-ticket--btn">{{isGetted ? 'GOT' : 'GET IT'}}</view>
   </view>
 </template>
 

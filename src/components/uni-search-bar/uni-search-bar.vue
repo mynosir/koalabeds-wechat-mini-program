@@ -3,7 +3,7 @@
 		<view :class="show?'':'hide'" class="uni-searchbar-form">
 			<view :style="{borderRadius:radius+'rpx'}" class="uni-searchbar-form__box">
 				<uni-icons :color="'#999999'" class="icon-search" type="search" size="18" />
-				<input :placeholder="placeholder" :focus="show" v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm">
+				<input :placeholder="placeholder" :disabled="disabled" focus v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm">
 				<uni-icons :color="'#999999'" v-if="clearButton==='always'||clearButton==='auto'&&searchVal!==''" class="icon-clear" type="clear" size="24" @click="clear" />
 			</view>
 			<view :style="{borderRadius:radius+'rpx'}" class="uni-searchbar-form__text" @click="searchClick">
@@ -42,10 +42,14 @@
 			showSearch:{
 				type: Boolean
 			},
+			disabled:{
+				type: Boolean,
+				default:false
+			},
 		},
 		data() {
 			return {
-				show: false,
+				show: true,
 				searchVal: ''
 			}
 		},

@@ -27,7 +27,7 @@
       <rating-show value="4.6" numbers="197"></rating-show>
       <view class="uni-panel">
         <uni-icons type="phone" size="26" />
-        <text style="margin-left:14upx">+123457897364</text>
+        <text style="margin-left:14upx" @tap="callPhone('123457897364')">+123457897364</text>
       </view>
       <view class="uni-panel">
         <uni-icons type="email" size="26" />
@@ -305,6 +305,11 @@ export default {
     },
     changeChildNum(value) {
       this.guestInfo.child = value;
+    },
+    callPhone(phoneNumber){
+      uni.makePhoneCall({
+        phoneNumber
+      });
     }
   }
 };

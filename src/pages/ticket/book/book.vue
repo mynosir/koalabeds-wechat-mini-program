@@ -115,7 +115,7 @@
     </view>
     <view class="uni-panel">
       <view style="height:60px"></view>
-      <view class="goods-carts">
+      <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
         <button type="primary" style="border-radius:0;" @tap="bookTicket">Booking Now</button>
       </view>
     </view>
@@ -230,7 +230,8 @@ export default {
       discount: 0,
       shippingFee: 0,
       existPop: ["coupon", "termInfo"],
-      isTerms: false
+      isTerms: false,
+      isIphoneX: this.$store.state.isIphoneX
     };
   },
   computed: {

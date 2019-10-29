@@ -75,10 +75,9 @@
             <ticket></ticket>
           </view>
         </view>
-        <button type="primary" @tap="closePopup">Get It All</button>
+        <button type="primary" @tap="closePopup">Get All</button>
       </view>
     </uni-popup>
-
     <!-- 日期选择 -->
     <calendar @change="dateChange" :modal="true" :show="showCaledar"></calendar>
   </view>
@@ -146,10 +145,12 @@ export default {
   onNavigationBarButtonTap(e) {},
   onLoad() {},
   onReady() {},
-  onShow() {},
+  onShow() {
+    console.log(this.$store.state)
+  },
   onHide() {},
   mounted() {
-    //this.showPop();
+    this.showPop();
   },
   methods: {
     dateChange({ choiceDate, dayCount }) {
@@ -205,7 +206,7 @@ export default {
 }
 .ticke-box {
   flex: none;
-  width: 300upx;
+  width: 400upx;
   margin-right: 20upx;
 }
 .recommend-box {

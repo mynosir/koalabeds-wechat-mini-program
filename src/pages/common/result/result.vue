@@ -4,13 +4,14 @@
       <icon type="success" size="80"></icon>
     </view>
     <view class="uni-panel" style="font-size:50upx">
-      PayMent Success
+      Payment Success
     </view>
     <view class="uni-panel" style="margin-top:120upx">
       <button type="primary" @tap="goOrderDetail">Booking Detail</button>
     </view>
     <view class="uni-panel" style="margin-bottom:220upx">
-      <button type="info" @tap="backHome">Back To Homepage</button>
+      <navigator class="uni-btn-info" target="miniProgram" open-type="exit">Back To Homepage</navigator>
+      <!-- <button type="info" @tap="backHome">Back To Homepage</button> -->
     </view>
   </view>
 </template>
@@ -50,9 +51,7 @@ export default {
       
     },
     backHome(){
-        uni.navigateBack({
-            delta: 10
-        });
+        
     }
   }
 };
@@ -60,4 +59,23 @@ export default {
 
 <style>
 @import "../../../common/uni-nvue.css";
+.uni-btn-info{
+  position: relative;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 14px;
+  padding-right: 14px;
+  box-sizing: border-box;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  line-height: 2.55555556;
+  border-radius: 5px;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+  color: #000000;
+  background-color: #F8F8F8;
+  border: 1px solid #ccc;
+}
 </style>

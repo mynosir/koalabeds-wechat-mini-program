@@ -1,5 +1,5 @@
 <template>
-  <view class="uni-container">
+  <scroll-view class="uni-container" :scroll-y="selectKey === '' ">
     <view class="uni-panel-h" style="border-bottom:1px solid #ccc">
       <view class="uni-flex" style="align-items:center;">
         <view class="uni-flex-item">
@@ -12,7 +12,7 @@
           </view>
         </view>
         <view style="width:200upx" @tap="goSearch">
-          <uni-search-bar radius="100" placeholder="Search" :hideCancel="true" />
+          <uni-search-bar radius="100" placeholder="Search" :hideCancel="true" :disabled="true"/>
         </view>
       </view>
       <view class="uni-flex" style="align-items:center;">
@@ -132,8 +132,8 @@
       </view>
     </uni-popup>
     <!-- 日期选择 -->
-    <calendar @change="dateChange" :modal="true" :show="showCaledar"></calendar>
-  </view>
+    <calendar @change="dateChange" :modal="true" :show="showCaledar" />
+  </scroll-view>
 </template>
 
 <script>
@@ -195,9 +195,9 @@ export default {
       this.dayCount = dayCount;
     },
     goSearch() {
-        uni.navigateTo({
-            url: "/pages/common/search/search"
-        });
+      uni.navigateTo({
+        url: "/pages/common/search/search"
+      });
     },
     showPop(key) {
       if (this.$refs[key].showPopup) {
@@ -221,6 +221,7 @@ export default {
       }
     },
     changePop({ show }) {
+      console.log(arguments)
       if (!show) {
         this.selectKey = "";
       }
@@ -251,6 +252,9 @@ export default {
 }
 .filter-pop .uni-popup {
   top: 196upx;
+}
+.filter-pop .uni-list:before{
+  background:none
 }
 .filter-select {
   text-align: center;

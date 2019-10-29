@@ -2,13 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
+const mobile = wx.getSystemInfoSync();
 
 const store = new Vuex.Store({
 	state: {
 		hasLogin: false,
 		loginProvider: "",
 		openid: null,
-		selectedAddress: null
+		selectedAddress: null,
+		isIphoneX: mobile.model.indexOf("iPhone X") >= 0
 	},
 	mutations: {
 		login(state, provider) {

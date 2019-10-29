@@ -58,9 +58,21 @@
         </uni-list-item>
       </uni-list>
     </view>
-    <view class="uni-panel">
+    <view class="uni-panel book-coupon-list">
       <uni-list>
-        <uni-list-item title="Coupon" :showDesc="true" desc="Not Yet" @click="showPop('coupon')" />
+        <uni-list-item
+          title="Coupon"
+          :showArrow="false"
+          :showDesc="true"
+          :showExtra="true"
+          @click="showPop('coupon')"
+        >
+          <view slot="extra">
+            <text v-if="selectCoupon">{{`-￥${selectCoupon.money}`}}</text>
+            <text v-else style="color:#ccc">Not Yet</text>
+            <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
+          </view>
+        </uni-list-item>
       </uni-list>
     </view>
     <view class="uni-panel">
@@ -70,7 +82,7 @@
           :showArrow="false"
           :showExtra="true"
           :showExtraIcon="true"
-          :extraIcon="{color:'#05db6c',type:'weixin'}"
+          :extraIcon="weixinExtra"
         >
           <view slot="extra">
             <label class="radio">
@@ -96,7 +108,7 @@
       </uni-list>
     </view>
     <view style="height:80px"></view>
-    <view class="goods-carts">
+    <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
       <uni-list>
         <uni-list-item :showArrow="false" :showFull="true">
           <view class="uni-flex" style="align-items:center;">
@@ -176,7 +188,7 @@
           </radio-group>
         </view>
       </view>
-      <button type="primary" @tap="closePopup('coupon')">Select It</button>
+      <button type="primary" @tap="chooseCoupon">Select It</button>
     </uni-popup>
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
@@ -244,7 +256,10 @@ export default {
         ]
       },
       existPop: ["roomInfo", "hotelDetail", "coupon", "termInfo"],
-      isTerms: false
+      isTerms: false,
+      isIphoneX: this.$store.state.isIphoneX,
+      selectCoupon: null,
+      weixinExtra: { color: "#05db6c", type: "weixin", size: 24 }
     };
   },
   methods: {
@@ -263,6 +278,13 @@ export default {
           });
         }
       });
+    },
+    chooseCoupon() {
+      this.selectCoupon = {
+        money: 10,
+        valid: "2019-10-10"
+      };
+      this.closePopup("coupon");
     },
     showPop(key) {
       if (this.existPop.includes(key)) {
@@ -305,5 +327,8 @@ export default {
 .pop-coupon .uni-list:before,
 .pop-coupon .uni-list:after {
   background: none;
+}
+.book-coupon-list .uni-list-item__extra {
+  max-width: 60%;
 }
 </style>

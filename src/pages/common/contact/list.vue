@@ -27,7 +27,7 @@
     <view style="height:80px"></view>
     <view class="uni-panel">
       <view style="height:60px"></view>
-      <view class="goods-carts">
+      <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
         <button type="primary" style="border-radius:0;" @tap="goDetail(null)">Add Address</button>
       </view>
     </view>
@@ -78,7 +78,8 @@ export default {
             backgroundColor: "rgb(255,58,49)"
           }
         }
-      ]
+      ],
+      isIphoneX: this.$store.state.isIphoneX
     };
   },
   methods: {

@@ -25,8 +25,8 @@
 
       <uni-list>
         <uni-list-item @click='goDetailPage("my-booking")' title="Hotel Booking" thumb="/static/booking.png" />
-        <uni-list-item @click='goDetailPage("my-ticket")' title="My ticket" thumb="/static/ticketsHL.png" />
-  			<uni-list-item @click='goDetailPage("my-coupon")' title="My CouPon" thumb="/static/coupon.png" />
+        <uni-list-item @click='goDetailPage("my-ticket")' title="My Ticket" thumb="/static/ticketsHL.png" />
+  			<uni-list-item @click='goDetailPage("my-coupon")' title="My Coupon" thumb="/static/coupon.png" />
   		</uni-list>
     </view>
 </template>

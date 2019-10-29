@@ -64,7 +64,7 @@
         </uni-list-item>
       </uni-list>
       <view style="height:120px"></view>
-      <view class="goods-carts">
+      <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
         <uni-list>
           <uni-list-item :showArrow="false" :showFull="true">
             <view class="uni-flex" style="align-items:center;">
@@ -126,7 +126,8 @@ export default {
           money2: 100.0,
           ticketNum: 0
         }
-      }
+      },
+      isIphoneX: this.$store.state.isIphoneX
     };
   },
   methods: {

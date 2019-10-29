@@ -147,7 +147,7 @@
 			},
 			daysCount: {
 				type: Number,
-				default: 150 //默认显示150天
+				default: 365 //默认显示365天
 			},
 			singleDate: {
 				type: Boolean,
