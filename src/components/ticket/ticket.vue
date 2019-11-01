@@ -33,6 +33,10 @@ export default {
     isUsed: {
       type: Boolean,
       default: false
+    },
+    canClick: {
+      type: Boolean,
+      default: false
     }
   },
   data: function() {
@@ -42,6 +46,9 @@ export default {
   },
   methods: {
     onClick() {
+      if(!this.canClick){
+        return;
+      }
       this.isGetted = true;
       this.$emit("click");
     }
@@ -92,6 +99,7 @@ export default {
 .koa-ticket--full {
   flex: 1;
   font-size: 14upx;
+  text-align: left;
 }
 .koa-ticket--valid {
   font-size: 14upx;

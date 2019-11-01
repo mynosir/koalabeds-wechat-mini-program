@@ -1,5 +1,15 @@
 {
-    "pages": [{
+    "pages": [
+        {
+            "path": "pages/index/home/home"
+        },{
+            "path": "pages/common/city/city"
+        }, {
+            "path": "pages/common/result/result"
+        },
+        {
+            "path": "pages/index/my/my"
+        }, {
             "path": "pages/hotel/book/book"
         },
         {
@@ -15,16 +25,10 @@
             "path": "pages/common/reviews/reviews"
         },
         {
-            "path": "pages/index/home/home"
-        },
-        {
             "path": "pages/my/my-ticket/my-ticket"
         },
         {
             "path": "pages/my/my-ticket/detail"
-        },
-        {
-            "path": "pages/index/my/my"
         },
         {
             "path": "pages/my/my-coupon/my-coupon"
@@ -49,9 +53,6 @@
         },
         {
             "path": "pages/common/search/search"
-        },
-        {
-            "path": "pages/common/result/result"
         }
     ],
     "globalStyle": {

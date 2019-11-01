@@ -253,7 +253,7 @@ export default {
     },
     bookTicket() {
       uni.redirectTo({
-        url: "/pages/common/result/result"
+        url: "/pages/common/result/result?type=ticket"
       });
     },
     goSelectAddress() {

@@ -17,7 +17,15 @@
         </view>
       </view>
       <view class="uni-panel uni-panel-h">
-        <uni-search-bar placeholder="Search location or hotel name" />
+        <view class="uni-flex" style="align-items:center">
+          <view style="text-align:center;padding:0 10upx;" @tap="goChooseCity">
+            {{cityName}}
+            <uni-icons type="location" size="20"></uni-icons>
+          </view>
+          <view class="uni-flex-item">
+            <uni-search-bar placeholder="Search location or hotel name" />
+          </view>
+        </view>
         <view class="uni-flex koa-date-home" @tap="toggleCalendar">
           <view class="uni-center uni-flex-item">
             <view class="koa-date--text">{{startDate}}</view>
@@ -36,7 +44,7 @@
       <uni-card :title="i18n.couponTitle" :isFull="true" :isShadow="false">
         <view class="panel-scroll" :scroll-x="true">
           <view class="ticke-box" v-for="i in 6" :key="i">
-            <ticket></ticket>
+            <ticket :canClick="true"></ticket>
           </view>
         </view>
       </uni-card>
@@ -72,7 +80,7 @@
         </view>
         <view class="popup-content">
           <view class="ticke-box" v-for="i in 6" :key="i">
-            <ticket></ticket>
+            <ticket :canClick="true"></ticket>
           </view>
         </view>
         <button type="primary" @tap="closePopup">Get All</button>
@@ -83,6 +91,8 @@
   </view>
 </template>
 <script>
+import { mapState, mapMutations } from "vuex";
+import citySelect from "@/components/city-select/city-select.vue";
 import uniSearchBar from "@/components/uni-search-bar/uni-search-bar.vue";
 import uniCard from "@/components/uni-card/uni-card.vue";
 import Ticket from "@/components/ticket/ticket.vue";
@@ -95,6 +105,7 @@ import uniCalendar from "@/components/uni-calendar/uni-calendar.vue";
 
 export default {
   components: {
+    citySelect,
     uniSearchBar,
     uniCard,
     Ticket,
@@ -105,6 +116,9 @@ export default {
     uniIcons
   },
   computed: {
+    ...mapState({
+			cityName: state => state.cityName,
+    }),
     i18n() {
       return this.$t("pages.home");
     }
@@ -146,7 +160,7 @@ export default {
   onLoad() {},
   onReady() {},
   onShow() {
-    console.log(this.$store.state)
+    console.log(this.$store.state);
   },
   onHide() {},
   mounted() {
@@ -176,7 +190,12 @@ export default {
       uni.navigateTo({
         url: "/pages/hotel/detail/detail"
       });
-    }
+    },
+    goChooseCity() {
+      uni.navigateTo({
+        url: "/pages/common/city/city"
+      });
+    },
   }
 };
 </script>

@@ -3,9 +3,7 @@
     <view class="uni-panel">
       <icon type="success" size="80"></icon>
     </view>
-    <view class="uni-panel" style="font-size:50upx">
-      Payment Success
-    </view>
+    <view class="uni-panel" style="font-size:50upx">Payment Success</view>
     <view class="uni-panel" style="margin-top:120upx">
       <button type="primary" @tap="goOrderDetail">Booking Detail</button>
     </view>
@@ -28,30 +26,30 @@ export default {
   },
   data() {
     return {
-        showList: false
+      showList: false,
+      type: "hotel"
     };
   },
-  onUnload() {
-      this.backHome()
+  onLoad: function(option) {
+    this.type = option.type || "hotel";
   },
-  methods:{
-    search(){
-        uni.navigateBack({
-            url: "/pages/hotel/search/search"
-        });
+  onUnload() {
+    this.backHome();
+  },
+  methods: {
+    goOrderDetail() {
+      const urls = {
+        hotel: "/pages/my/my-booking/my-booking",
+        ticket: "/pages/my/my-ticket/my-ticket"
+      };
+      uni.navigateTo({
+        url: urls[this.type]
+      });
     },
-    input({value}){
-        if(value.length > 0){
-          this.showList = true
-        }else{
-          this.showList = false
-        }
-    },
-    goOrderDetail(){
-      
-    },
-    backHome(){
-        
+    backHome() {
+      uni.navigateBack({
+        delta: 10
+      });
     }
   }
 };
@@ -59,7 +57,7 @@ export default {
 
 <style>
 @import "../../../common/uni-nvue.css";
-.uni-btn-info{
+.uni-btn-info {
   position: relative;
   display: block;
   margin-left: auto;
@@ -75,7 +73,7 @@ export default {
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
   color: #000000;
-  background-color: #F8F8F8;
+  background-color: #f8f8f8;
   border: 1px solid #ccc;
 }
 </style>

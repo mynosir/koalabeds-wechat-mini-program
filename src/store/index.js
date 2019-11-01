@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {
+	LOGIN
+} from './types'
 
 Vue.use(Vuex)
 const mobile = wx.getSystemInfoSync();
@@ -7,15 +10,17 @@ const mobile = wx.getSystemInfoSync();
 const store = new Vuex.Store({
 	state: {
 		hasLogin: false,
-		loginProvider: "",
+		userInfo: null,
+      	activeCity: null,
+		cityName: 'Choose City',
 		openid: null,
 		selectedAddress: null,
 		isIphoneX: mobile.model.indexOf("iPhone X") >= 0
 	},
 	mutations: {
-		login(state, provider) {
+		[LOGIN]: (state, userInfo) => {
+			state.userInfo = userInfo;
 			state.hasLogin = true;
-			state.loginProvider = provider;
 		},
 		logout(state) {
 			state.hasLogin = false
@@ -24,9 +29,13 @@ const store = new Vuex.Store({
 		setOpenid(state, openid) {
 			state.openid = openid
 		},
-		setSelectedAddress(state, address){
+		setSelectedAddress(state, address) {
 			console.log('update store address:', state, address)
 			state.selectedAddress = address
+		},
+		setCity(state, city) {
+			state.activeCity = city
+			state.cityName = city.cityName
 		}
 	},
 	actions: {
@@ -57,6 +66,17 @@ const store = new Vuex.Store({
 				}
 			})
 		}
+	}
+})
+
+uni.getUserInfo({
+	success: res => {
+		store.commit(LOGIN, res.userInfo)
+	}
+})
+wx.login({
+	success(res) {
+		console.log(res)
 	}
 })
 
