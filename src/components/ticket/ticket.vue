@@ -9,7 +9,9 @@
       <view class="koa-ticket--full">With purchase ￥{{fullPrice}}</view>
       <view class="koa-ticket--valid">Valid {{valid}} days</view>
     </view>
-    <view class="koa-ticket--line"></view>
+    <view style="margin:0 -30upx">
+      <view class="koa-ticket--line"></view>
+    </view>
     <view class="koa-ticket--btn">{{isGetted ? 'GOT' : 'GET IT'}}</view>
   </view>
 </template>
@@ -69,26 +71,7 @@ export default {
 .koa-ticket--used {
   background: #ccc;
 }
-.koa-ticket:before {
-  content: "";
-  position: absolute;
-  top: 96upx;
-  left: -15upx;
-  width: 30upx;
-  height: 30upx;
-  background: #fff;
-  border-radius: 50%;
-}
-.koa-ticket:after {
-  content: "";
-  position: absolute;
-  top: 96upx;
-  right: -15upx;
-  width: 30upx;
-  height: 30upx;
-  background: #fff;
-  border-radius: 50%;
-}
+
 .koa-ticket--price {
   font-size: 40upx;
   line-height: 1.4;
@@ -106,12 +89,30 @@ export default {
   text-align: right;
 }
 .koa-ticket--line {
-  position: absolute;
   border-bottom: 8upx dotted #fff;
   height: 8upx;
-  top: 100upx;
-  left: 0;
   width: 100%;
+  position: relative;
+}
+.koa-ticket--line:before {
+  content: "";
+  position: absolute;
+  top:-11upx;
+  left: -15upx;
+  width: 30upx;
+  height: 30upx;
+  background: #fff;
+  border-radius: 50%;
+}
+.koa-ticket--line:after {
+  content: "";
+  position: absolute;
+  top:-11upx;
+  right: -15upx;
+  width: 30upx;
+  height: 30upx;
+  background: #fff;
+  border-radius: 50%;
 }
 .koa-ticket--btn {
   padding-top: 10upx;

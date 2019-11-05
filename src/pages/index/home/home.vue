@@ -23,7 +23,7 @@
             <uni-icons type="location" size="20"></uni-icons>
           </view>
           <view class="uni-flex-item">
-            <uni-search-bar placeholder="Search location or hotel name" />
+            <uni-search-bar placeholder="Search location or hotel name"/>
           </view>
         </view>
         <view class="uni-flex koa-date-home" @tap="toggleCalendar">

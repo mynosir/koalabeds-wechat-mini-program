@@ -1,12 +1,27 @@
 export default {
     global:{
-        title: 'Koalabeds'
+        title: 'Koalabeds',
+        checkIn: 'Check In',
+        checkOut: 'Check Out',
+        search: 'Search',
+        chooseCity: 'Choose City',
+        total: 'Total',
+        night: 'nights'
     },
     pages: {
         home: {
             title: 'Koalabeds',
+            searchPlaceHolod: 'Search location or hotel name',
             couponTitle: 'Get your coupon',
-            recommendTitle: 'Recommend'
+            recommendTitle: 'Recommend',
+
+        },
+        my:{
+            wechat: 'Wechat Authorization',
+            hotelBook: 'Hotel Booking',
+            myTicket: 'My Ticket',
+            myCoupon: 'My Coupon',
+            language: 'Language'
         }
     },
     tabBar: {

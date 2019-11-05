@@ -1,14 +1,10 @@
 <template>
 	<view class="uni-searchbar">
 		<view :class="show?'':'hide'" class="uni-searchbar-form">
-			<view :style="{borderRadius:radius+'rpx'}" class="uni-searchbar-form__box">
+			<view :style="{borderRadius:radius+'rpx'}" class="uni-searchbar-form__box" @click="searchClick">
 				<uni-icons :color="'#999999'" class="icon-search" type="search" size="18" />
-				<input :placeholder="placeholder" :disabled="disabled" :focus="focus" v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm">
+				<input ref="input" :placeholder="placeholder" :disabled="disabled" :focus="focus" v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm">
 				<uni-icons :color="'#999999'" v-if="clearButton==='always'||clearButton==='auto'&&searchVal!==''" class="icon-clear" type="clear" size="24" @click="clear" />
-			</view>
-			<view :style="{borderRadius:radius+'rpx'}" class="uni-searchbar-form__text" @click="searchClick">
-				<uni-icons color="#999999" class="icon-search" type="search" size="18" />
-				<text class="placeholder">{{ placeholder }}</text>
 			</view>
 			<text v-if="!hideCancel" class="uni-searchbar-form__cancel" @click="cancel">Cancel</text>
 			<text v-if="showSearch" class="uni-searchbar-form__cancel active" @click="search">Search</text>
@@ -53,7 +49,7 @@
 		},
 		data() {
 			return {
-				show: true,
+				show: false,
 				searchVal: ''
 			}
 		},
@@ -68,6 +64,7 @@
 			searchClick() {
 				this.searchVal = ''
 				this.show = true
+				console.log(this.$refs)
 			},
 			search(){
 				this.$emit('search', {
@@ -171,10 +168,6 @@
 	}
 	.uni-searchbar-form__cancel.active{
 		color: #0bb9ee;
-	}
-
-	.uni-searchbar-form.hide .uni-searchbar-form__box {
-		display: none
 	}
 
 	.uni-searchbar-form.hide .uni-searchbar-form__text {

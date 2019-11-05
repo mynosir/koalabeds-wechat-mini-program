@@ -15,7 +15,7 @@
           type="primary"
           open-type="getUserInfo"
           @getuserinfo="mpGetUserInfo"
-        >Wechat Authorization</button>
+        >{{i18n.wechat}}</button>
       </view>
       <block v-else>
         <view style="padding-top:30upx; text-align:center;">
@@ -24,23 +24,36 @@
         <view class="uni-h4 uni-center uni-common-mt">{{userInfo.nickName}}</view>
       </block>
     </view>
-    <uni-list v-if="hasLogin">
-      <uni-list-item
-        @click="goDetailPage('my-booking')"
-        title="Hotel Booking"
-        thumb="/static/booking.png"
-      />
-      <uni-list-item
-        @click="goDetailPage('my-ticket')"
-        title="My Ticket"
-        thumb="/static/ticketsHL.png"
-      />
-      <uni-list-item
-        @click="goDetailPage('my-coupon')"
-        title="My Coupon"
-        thumb="/static/coupon.png"
-      />
-    </uni-list>
+    <template v-if="hasLogin">
+      <view class="uni-panel">
+        <uni-list>
+          <uni-list-item
+            @click="goDetailPage('my-booking')"
+            :title="i18n.hotelBook"
+            thumb="/static/booking.png"
+          />
+          <uni-list-item
+            @click="goDetailPage('my-ticket')"
+            :title="i18n.myTicket"
+            thumb="/static/ticketsHL.png"
+          />
+          <uni-list-item
+            @click="goDetailPage('my-coupon')"
+            :title="i18n.myCoupon"
+            thumb="/static/coupon.png"
+          />
+        </uni-list>
+      </view>
+      <view class="uni-panel">
+        <uni-list>
+          <uni-list-item
+            @click="goDetailPage('my-language')"
+            :title="i18n.language"
+            thumb="/static/language.png"
+          />
+        </uni-list>
+      </view>
+    </template>
   </view>
 </template>
 <script>
@@ -62,9 +75,12 @@ export default {
   },
   computed: {
     ...mapState({
-			hasLogin: state => state.hasLogin,
+      hasLogin: state => state.hasLogin,
       userInfo: state => state.userInfo
-    })
+    }),
+    i18n() {
+      return this.$t("pages.my");
+    }
   },
   onShareAppMessage() {
     return {
@@ -77,8 +93,7 @@ export default {
       url: "/pages/about/about"
     });
   },
-  onLoad() {
-  },
+  onLoad() {},
   onReady() {},
   onShow() {},
   onHide() {},
@@ -93,7 +108,7 @@ export default {
         });
         return;
       }
-      this.$store.commit(LOGIN, result.detail.userInfo)
+      this.$store.commit(LOGIN, result.detail.userInfo);
     },
     goDetailPage(u) {
       let url = "/pages/my/" + u + "/" + u;

@@ -3,12 +3,14 @@
         {
             "path": "pages/index/home/home"
         },{
+            "path": "pages/index/my/my"
+        },
+        {
+            "path": "pages/my/my-language/my-language"
+        }, {
             "path": "pages/common/city/city"
         }, {
             "path": "pages/common/result/result"
-        },
-        {
-            "path": "pages/index/my/my"
         }, {
             "path": "pages/hotel/book/book"
         },
@@ -38,7 +40,8 @@
         },
         {
             "path": "pages/common/contact/list"
-        }, {
+        },
+        {
             "path": "pages/common/contact/detail"
         }, {
             "path": "pages/common/address/list"
