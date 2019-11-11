@@ -13,12 +13,12 @@
         </view>
         <view class="uni-media-list-body">
           <view class="uni-media-list-text-top">{{value.title}}</view>
-          <view class="uni-media-list-text-bottom uni-ellipsis">{{value.content}}</view>
+          <view class="uni-media-list-text-bottom uni-ellipsis" v-html="value.content"></view>
         </view>
         <view class="uni-media-list-extra">
           <view class="uni-product-price">
-            <view class="uni-product-price-favour">￥{{value.money1}}</view>
-            <view class="uni-product-price-original">￥{{value.money2}}</view>
+            <view class="uni-product-price-favour" v-if="value.money1">{{value.currencySymbol}}{{value.money1}}</view>
+            <view class="uni-product-price-original">{{value.currencySymbol}}{{value.money2}}<text style="font-size:24upx;margin-left:6upx;">up</text></view>
             <view>
               <button id="product-list-btn" type="primary" size="mini" @click="goBook($event,value)">BOOK</button>
             </view>

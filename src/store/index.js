@@ -1,46 +1,155 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {
-	LOGIN
+	LOGIN,
+	GETCITYS,
+	GETOPENID,
+	keymaps
 } from './types'
+
+
+import {
+	domain
+} from './host'
+
+
+const Utils = require("../common/util.js");
+const {
+	fetch
+} = Utils;
+
+const dayCount = 1;
+let now = new Date();
+const startDate = new Date(now);
+now.setDate(now.getDate() + dayCount);
+const endDate = new Date(now);
+
+
 
 Vue.use(Vuex)
 const mobile = wx.getSystemInfoSync();
 
 const store = new Vuex.Store({
 	state: {
+		language: 'en',
+		domain,
 		hasLogin: false,
 		userInfo: null,
-      	activeCity: null,
+		citys: [],
+		activeCity: null,
 		cityName: 'Choose City',
 		openid: null,
 		selectedAddress: null,
+		hotel: {
+			search: '',
+			startDate,
+			endDate,
+			dayCount,
+			selectHotel: {},
+			guestInfo: {
+				adult: 2,
+				child: 0
+			},
+			roomInfo: {},
+			keymaps,
+		},
+		ticket: {
+			image: '',
+			validDate: startDate,
+			ticketInfo: null
+		},
+		hotelTemps: [], //用来缓存酒店，优化查询
 		isIphoneX: mobile.model.indexOf("iPhone X") >= 0
 	},
 	mutations: {
 		[LOGIN]: (state, userInfo) => {
 			state.userInfo = userInfo;
 			state.hasLogin = true;
+			fetch({
+				url: domain + '/api/post?actionxm=saveUserinfo',
+				method: 'POST',
+				data: {
+					openid: state.openid,
+					userinfo: userInfo
+				}
+			})
 		},
 		logout(state) {
 			state.hasLogin = false
 			state.openid = null
 		},
 		setOpenid(state, openid) {
+			uni.setStorageSync('openid', openid)
 			state.openid = openid
 		},
 		setSelectedAddress(state, address) {
-			console.log('update store address:', state, address)
 			state.selectedAddress = address
 		},
 		setCity(state, city) {
 			state.activeCity = city
 			state.cityName = city.cityName
+		},
+		setCityList(state, citys) {
+			state.citys = citys
+		},
+		setHotelDate(state, date) {
+			state.hotel.startDate = date.startDate;
+			state.hotel.endDate = date.endDate;
+			state.hotel.dayCount = date.dayCount;
+		},
+		setHotel(state, hotel) {
+			state.hotel.selectHotel = hotel
+		},
+		setGuestInfo(state, guestInfo) {
+			state.hotel.guestInfo = guestInfo
+		},
+		setRoomInfo(state, roomInfo) {
+			state.hotel.roomInfo = roomInfo
+		},
+		setSearch(state, search) {
+			state.hotel.search = search
+		},
+		setHotelTemps(state, list) {
+			state.hotelTemps = list
+		},
+		setTicket(state, ticket) {
+			state.ticket.ticketInfo = ticket
+		},
+		setTicketDate(state, date) {
+			state.ticket.validDate = date;
+		},
+		setTicketImg(state, imgurl) {
+			state.ticket.image = imgurl
 		}
 	},
 	actions: {
+		[GETCITYS]({
+			commit
+		}) {
+			return new Promise((resolve, reject) => {
+				fetch({
+					url: domain + "/api/get?actionxm=getCitys",
+					data: {
+						type: 2
+					}
+				}).then(res => {
+					let citys = []
+					const {
+						data
+					} = res
+					data.map((item, index) => {
+						citys.push({
+							'cityCode': index,
+							'cityName': item.propertyCity
+						})
+					})
+					commit('setCityList', citys)
+					resolve(citys)
+				})
+			})
+		},
 		// lazy loading openid
-		getUserOpenId: async function ({
+		[GETOPENID]: async function ({
 			commit,
 			state
 		}) {
@@ -50,17 +159,26 @@ const store = new Vuex.Store({
 				} else {
 					uni.login({
 						success: (data) => {
-							commit('login')
-							setTimeout(function () { //模拟异步请求服务器获取 openid
-								const openid = '123456789'
-								console.log('uni.request mock openid[' + openid + ']');
-								commit('setOpenid', openid)
-								resolve(openid)
-							}, 1000)
-						},
-						fail: (err) => {
-							console.log('uni.login 接口调用失败，将无法正常使用开放接口等服务', err)
-							reject(err)
+							const {
+								code
+							} = data;
+							fetch({
+								url: domain + "/api/get?actionxm=getOpenid",
+								data: {
+									code
+								}
+							}).then(res => {
+								const {
+									data
+								} = res
+								commit('setOpenid', data)
+								return uni.getUserInfo()
+							}).then((res) => {
+								console.log(res)
+								if (res[1]) {
+									store.commit(LOGIN, res[1].userInfo)
+								}
+							})
 						}
 					})
 				}
@@ -69,15 +187,9 @@ const store = new Vuex.Store({
 	}
 })
 
-uni.getUserInfo({
-	success: res => {
-		store.commit(LOGIN, res.userInfo)
-	}
-})
-wx.login({
-	success(res) {
-		console.log(res)
-	}
-})
+
+//获取城市
+store.dispatch(GETCITYS)
+store.dispatch(GETOPENID)
 
 export default store

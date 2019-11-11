@@ -99,7 +99,6 @@ export default {
   onHide() {},
   methods: {
     mpGetUserInfo(result) {
-      console.log("mpGetUserInfo", result);
       if (result.detail.errMsg !== "getUserInfo:ok") {
         uni.showModal({
           title: "get userinfo error",

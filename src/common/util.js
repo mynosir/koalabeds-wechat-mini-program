@@ -1,3 +1,21 @@
+Date.prototype.format = function (fmt) { //author: meizz   
+	var o = {
+		"M+": this.getMonth() + 1, //月份   
+		"d+": this.getDate(), //日   
+		"h+": this.getHours(), //小时   
+		"m+": this.getMinutes(), //分   
+		"s+": this.getSeconds(), //秒   
+		"q+": Math.floor((this.getMonth() + 3) / 3), //季度   
+		"S": this.getMilliseconds() //毫秒   
+	};
+	if (/(y+)/.test(fmt))
+		fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+	for (var k in o)
+		if (new RegExp("(" + k + ")").test(fmt))
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+	return fmt;
+}
+
 function formatTime(time) {
 	if (typeof time !== 'number' || time < 0) {
 		return time
@@ -81,9 +99,47 @@ function getDate(date, AddMonthCount = 0, AddDayCount = 0) {
 	return y + "-" + m + "-" + d;
 }
 
+function fetch({
+	url,
+	method = 'GET',
+	data,
+	showLoading = false
+}) {
+	if (showLoading) {
+		uni.showLoading();
+	}
+	return new Promise((resolve, reject) => {
+		uni.request({
+			url, //仅为示例，并非真实接口地址。
+			data:{
+				...data,
+				openid: uni.getStorageSync('openid')
+			},
+			method,
+			success: (res) => {
+				console.log(url, data, method, res);
+				if (res.statusCode == 200) {
+					resolve(res.data)
+					if(showLoading){
+						uni.hideLoading();
+					}
+				} else {
+					reject(res)
+				}
+			},
+			error(err) {
+				reject(err)
+				uni.hideLoading();
+			}
+		});
+	})
+
+}
+
 module.exports = {
 	formatTime: formatTime,
 	formatLocation: formatLocation,
 	dateUtils: dateUtils,
-	getDate
+	getDate,
+	fetch
 }

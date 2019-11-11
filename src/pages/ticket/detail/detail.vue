@@ -1,89 +1,92 @@
 <template>
   <view class="koa-ticket-detail uni-container">
-    <view class="uni-panel">
-      <view class="page-section swiper">
-        <view class="page-section-spacing">
-          <swiper
-            class="swiper"
-            :indicator-dots="swiperSetting.indicatordots"
-            :autoplay="swiperSetting.autoplay"
-            :interval="swiperSetting.interval"
-            :duration="swiperSetting.duration"
-          >
-            <swiper-item v-for="(item, index) in imglist" :key="index">
-              <image style="width: 100%; " :src="item" />
-            </swiper-item>
-          </swiper>
+    <template v-if="ticketInfo">
+      <view class="uni-panel">
+        <view class="page-section swiper">
+          <view class="page-section-spacing">
+            <swiper
+              class="swiper"
+              :autoplay="swiperSetting.autoplay"
+              :interval="swiperSetting.interval"
+              :duration="swiperSetting.duration"
+            >
+              <swiper-item>
+                <image style="width: 100%; " :src="ticketImg" />
+              </swiper-item>
+            </swiper>
+          </view>
         </view>
       </view>
-    </view>
-    <view class="uni-panel uni-panel-h">
-      <view class="koa-title">HONGKONG DISNEY DSTIdskfjsdf</view>
-      <view class="koa-desc">
-        something say askdfl;asdfjasdf asldfjasd;fas dfklasjdf;
-        safdlkasjf asaldf;asdfsaldf;asdfsaldf;asdfsaldf;asdfsaldf;asdf
-        asdfkasldfjasl;dfasdfsaldf;asdf
+      <view class="uni-panel uni-panel-h">
+        <view class="koa-title">{{ticketInfo.tourCode}}</view>
+        <view class="koa-desc">{{ticketInfo.title}}</view>
       </view>
-    </view>
-    <view class="uni-panel">
-      <uni-list>
-        <uni-list-item title="Booking Instruction" />
-        <uni-list-item
-          title="Valid Date"
-          :desc="validDate == ''?'Choose A Date': validDate"
-          :showDesc="true"
-          @click="goDate"
-        />
-      </uni-list>
-    </view>
-    <view class="uni-panel">
-      <uni-list>
-        <uni-list-item :showArrow="false" :showExtra="true">
-          <view>
-            <view class="panel" style="font-size:32upx">Adult:</view>
-            <view class="uni-product-price uni-flex" style="width:50%;align-items:center">
-              <view class="uni-product-price-favour">￥{{ticket.adult.money1}}</view>
-              <view class="uni-product-price-original">￥{{ticket.adult.money2}}</view>
-            </view>
-          </view>
-          <view slot="extra">
-            <uni-number-box :value="ticket.adult.ticketNum" @change="changeAdultNum" />
-          </view>
-        </uni-list-item>
-        <uni-list-item :showArrow="false" :showExtra="true">
-          <view>
-            <view class="panel" style="font-size:32upx">Child:</view>
-            <view class="uni-product-price uni-flex" style="width:50%;align-items:center">
-              <view class="uni-product-price-favour">￥{{ticket.child.money1}}</view>
-              <view class="uni-product-price-original">￥{{ticket.child.money2}}</view>
-            </view>
-          </view>
-          <view slot="extra">
-            <uni-number-box :value="ticket.child.ticketNum" @change="changeChildNum" />
-          </view>
-        </uni-list-item>
-      </uni-list>
-      <view style="height:120px"></view>
-      <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
+      <view class="uni-panel">
         <uni-list>
-          <uni-list-item :showArrow="false" :showFull="true">
-            <view class="uni-flex" style="align-items:center;">
-              <view
-                class="uni-flex-item"
-                style="padding-left:24upx"
-              >￥{{ticket.adult.money2*ticket.adult.ticketNum+ticket.child.money2*ticket.child.ticketNum}}</view>
-              <view>
-                <button type="primary" style="border-radius:0;" @tap="bookTicket">Booking Now</button>
+          <!-- <uni-list-item title="Booking Instruction" /> -->
+          <uni-list-item
+            title="Valid Date"
+            :desc="validDate == ''?'Choose A Date': validDate"
+            :showDesc="true"
+            @click="goDate"
+          />
+        </uni-list>
+      </view>
+      <view class="uni-panel">
+        <uni-list>
+          <uni-list-item
+            :showArrow="false"
+            :showExtra="true"
+            v-for="(item, index) in ticketInfo.productPrice"
+            :key="item.id"
+          >
+            <view>
+              <view class="panel" style="font-size:32upx">{{item.title}}:</view>
+              <view class="uni-product-price uni-flex" style="width:50%;align-items:center">
+                <view class="uni-product-price-original">￥{{item.price}}</view>
               </view>
+            </view>
+            <view slot="extra">
+              <uni-number-box :value="item.ticketNum" @change="changeNum($event, index)" />
             </view>
           </uni-list-item>
         </uni-list>
+        <view style="height:120px"></view>
+        <view class="goods-carts" :class="{'iphonexBottom': isIphoneX}">
+          <uni-list>
+            <uni-list-item :showArrow="false" :showFull="true">
+              <view class="uni-flex" style="align-items:center;">
+                <view
+                  class="uni-flex-item uni-product-price-original"
+                  style="padding-left:24upx;font-size:32upx;"
+                >￥{{totalSum}}</view>
+                <view>
+                  <button
+                    type="primary"
+                    style="border-radius:0;"
+                    @tap="bookTicket"
+                    v-if="hasLogin"
+                  >Booking Now</button>
+                  <button
+                    type="primary"
+                    style="border-radius:0;"
+                    open-type="getUserInfo"
+                    @getuserinfo="mpGetUserInfo"
+                    v-else
+                  >Booking Now</button>
+                </view>
+              </view>
+            </uni-list-item>
+          </uni-list>
+        </view>
       </view>
-    </view>
-
+    </template>
+    <template v-else>
+      <div class="no-data">loading....</div>
+    </template>
     <uni-calendar
       ref="calendar"
-      :start-date="startDate"
+      :disableBefore="true"
       :date="validDate"
       @change="change"
       @confirm="change"
@@ -105,46 +108,103 @@ export default {
     uniCalendar,
     uniNumberBox
   },
+  computed: {
+    hasLogin() {
+      return this.$store.state.hasLogin;
+    },
+    ticketInfo() {
+      return this.$store.state.ticket.ticketInfo;
+    },
+    validDate() {
+      return this.$store.state.ticket.validDate.format("yyyy-MM-dd");
+    },
+    ticketImg() {
+      return (
+        this.$store.state.ticket.image ||
+        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
+      );
+    }
+  },
   data() {
     return {
-      validDate: "",
+      productId: "",
+      type: "",
       startDate: Utils.getDate(new Date(), -1),
-      date: "",
-      imglist: [
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-      ],
-      ticket: {
-        adult: {
-          money1: 300.0,
-          money2: 200.0,
-          ticketNum: 1
-        },
-        child: {
-          money1: 200.0,
-          money2: 100.0,
-          ticketNum: 0
-        }
-      },
-      isIphoneX: this.$store.state.isIphoneX
+      isIphoneX: this.$store.state.isIphoneX,
+      totalSum: 0
     };
   },
+  watch: {
+    ticketInfo(newVal) {
+      if (newVal.productPrice) {
+        newVal.productPrice.map(item => {
+          this.totalSum += item.price * item.num;
+        });
+      }
+      console.log(newVal);
+      return newVal;
+    }
+  },
+  onLoad(options) {
+    this.productId = options.productId || "6";
+    this.type = options.type || "tour";
+    this.getGraylineProductDetails();
+  },
+  unLoad() {
+    this.$store.commit("setTicket", null);
+  },
   methods: {
+    mpGetUserInfo(result) {
+      if (result.detail.errMsg !== "getUserInfo:ok") {
+        uni.showModal({
+          title: "get userinfo error",
+          content: "reason:" + result.detail.errMsg,
+          showCancel: false
+        });
+        return;
+      }
+      this.$store.commit("LOGIN", result.detail.userInfo);
+    },
+    getGraylineProductDetails() {
+      this.$fetch({
+        url:
+          this.$store.state.domain +
+          "api/get?actionxm=getGraylineProductDetails",
+        data: {
+          productId: this.productId,
+          type: this.type
+        },
+        showLoading: true
+      }).then(res => {
+        let ticket = res.data;
+        ticket.productPrice = ticket.productPrice.map(pp => {
+          return {
+            ...pp,
+            num: 0
+          };
+        });
+        this.$store.commit("setTicket", ticket);
+      });
+    },
     goDate() {
       this.$refs.calendar.open();
     },
     change(e) {
-      console.log(e);
-      this.validDate = e.fulldate;
+      this.$store.commit("setTicketDate", new Date(e.fulldate));
     },
-    changeAdultNum(value) {
-      this.ticket.adult.ticketNum = value;
-    },
-    changeChildNum(value) {
-      this.ticket.child.ticketNum = value;
+    changeNum(value, index) {
+      const ticket = JSON.parse(JSON.stringify(this.ticketInfo));
+      ticket.productPrice[index].num = value;
+      this.$store.commit("setTicket", ticket);
     },
     bookTicket() {
+      if (this.totalSum == 0) {
+        uni.showToast({
+          icon: "none",
+          title: "Please select num~"
+        });
+        return;
+      }
       uni.navigateTo({
         url: "/pages/ticket/book/book"
       });

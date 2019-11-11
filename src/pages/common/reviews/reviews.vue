@@ -21,36 +21,49 @@ export default {
   data() {
     return {
       comments: [],
-      count: 1,
+      page: 1,
+      num: 10,
+      hotelId: '170048',
       loadmoreStatus: "more" //more（loading前）、loading（loading中）、noMore（没有更多了
     };
   },
-  onLoad() {
-    this.getComments(1);
+
+  onLoad(options) {
+    this.hotelId = options.id || "170048";
+    this.getComments();
   },
   methods: {
     getComments() {
-      if(this.loadmoreStatus === 'loading'){
-          return
-      }
-      this.loadmoreStatus = 'loading'
-      if (this.count > 3) {
-        this.loadmoreStatus = "noMore";
+      if (
+        this.loadmoreStatus === "loading" ||
+        this.loadmoreStatus == "noMore"
+      ) {
         return;
       }
-      setTimeout(() => {
-        for (let i = 0; i < this.count * 10; i++) {
-          this.comments.push({
-            username: "username",
-            userimg:
-              "http://ww1.sinaimg.cn/large/68c990d9gy1g7wxkn7r0gj20dw0dwgqp.jpg",
-            stars: parseInt(Math.random() * 5 + 1),
-            content:
-              "reviwess contentreviwess contentreviwess contentreviwess content"
-          });
+      this.loadmoreStatus = "loading";
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getReviews",
+        data: {
+          propertyID: this.hotelId,
+          page: this.page,
+          num: this.num
         }
-        this.loadmoreStatus = 'more'
-      }, 1000);
+      }).then(data => {
+        if (data.length <= 0) {
+          this.loadmoreStatus = "noMore";
+        } else {
+          this.comments = data.map(item => {
+            return {
+              ...item,
+              title: item.roomTypeName,
+              content: item.roomTypeDescription,
+              img: item.roomTypePhotos[0].thumb,
+              money2: item.roomRate
+            };
+          });
+          this.page++;
+        }
+      });
     },
     loadMore() {
       console.log(1);

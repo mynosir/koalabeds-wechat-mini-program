@@ -3,11 +3,14 @@ import Vue from 'vue'
 import App from './App'
 import store from './store'
 import i18n from './i18n'
+const Utils = require("./common/util.js");
+const {fetch} = Utils
 
 
 Vue.config.productionTip = false
 
 Vue.prototype.$store = store
+Vue.prototype.$fetch = fetch
 Vue.prototype.$backgroundAudioData = {
 	playing: false,
 	playTime: 0,

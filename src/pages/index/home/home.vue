@@ -1,5 +1,10 @@
 <template>
-  <view class="uni-container">
+  <scroll-view
+    @scrolltolower="loadMore"
+    style="height:100%"
+    :scroll-y="true"
+    :enable-back-to-top="true"
+  >
     <view class="uni-panel">
       <view class="page-section swiper">
         <view class="page-section-spacing">
@@ -10,8 +15,8 @@
             :interval="swiperSetting.interval"
             :duration="swiperSetting.duration"
           >
-            <swiper-item v-for="(item, index) in imglist" :key="index" @tap="goHotel">
-              <image style="width: 100%; " :src="item" />
+            <swiper-item v-for="(item, index) in imglist" :key="index">
+              <image style="width: 100%; " :src="item.img" />
             </swiper-item>
           </swiper>
         </view>
@@ -23,7 +28,7 @@
             <uni-icons type="location" size="20"></uni-icons>
           </view>
           <view class="uni-flex-item">
-            <uni-search-bar placeholder="Search location or hotel name"/>
+            <uni-search-bar placeholder="Search location or hotel name" @input="changeSearch" />
           </view>
         </view>
         <view class="uni-flex koa-date-home" @tap="toggleCalendar">
@@ -43,8 +48,16 @@
     <view class="uni-panel uni-panel-h">
       <uni-card :title="i18n.couponTitle" :isFull="true" :isShadow="false">
         <view class="panel-scroll" :scroll-x="true">
-          <view class="ticke-box" v-for="i in 6" :key="i">
-            <ticket :canClick="true"></ticket>
+          <view class="ticke-box" v-for="item in coupons" :key="item.id">
+            <ticket
+              :status="item.status"
+              :canClick="true"
+              :price="item.discountAmount"
+              :fullPrice="item.totalAmount"
+              :valid="item.validateDate"
+              @click="postCoupon(item.id)"
+              :isSmall="true"
+            ></ticket>
           </view>
         </view>
       </uni-card>
@@ -52,23 +65,27 @@
     <view class="uni-panel uni-panel-h">
       <uni-card :title="i18n.recommendTitle" :isFull="true" :isShadow="false">
         <view class="panel-scroll" :scroll-x="true">
-          <view class="recommend-box" v-for="i in 6" :key="i" @tap="goHotel">
+          <view
+            class="recommend-box"
+            v-for="item in recommendList"
+            :key="item.id"
+            @tap="goHotel(item.propertyID)"
+          >
             <view class="recommend-image">
-              <image :src="tempImg" />
+              <image :src="item.propertyImageThumb" />
             </view>
-            <view class="recommend-text">LEE GRDDK HOTEL NAME</view>
+            <view class="recommend-text">{{item.propertyName}}</view>
           </view>
         </view>
       </uni-card>
     </view>
     <view>
       <panel-image
-        @click="goHotel"
-        v-for="i in 6"
-        :key="i"
-        title="Hotel Title"
-        :imgUrl="tempImg"
-        goUrl="/pages/hotel/detail/detail"
+        @click="goHotel(item.propertyID)"
+        v-for="item in hotelList"
+        :key="item.id"
+        :title="item.propertyName"
+        :imgUrl="item.propertyImage"
       ></panel-image>
       <uni-load-more iconType="spinner" :status="loadmoreStatus" />
     </view>
@@ -79,16 +96,24 @@
           <uni-icons type="close" color="#ccc" size="30" />
         </view>
         <view class="popup-content">
-          <view class="ticke-box" v-for="i in 6" :key="i">
-            <ticket :canClick="true"></ticket>
+          <view class="ticke-box" v-for="(item) in coupons" :key="item.id">
+            <ticket
+              :canClick="false"
+              :price="item.discountAmount"
+              :fullPrice="item.totalAmount"
+              :valid="item.validateDate"
+            ></ticket>
           </view>
         </view>
-        <button type="primary" @tap="closePopup">Get All</button>
+        <button type="primary" @tap="postCoupon('all')" v-if="hasLogin">Get All</button>
+        <button type="primary" 
+          open-type="getUserInfo"
+          @getuserinfo="mpGetUserInfo" v-else>Get All</button>
       </view>
     </uni-popup>
     <!-- 日期选择 -->
     <calendar @change="dateChange" :modal="true" :show="showCaledar"></calendar>
-  </view>
+  </scroll-view>
 </template>
 <script>
 import { mapState, mapMutations } from "vuex";
@@ -117,37 +142,39 @@ export default {
   },
   computed: {
     ...mapState({
-			cityName: state => state.cityName,
+      cityName: state => state.cityName,
+      hasLogin: state => state.hasLogin,
     }),
     i18n() {
       return this.$t("pages.home");
+    },
+    startDate() {
+      return this.$store.state.hotel.startDate.toString().substr(4, 6);
+    },
+    endDate() {
+      return this.$store.state.hotel.endDate.toString().substr(4, 6);
+    },
+    dayCount() {
+      return this.$store.state.hotel.dayCount;
     }
   },
   data() {
-    let now = new Date();
-    const dayCount = 1;
-    const startDate = now.toString().substr(4, 6);
-    now.setDate(now.getDate() + dayCount);
-    const endDate = now.toString().substr(4, 6);
     return {
       showCaledar: false,
-      startDate,
-      endDate,
-      dayCount: 1,
+      searchContent: "",
       swiperSetting: {
         indicatordots: true,
         autoplay: true,
         interval: 3000, //每隔毫秒自动播放
         duration: 500 //动画时间
       },
-      loadmoreStatus: "loading", //more loading nomore
-      imglist: [
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-      ],
-      tempImg:
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
+      loadmoreStatus: "more", //more loading nomore
+      imglist: [],
+      recommendList: [],
+      hotelList: [],
+      page: 1,
+      num: 10,
+      coupons: []
     };
   },
   onShareAppMessage() {
@@ -157,20 +184,104 @@ export default {
     };
   },
   onNavigationBarButtonTap(e) {},
-  onLoad() {},
-  onReady() {},
-  onShow() {
-    console.log(this.$store.state);
+  onLoad() {
+    this.getRecommend();
+    this.getRecommendFlow();
+    this.getBanners();
+    this.getCoupons();
   },
+  onReady() {},
+  onShow() {},
   onHide() {},
   mounted() {
-    this.showPop();
+    if (uni.getStorageSync("firstHello") !== "Y") {
+      this.showPop();
+      uni.setStorageSync("firstHello", "Y");
+    }
   },
   methods: {
+    mpGetUserInfo(result) {
+      if (result.detail.errMsg !== "getUserInfo:ok") {
+        uni.showModal({
+          title: "get userinfo error",
+          content: "reason:" + result.detail.errMsg,
+          showCancel: false
+        });
+        return;
+      }
+      this.$store.commit('LOGIN', result.detail.userInfo);
+    },
+    input({ value }) {
+      this.searchContent = value;
+    },
+    getBanners() {
+      this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getBanners", //仅为示例，并非真实接口地址。
+        data: {
+          type: 2
+        },
+        showLoading: true
+      }).then(res => {
+        this.imglist = res.data;
+      });
+    },
+    getCoupons() {
+      this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getCoupons", //仅为示例，并非真实接口地址。
+        data: {
+          type: 2
+        },
+        showLoading: true
+      }).then(res => {
+        this.coupons = res.data;
+      });
+    },
+    getRecommend() {
+      this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getRecommend", //仅为示例，并非真实接口地址。
+        data: {
+          type: 2
+        },
+        showLoading: true
+      }).then(res => {
+        this.recommendList = res.data;
+      });
+    },
+    getRecommendFlow() {
+      if (this.loadmoreStatus == "nomore" || this.loadmoreStatus == "loading") {
+        return;
+      }
+      this.loadmoreStatus = "loading";
+      uni.request({
+        url: this.$store.state.domain + "/api/get?actionxm=getRecommendFlow", //仅为示例，并非真实接口地址。
+        data: {
+          page: this.page,
+          num: this.num
+        },
+        success: res => {
+          uni.hideToast();
+          console.log("getRecommendFlow:", res);
+          if (res.statusCode == 200) {
+            if (!res.data.data || res.data.data.length == 0) {
+              this.loadmoreStatus = "nomore";
+              return;
+            }
+            this.hotelList = res.data.data;
+          }
+          this.loadmoreStatus = "more";
+        }
+      });
+    },
+    loadMore() {
+      this.page++;
+      this.getRecommendFlow();
+    },
     dateChange({ choiceDate, dayCount }) {
-      this.startDate = new Date(choiceDate[0].dateTime).toString().substr(4, 6);
-      this.endDate = new Date(choiceDate[1].dateTime).toString().substr(4, 6);
-      this.dayCount = dayCount;
+      this.$store.commit("setHotelDate", {
+        startDate: new Date(choiceDate[0].dateTime),
+        endDate: new Date(choiceDate[1].dateTime),
+        dayCount
+      });
     },
     toggleCalendar() {
       this.showCaledar = !this.showCaledar;
@@ -181,21 +292,47 @@ export default {
     closePopup() {
       this.$refs["popup"].close();
     },
+    changeSearch({ value }) {
+      this.searchContent = value;
+    },
     goSearch() {
+      this.$store.commit("setSearch", this.searchContent);
       uni.navigateTo({
-        url: "/pages/hotel/search/search"
+        url: `/pages/hotel/search/search`
       });
     },
-    goHotel() {
+    postCoupon(ids) {
+      if (ids === "all") {
+        let idlist = [];
+        this.coupons.map(item => {
+          idlist.push(item.id);
+        });
+        ids = idlist.join(",");
+      }
+      console.log("postCoupon:", ids);
+      this.$fetch({
+        url: this.$store.state.domain + "/api/post?actionxm=getUserCoupon",
+        data: {
+          ids
+        },
+        method: "POST"
+      }).then(res => {
+        this.getCoupons();
+        this.closePopup();
+      }).catch((e)=>{
+        this.closePopup();
+      });
+    },
+    goHotel(id) {
       uni.navigateTo({
-        url: "/pages/hotel/detail/detail"
+        url: "/pages/hotel/detail/detail?id=" + id
       });
     },
     goChooseCity() {
       uni.navigateTo({
         url: "/pages/common/city/city"
       });
-    },
+    }
   }
 };
 </script>

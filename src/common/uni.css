@@ -29,6 +29,37 @@ button[type="primary"]:hover,
 button[type="primary"]:active {
   background-color: #0bb9ee;
 }
+/* 默认背景样式*/
+radio .wx-radio-input{
+  width: 40rpx;
+  height: 40rpx;
+}
+
+/* 选中后的 背景样式 （红色背景 无边框 可根据UI需求自己修改） */
+radio .wx-radio-input.wx-radio-input-checked{
+  width: 40rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  height: 40rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  border-color: #0bb9ee;
+  background: #0bb9ee;
+}
+/* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
+radio .wx-radio-input.wx-radio-input-checked::before{
+  border-radius: 50%;/* 圆角 */
+  width: 40rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  height: 40rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  line-height: 40rpx;
+  text-align: center;
+  font-size:30rpx; /* 对勾大小 30rpx */
+  color:#fff; /* 对勾颜色 白色 */
+  border: 1rpx solid #0bb9ee;
+  background: #0bb9ee;
+  transform:translate(-50%, -50%) scale(1);
+  -webkit-transform:translate(-50%, -50%) scale(1);
+}
+input[disabled]{
+  color:#ccc
+}
+
 .uni-flex {
   display: flex;
   flex-direction: row;
@@ -610,17 +641,18 @@ checkbox-group label {
   height: 162rpx;
   width: 162rpx;
   margin-right: 20upx;
+  background: url('./static/hotel_example.jpg');
+  background-size: 100% 100%;
 }
 .uni-media-list-logo image {
   height: 100%;
   width: 100%;
 }
 .uni-media-list-body {
-  height: 84upx;
+  height: auto;
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: space-between;
   align-items: flex-start;
   overflow: hidden;
 }
@@ -1063,6 +1095,10 @@ checkbox-group label {
 }
 
 .uni-product-price-original {
+  color: #d83c2a;
+}
+
+.text-light{
   color: #0bb9ee;
 }
 
@@ -1605,4 +1641,17 @@ checkbox-group label {
 }
 .koa-pop-content .uni-list:before, .koa-pop-content .uni-list:after{
 	background: none
+}
+.no-data{
+  margin: 40upx 0;
+  text-align: center;
+  color:#ccc;
+  font-size:28upx;
+}
+.iphonexBottom{
+  padding-bottom: 68upx;
+}
+.panel-image-content image, .recommend-image{
+  background: url('./static/hotel_example.jpg');
+  background-size: 100% auto;
 }

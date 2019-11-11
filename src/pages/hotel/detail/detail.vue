@@ -1,92 +1,120 @@
 <template>
   <view class="uni-container">
-    <view class="uni-panel">
-      <view class="page-section swiper">
-        <view class="page-section-spacing">
-          <swiper
-            class="swiper"
-            :indicator-dots="swiperSetting.indicatordots"
-            :autoplay="swiperSetting.autoplay"
-            :interval="swiperSetting.interval"
-            :duration="swiperSetting.duration"
-          >
-            <swiper-item v-for="(item, index) in imglist" :key="index">
-              <image style="width: 100%; " :src="item" />
-            </swiper-item>
-          </swiper>
+    <template v-if="hotelInfo">
+      <view class="uni-panel">
+        <view class="page-section swiper">
+          <view class="page-section-spacing">
+            <swiper
+              class="swiper"
+              :indicator-dots="swiperSetting.indicatordots"
+              :autoplay="swiperSetting.autoplay"
+              :interval="swiperSetting.interval"
+              :duration="swiperSetting.duration"
+            >
+              <swiper-item v-for="(item, index) in hotelInfo.propertyImage" :key="index">
+                <image style="width: 100%; " :src="item" />
+              </swiper-item>
+            </swiper>
+          </view>
         </view>
       </view>
-    </view>
-    <view class="uni-panel">
-      <uni-list>
-        <uni-list-item :show-arrow="false" :title="hotelInfo.title" />
-        <uni-list-item :title="hotelInfo.address" desc="Map" :showDesc="true" @click="goMap" />
-      </uni-list>
-    </view>
-    <view class="uni-panel uni-panel-h">
-      <rating-show value="4.6" numbers="197"></rating-show>
       <view class="uni-panel">
-        <uni-icons type="phone" size="26" />
-        <text style="margin-left:14upx" @tap="callPhone('123457897364')">+123457897364</text>
+        <uni-list>
+          <uni-list-item :show-arrow="false" :title="hotelInfo.propertyName" />
+          <uni-list-item
+            :title="`${hotelInfo.propertyAddress1} ${hotelInfo.propertyAddress2}`"
+            desc="Map"
+            :showDesc="true"
+            @click="goMap"
+          />
+        </uni-list>
+      </view>
+      <view class="uni-panel uni-panel-h">
+        <rating-show :value="hotelInfo.rate" :numbers="hotelInfo.rateNum"></rating-show>
+        <view class="uni-panel">
+          <uni-icons type="phone" size="26" />
+          <text
+            style="margin-left:14upx"
+            @tap="callPhone(hotelInfo.propertyPhone)"
+          >{{hotelInfo.propertyPhone}}</text>
+        </view>
+        <view class="uni-panel">
+          <uni-icons type="email" size="26" />
+          <text style="margin-left:14upx">{{hotelInfo.propertyEmail}}</text>
+        </view>
+        <view class="uni-panel">
+          <image
+            class="koa-icon-image"
+            :key="index"
+            v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
+            :src="item"
+          />
+        </view>
+        <view class="uni-panel koa-desc" v-html="hotelInfo.propertyDescription"></view>
       </view>
       <view class="uni-panel">
-        <uni-icons type="email" size="26" />
-        <text style="margin-left:14upx">dsfalsdjf@cdfdk.com.hk</text>
+        <uni-list>
+          <uni-list-item
+            @click="toggleCalendar"
+            :desc="'Total '+orderInfo.dayCount"
+            :thumb="orderInfo.thumb"
+          >
+            <view>
+              <text class="date-text--desc">IN</text>
+              <text class="date-text--value">{{orderInfo.startDate}}</text>
+              <text class="date-text--desc">OUT</text>
+              <text class="date-text--value">{{orderInfo.endDate}}</text>
+            </view>
+          </uni-list-item>
+          <uni-list-item @click="showGuest">
+            <view class="uni-flex">
+              <view>Guest</view>
+              <view
+                class="koa-desc uni-flex-item"
+                style="text-align:right"
+              >{{guestInfo.adult+ ' adults '+ guestInfo.child+' child'}}</view>
+            </view>
+          </uni-list-item>
+        </uni-list>
       </view>
-      <view class="uni-panel">
-        <image class="koa-icon-image" src="../../../static/tv.png" />
-        <image class="koa-icon-image" src="../../../static/cold.png" />
-        <image class="koa-icon-image" src="../../../static/hot.png" />
-        <image class="koa-icon-image" src="../../../static/wifi.png" />
-        <image class="koa-icon-image" src="../../../static/sweep.png" />
-      </view>
-      <view
-        class="uni-panel koa-desc"
-      >Hotel desc,sdfklas,asdflasldf.asdflasdkjfaskdfjsHotel desc,sdfklas,asdflasldf.asdflasdkjfaskdfjsHotel desc,sdfklas,asdflasldf.asdflasdkjfaskdfjsHotel desc,sdfklas,asdflasldf.asdflasdkjfaskdfjsHotel desc,sdfklas,asdflasldf.asdflasdkjfaskdfjs</view>
-    </view>
-    <view class="uni-panel">
-      <uni-list>
-        <uni-list-item
-          @click="toggleCalendar"
-          :desc="'Total '+orderInfo.dayCount"
-          :thumb="orderInfo.thumb"
-        >
-          <view>
-            <text class="date-text--desc">IN</text>
-            <text class="date-text--value">{{orderInfo.startDate}}</text>
-            <text class="date-text--desc">OUT</text>
-            <text class="date-text--value">{{orderInfo.endDate}}</text>
-          </view>
-        </uni-list-item>
-        <uni-list-item @click="showGuest">
-          <view class="uni-flex">
-            <view>Guest</view>
-            <view
-              class="koa-desc uni-flex-item"
-              style="text-align:right"
-            >{{guestInfo.adult+ ' adults '+ guestInfo.child+' child'}}</view>
-          </view>
-        </uni-list-item>
-      </uni-list>
-    </view>
 
-    <view class="uni-panel">
-      <product-list :list="list" @click="showProduct" @book="goBook"></product-list>
-    </view>
-    <view class="uni-panel uni-panel-h">
-      <comments :list="comments" :showMore="true"></comments>
-    </view>
+      <view class="uni-panel">
+        <template v-if="list && list.length > 0">
+          <product-list :list="list" @click="showProduct" @book="goBook"></product-list>
+        </template>
+        <view class="no-data" v-else>Hotel Not Have Rooms~</view>
+      </view>
+      <view class="uni-panel uni-panel-h" v-if="comments && comments.length > 0">
+        {{comments}}
+        <comments :list="comments" :showMore="true" @click="goReviews"></comments>
+      </view>
+    </template>
+    <template v-else>
+      <view class="no-data">Something Wrong,cann't find Hotel!</view>
+    </template>
     <!-- 房间详情 -->
     <uni-popup ref="popup" type="bottom">
       <view>
-        <view class="popup-title">{{hotelInfo.title}}</view>
+        <view class="popup-title">{{hotelInfo.propertyName}}</view>
         <view class="popup-close" @tap="closePopup('popup')">
           <uni-icons type="close" color="#ccc" size="30" />
         </view>
-        <view class="uni-panel" style="margin:60upx 0 80upx"></view>
+        <view class="uni-panel" style="margin:60upx 0 80upx">
+          <view style="margin:10upx 0;font-size:32upx">{{selectRoom.roomTypeName}}</view>
+          <view class="page-section swiper">
+            <view class="page-section-spacing">
+              <swiper class="swiper" :indicator-dots="true">
+                <swiper-item v-for="(item, index) in selectRoom.roomTypePhotos" :key="index">
+                  <image style="width: 100%; " :src="item.image" />
+                </swiper-item>
+              </swiper>
+            </view>
+            <view v-html="selectRoom.roomTypeDescription"></view>
+          </view>
+        </view>
       </view>
     </uni-popup>
-    <!-- 房间详情 -->
+    <!-- 客人人数设置 -->
     <uni-popup ref="guest" type="bottom">
       <view>
         <view class="popup-title">Guest Setting</view>
@@ -142,6 +170,17 @@ export default {
   computed: {
     i18n() {
       return this.$t("pages.detail");
+    },
+    orderInfo() {
+      return {
+        startDate: this.$store.state.hotel.startDate.format("yyyy/MM/dd"),
+        endDate: this.$store.state.hotel.endDate.format("yyyy/MM/dd"),
+        dayCount: this.$store.state.hotel.dayCount,
+        thumb: "/static/date.png"
+      };
+    },
+    guestInfo() {
+      return this.$store.state.hotel.guestInfo;
     }
   },
   data() {
@@ -152,92 +191,18 @@ export default {
     const endDate = now.toString().substr(4, 6);
     return {
       showCaledar: false,
-      orderInfo: {
-        startDate,
-        endDate,
-        dayCount: 1,
-        thumb: "/static/date.png"
-      },
       swiperSetting: {
         indicatordots: true,
         autoplay: true,
         interval: 3000, //每隔毫秒自动播放
         duration: 500 //动画时间
       },
-      hotelInfo: {
-        title: "hotelName",
-        address: "address Address address"
-      },
-      imglist: [
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-      ],
-      list: [
-        {
-          title: "ROOM A",
-          content: "Two Bed",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-          money1: "200.00",
-          money2: "300.00",
-          imglist: [
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-          ]
-        },
-        {
-          title: "ROOM A",
-          content: "",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-          money1: "200.00",
-          money2: "300.00",
-          imglist: [
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-          ]
-        },
-        {
-          title: "ROOM A",
-          content: "Two Bed",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-          money1: "200.00",
-          money2: "300.00",
-          imglist: [
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg",
-            "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-          ]
-        }
-      ],
+      hotelInfo: null,
+      list: [],
       selectRoom: null,
-      comments: [
-        {
-          username: "username",
-          userimg:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wxkn7r0gj20dw0dwgqp.jpg",
-          stars: 4,
-          content:
-            "reviwess contentreviwess contentreviwess contentreviwess content"
-        },
-        {
-          username: "username2",
-          userimg:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wxkn7r0gj20dw0dwgqp.jpg",
-          stars: 3,
-          content:
-            "reviwess contentreviwess contentreviwess contentreviwess content"
-        }
-      ],
-      existPop: ["popup", "guest"],
-      guestInfo: {
-        adult: 2,
-        child: 0
-      }
+      comments: [],
+      hotelId: "170048",
+      existPop: ["popup", "guest"]
     };
   },
   onShareAppMessage() {
@@ -247,41 +212,108 @@ export default {
     };
   },
   onNavigationBarButtonTap(e) {},
-  onLoad() {},
+  onLoad(options) {
+    this.hotelId = options.id || "170048";
+    this.getHotel();
+    this.getReviews();
+  },
   onReady() {},
   onShow() {},
   onHide() {},
   methods: {
-    goMap() {
-      wx.getLocation({
-        type: "gcj02", //返回可以用于wx.openLocation的经纬度
-        success(res) {
-          const latitude = res.latitude;
-          const longitude = res.longitude;
-          wx.openLocation({
-            latitude,
-            longitude,
-            name: "花园桥肯德基",
-            address: "详细地址说明",
-            scale: 18
-          });
+    getReviews() {
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getReviews",
+        data: {
+          propertyID: this.hotelId,
+          page: 1,
+          num: 3
         }
+      }).then(res => {
+        this.comments = res.map(item => {
+          return {
+            username: item.nickName,
+            userimg: item.nickName,
+            stars: item.rate,
+            content: item.content
+          };
+        });
       });
     },
-    selectUsers() {},
-    selectDate() {},
+    getRoomsByHotelId() {
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getRoomsByHotelId",
+        data: {
+          propertyID: this.hotelId,
+          checkInDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
+          checkOutDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd")
+        },
+        showLoading: true
+      }).then(res => {
+        this.list = res.data[0].propertyRooms.map(item => {
+          return {
+            ...item,
+            ...res.data[0].propertyCurrency,
+            title: item.roomTypeName,
+            content: item.roomTypeDescription,
+            img: item.roomTypePhotos[0].thumb,
+            money2: item.roomRate
+          };
+        });
+      });
+    },
+    getHotel() {
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getHotel",
+        data: {
+          propertyID: this.hotelId
+        },
+        showLoading: true
+      }).then(res => {
+        const { data } = res;
+        this.hotelInfo = {
+          ...data,
+          propertyImage: data.propertyImage.split(","),
+          propertyTermsAndConditions: data.propertyTermsAndConditions
+            .split(",")
+            .map(item => {
+              return this.$store.state.hotel.keymaps[item];
+            })
+            .filter(item => !!item)
+        };
+        this.$store.commit("setHotel", this.hotelInfo);
+        this.getRoomsByHotelId();
+      });
+    },
+    goMap() {
+      wx.openLocation({
+        latitude: Number(this.hotelInfo.propertyLatitude),
+        longitude: Number(this.hotelInfo.propertyLongitude),
+        name: this.hotelInfo.propertyName,
+        address: `${this.hotelInfo.propertyAddress1} ${this.hotelInfo.propertyAddress2} ${this.hotelInfo.propertyCity} ${this.hotelInfo.propertyState}`,
+        scale: 18
+      });
+    },
     dateChange({ choiceDate, dayCount }) {
-      this.orderInfo.startDate = choiceDate[0].re.replace(/-/g, "/");
-      this.orderInfo.endDate = choiceDate[1].re.replace(/-/g, "/");
-      this.orderInfo.dayCount = dayCount;
+      this.$store.commit("setHotelDate", {
+        startDate: new Date(choiceDate[0].dateTime),
+        endDate: new Date(choiceDate[1].dateTime),
+        dayCount
+      });
     },
     toggleCalendar() {
       this.showCaledar = !this.showCaledar;
     },
-    goBook(value) {
+    goBook(item) {
+      this.$store.commit("setRoomInfo", item);
       uni.navigateTo({
         url: "/pages/hotel/book/book"
       });
+    },
+    goReviews(){
+      uni.navigateTo({
+				url: '/pages/common/reviews/reviews?id'+this.hotelId
+			})
     },
     showPop(key) {
       if (this.existPop.includes(key)) {
@@ -301,12 +333,20 @@ export default {
       this.showPop("popup");
     },
     changeAdultNum(value) {
-      this.guestInfo.adult = value;
+      this.$store.commit("setGuestInfo", {
+        ...this.guestInfo,
+        adult: value
+      });
+      // this.getRoomsByHotelId();
     },
     changeChildNum(value) {
-      this.guestInfo.child = value;
+      this.$store.commit("setGuestInfo", {
+        ...this.guestInfo,
+        child: value
+      });
+      // this.getRoomsByHotelId();
     },
-    callPhone(phoneNumber){
+    callPhone(phoneNumber) {
       uni.makePhoneCall({
         phoneNumber
       });

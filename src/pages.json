@@ -1,8 +1,34 @@
 {
     "pages": [
         {
-            "path": "pages/index/home/home"
+            "path": "pages/ticket/detail/detail"
+        },
+        {
+            "path": "pages/index/tickets/tickets"
+        },
+        {
+            "path": "pages/ticket/book/book"
+        },
+        {
+            "path": "pages/my/my-ticket/detail"
         },{
+            "path": "pages/index/home/home"
+        }, {
+            "path": "pages/my/my-coupon/my-coupon"
+        }, {
+            "path": "pages/my/my-ticket/my-ticket"
+        },
+        {
+            "path": "pages/hotel/search/search"
+        },
+        {
+            "path": "pages/hotel/detail/detail"
+        }, {
+            "path": "pages/hotel/book/book"
+        },
+        {
+            "path": "pages/common/reviews/reviews"
+        }, {
             "path": "pages/index/my/my"
         },
         {
@@ -11,32 +37,6 @@
             "path": "pages/common/city/city"
         }, {
             "path": "pages/common/result/result"
-        }, {
-            "path": "pages/hotel/book/book"
-        },
-        {
-            "path": "pages/hotel/detail/detail"
-        },
-        {
-            "path": "pages/ticket/book/book"
-        },
-        {
-            "path": "pages/hotel/search/search"
-        },
-        {
-            "path": "pages/common/reviews/reviews"
-        },
-        {
-            "path": "pages/my/my-ticket/my-ticket"
-        },
-        {
-            "path": "pages/my/my-ticket/detail"
-        },
-        {
-            "path": "pages/my/my-coupon/my-coupon"
-        },
-        {
-            "path": "pages/ticket/detail/detail"
         },
         {
             "path": "pages/common/contact/list"
@@ -47,9 +47,6 @@
             "path": "pages/common/address/list"
         }, {
             "path": "pages/common/address/detail"
-        },
-        {
-            "path": "pages/index/tickets/tickets"
         },
         {
             "path": "pages/my/my-booking/my-booking"

@@ -3,7 +3,7 @@
 		<view :class="show?'':'hide'" class="uni-searchbar-form">
 			<view :style="{borderRadius:radius+'rpx'}" class="uni-searchbar-form__box" @click="searchClick">
 				<uni-icons :color="'#999999'" class="icon-search" type="search" size="18" />
-				<input ref="input" :placeholder="placeholder" :disabled="disabled" :focus="focus" v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm">
+				<input ref="input" :placeholder="placeholder" :disabled="disabled" :focus="focus" v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm" @blur="onblur">
 				<uni-icons :color="'#999999'" v-if="clearButton==='always'||clearButton==='auto'&&searchVal!==''" class="icon-clear" type="clear" size="24" @click="clear" />
 			</view>
 			<text v-if="!hideCancel" class="uni-searchbar-form__cancel" @click="cancel">Cancel</text>
@@ -20,9 +20,13 @@
 			uniIcons
 		},
 		props: {
+			value: {
+				type: String,
+				default: ''
+			},
 			placeholder: {
 				type: String,
-				default: '搜索'
+				default: 'search'
 			},
 			radius: {
 				type: [Number, String],
@@ -50,7 +54,7 @@
 		data() {
 			return {
 				show: false,
-				searchVal: ''
+				searchVal: this.value
 			}
 		},
 		watch: {
@@ -62,9 +66,11 @@
 		},
 		methods: {
 			searchClick() {
-				this.searchVal = ''
+				// this.searchVal = ''
 				this.show = true
-				console.log(this.$refs)
+			},
+			onblur(){
+				this.show = false
 			},
 			search(){
 				this.$emit('search', {

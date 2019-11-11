@@ -5,29 +5,17 @@
         <uni-list-item
           :showArrow="false"
           :showExtra="true"
-          thumb="https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
+          :thumb="tempImg"
+          v-for="item in ticketInfo.productPrice"
+          :key="item.id"
         >
           <view>
-            <view class="panel" style="font-size:32upx">HONGKONG DISNEY TICKET</view>
-            <view>Adult</view>
+            <view class="panel" style="font-size:32upx">{{ticketInfo.title}}</view>
+            <view>{{item.title}}</view>
           </view>
           <view slot="extra">
-            <text>{{ticket.adult.ticketNum}} X</text>
-            <text class="uni-product-price-original">￥{{ticket.adult.money2}}</text>
-          </view>
-        </uni-list-item>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          thumb="https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-        >
-          <view>
-            <view class="panel" style="font-size:32upx">HONGKONG DISNEY TICKET</view>
-            <view>Child</view>
-          </view>
-          <view slot="extra">
-            <text>{{ticket.child.ticketNum}} X</text>
-            <text class="uni-product-price-original">￥{{ticket.child.money2}}</text>
+            <text>{{item.num}} X</text>
+            <text class="uni-product-price-original">￥{{item.price}}</text>
           </view>
         </uni-list-item>
       </uni-list>
@@ -56,8 +44,20 @@
     </view>
     <view class="uni-panel normal-list">
       <uni-list>
-        <uni-list-item title="Coupon" :showDesc="true" desc="Not Yet" @click="showPop('coupon')" />
-        <uni-list-item :showArrow="false" :showExtra="true" @click="showPop('termInfo')">
+        <uni-list-item
+          title="Coupon"
+          :showArrow="false"
+          :showDesc="true"
+          :showExtra="true"
+          @click="showPop('coupon')"
+        >
+          <view slot="extra">
+            <text v-if="selectCoupon">{{`-￥${selectCoupon.discountAmount}`}}</text>
+            <text v-else style="color:#ccc">Not Yet</text>
+            <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
+          </view>
+        </uni-list-item>
+        <!-- <uni-list-item :showArrow="false" :showExtra="true" @click="showPop('termInfo')">
           <view>
             I have read and agree
             <text style="color:#02b90b">"booking terms"</text>
@@ -67,7 +67,7 @@
               <radio value="r1" :disabled="!isTerms" :checked="isTerms" />
             </label>
           </view>
-        </uni-list-item>
+        </uni-list-item>-->
       </uni-list>
     </view>
     <view class="uni-panel">
@@ -115,14 +115,14 @@
     </view>
     <view class="uni-panel">
       <view style="height:60px"></view>
-      <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
+      <view class="goods-carts" :class="{'iphonexBottom': isIphoneX}">
         <button type="primary" style="border-radius:0;" @tap="bookTicket">Booking Now</button>
       </view>
     </view>
 
     <uni-calendar
       ref="calendar"
-      :start-date="startDate"
+      :disableBefore="true"
       :date="validDate"
       @change="change"
       @confirm="change"
@@ -135,19 +135,28 @@
       </view>
       <view class="koa-pop-content" style="width: 80%;">
         <view class="uni-list pop-coupon">
-          <radio-group>
-            <label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in 6" :key="index">
+          <radio-group @change="changeCoupon">
+            <label
+              class="uni-list-cell uni-list-cell-pd"
+              v-for="(item,index) in coupons"
+              :key="item.id"
+            >
               <view>
-                <radio :value="item" />
+                <radio :value="index" />
               </view>
               <view class="uni-flex-item">
-                <ticket></ticket>
+                <ticket
+                  :status="item.status"
+                  :price="item.discountAmount"
+                  :fullPrice="item.totalAmount"
+                  :valid="item.validateDate"
+                ></ticket>
               </view>
             </label>
           </radio-group>
         </view>
       </view>
-      <button type="primary" @tap="closePopup('coupon')">Select It</button>
+      <button type="primary" @tap="chooseCoupon">Select It</button>
     </uni-popup>
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
@@ -195,51 +204,71 @@ export default {
     uniIcons
   },
   data() {
-    function getDate(date, AddMonthCount = 0, AddDayCount = 0) {
-      if (typeof date !== "object") {
-        date = date.replace(/-/g, "/");
-      }
-      let dd = new Date(date);
-      dd.setMonth(dd.getMonth() + AddMonthCount); // 获取AddDayCount天后的日期
-      dd.setDate(dd.getDate() + AddDayCount); // 获取AddDayCount天后的日期
-      let y = dd.getFullYear();
-      let m =
-        dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1; // 获取当前月份的日期，不足10补0
-      let d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate(); // 获取当前几号，不足10补0
-      return y + "-" + m + "-" + d;
-    }
-    let ticket = {
-      adult: {
-        money1: 300.0,
-        money2: 200.0,
-        ticketNum: 2
-      },
-      child: {
-        money1: 200.0,
-        money2: 100.0,
-        ticketNum: 1
-      }
-    };
     return {
-      validDate: getDate(new Date(), -1),
-      startDate: getDate(new Date(), -1),
-      ticket,
-      ticketSum:
-        ticket.adult.money2 * ticket.adult.ticketNum +
-        ticket.child.money2 * ticket.child.ticketNum,
       discount: 0,
       shippingFee: 0,
       existPop: ["coupon", "termInfo"],
       isTerms: false,
+      coupons: [],
+      selectCouponIndex: -1,
+      selectCoupon: null,
       isIphoneX: this.$store.state.isIphoneX
     };
   },
   computed: {
-    ...mapState(["selectedAddress"])
+    ...mapState(["selectedAddress"]),
+    validDate() {
+      return this.$store.state.ticket.validDate.format("yyyy-MM-dd");
+    },
+    ticketInfo() {
+      let ticket = this.$store.state.ticket.ticketInfo;
+      ticket.productPrice = ticket.productPrice.filter(item => item.num > 0);
+      return ticket;
+    },
+    ticketSum() {
+      let sum = 0;
+      this.$store.state.ticket.ticketInfo.productPrice.map(item => {
+        sum += item.price * item.num;
+      });
+      return sum;
+    },
+    ticketImg() {
+      return (
+        this.$store.state.ticket.image ||
+        "https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
+      );
+    }
+  },
+  watch: {
+    selectCoupon(newVal) {
+      this.discount = newVal.discountAmount;
+      return newVal;
+    }
+  },
+  onLoad() {
+    this.getCoupons();
   },
   methods: {
+    changeCoupon(e) {
+      this.selectCouponIndex = e.detail.value;
+    },
+    chooseCoupon() {
+      this.selectCoupon = this.coupons[this.selectCouponIndex];
+      this.closePopup("coupon");
+    },
     goDate() {
       this.$refs.calendar.open();
+    },
+    getCoupons() {
+      this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getCoupons",
+        data: {
+          type: 2
+        },
+        showLoading: true
+      }).then(res => {
+        this.coupons = res.data.filter(item => item.totalAmount <= this.ticketSum);
+      });
     },
     change(e) {
       console.log(e);
@@ -251,10 +280,46 @@ export default {
     changeChildNum(value) {
       this.ticket.child.ticketNum = value;
     },
-    bookTicket() {
-      uni.redirectTo({
-        url: "/pages/common/result/result?type=ticket"
+    testPay() {
+      let subQty = {};
+      this.ticketInfo.productPrice(item => {
+        subQty[item.id] = item.num;
       });
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getGraylinePay",
+        data: {
+          type: this.ticketInfo.type,
+          productId: this.ticketInfo.productId,
+          date: this.validDate,
+          subQty
+        },
+        showLoading: true
+      }).then(res => {
+        const { data } = res;
+        const payInfo = JSON.parse(data.pay_info);
+        // 仅作为示例，非真实参数信息。
+        uni.requestPayment({
+          provider: "wxpay",
+          ...payInfo,
+          success: function(res) {
+            uni.redirectTo({
+              url: "/pages/common/result/result?type=ticket"
+            });
+          },
+          fail: function(err) {
+            this.errorTips("pay error");
+          }
+        });
+      });
+    },
+    bookTicket() {
+      if (!this.selectedAddress) {
+        uni.showToast({
+          icon: "none",
+          title: "Please select Shipping address~"
+        });
+        return;
+      }
     },
     goSelectAddress() {
       uni.navigateTo({
@@ -274,6 +339,13 @@ export default {
       if (this.existPop.includes(key)) {
         this.$refs[key].close();
       }
+    },
+    errorTips(msg) {
+      uni.showToast({
+        icon: "none",
+        title: msg,
+        duration: 2000
+      });
     }
   }
 };

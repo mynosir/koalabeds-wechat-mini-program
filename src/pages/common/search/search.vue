@@ -1,12 +1,31 @@
 <template>
   <view class="uni-panel uni-panel-h">
     <view class="uni-panel">
-        <uni-search-bar placeholder="Search location or hotel name" @input="input" @search="search" :radius="100" :hideCancel="true" :showSearch="true"/>
+      <uni-search-bar
+        placeholder="Search location or hotel name"
+        @input="input"
+        @search="search"
+        :radius="100"
+        :hideCancel="true"
+        :showSearch="true"
+      />
     </view>
     <view v-if="showList">
-        <uni-list>
-            <uni-list-item :show-arrow="false" :title="'hotel name'+i" v-for="i in 6" :key="i" @tap="goHotel"/>
-        </uni-list>
+      <uni-list>
+        <uni-list-item
+          :show-arrow="false"
+          :title="searchContent"
+          @tap="search"
+        />
+        <uni-list-item
+          :show-arrow="false"
+          :title="item.propertyName"
+          v-for="item in list"
+          :key="item.id"
+          @tap="goHotel(item.propertyID)"
+          thumb="/static/hotel.png"
+        />
+      </uni-list>
     </view>
   </view>
 </template>
@@ -23,26 +42,40 @@ export default {
   },
   data() {
     return {
-        showList: false
+      searchContent: '',
+      showList: false,
+      list: []
     };
   },
-  methods:{
-    search(){
-        uni.navigateBack({
-            url: "/pages/hotel/search/search"
-        });
+  watch:{
+    searchContent(newVal){
+      if(newVal !== ''){
+        this.list = this.$store.state.hotelTemps.filter(item=>item.propertyName.indexOf(newVal)>=0)
+      }else{
+        this.list = []
+      }
+      return newVal;
+    }
+  },
+  methods: {
+    search() {
+      this.$store.commit("setSearch", this.searchContent);
+      uni.navigateBack({
+        url: "/pages/hotel/search/search"
+      });
     },
-    input({value}){
-        if(value.length > 0){
-          this.showList = true
-        }else{
-          this.showList = false
-        }
+    input({ value }) {
+      if (value.length > 0) {
+        this.showList = true;
+        this.searchContent = value;
+      } else {
+        this.showList = false;
+      }
     },
-    goHotel(){
-        uni.navigateTo({
-            url: "/pages/hotel/detail/detail"
-        });
+    goHotel(id) {
+      uni.navigateTo({
+        url: "/pages/hotel/detail/detail?id="+id
+      });
     }
   }
 };

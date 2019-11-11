@@ -27,7 +27,7 @@
     <view style="height:80px"></view>
     <view class="uni-panel">
       <view style="height:60px"></view>
-      <view class="goods-carts" :style='"padding-bottom: "+(isIphoneX ? 68 : 0)+"rpx;"'>
+      <view class="goods-carts" :class="{'iphonexBottom': isIphoneX}">
         <button type="primary" style="border-radius:0;" @tap="goDetail(null)">Add Address</button>
       </view>
     </view>

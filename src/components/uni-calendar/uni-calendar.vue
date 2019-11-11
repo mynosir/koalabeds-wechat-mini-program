@@ -11,7 +11,7 @@
 					<view class="uni-calendar__panel">
 						<view class="uni-calendar__date-befor" @tap="dataBefor(-1, 'month')"><text class="iconfont icon-jiantou" /></view>
 						<view class="uni-calendar__panel-box">
-							<view>{{ monthNameArr[canlender.month] }}</view>
+							<view>{{ monthNameArr[canlender.month-1] }}</view>
 							<view style="margin-left:20upx">{{ canlender.year }}</view>
 						</view>
 						<view class="uni-calendar__date-after uni-calendar__rollback" @tap="dataBefor(1, 'month')"><text class="iconfont icon-jiantou " /></view>

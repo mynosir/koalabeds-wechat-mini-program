@@ -14,7 +14,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import citys from "./citys.js";
+// import citys from "./citys.js";
 import citySelect from "@/components/city-select/city-select.vue";
 export default {
   data() {
@@ -24,7 +24,7 @@ export default {
       //热门城市
       hotCity: [],
       //显示的城市数据
-      obtainCitys: []
+      obtainCitys: this.$store.state.citys
     };
   },
   computed:{
@@ -36,19 +36,6 @@ export default {
     citySelect
   },
   onLoad() {
-    //修改热门城市
-    this.hotCity = [
-      {
-        cityCode: "110100",
-        cityName: "BEIJING"
-      },
-      {
-        cityCode: "130301",
-        cityName: "SHENZHEN"
-      }
-    ];
-    //修改构建索引数据
-    this.obtainCitys = citys;
   },
   methods: {
     cityClick(item) {

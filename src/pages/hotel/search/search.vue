@@ -12,7 +12,7 @@
           </view>
         </view>
         <view style="width:200upx" @tap="goSearch">
-          <uni-search-bar radius="100" placeholder="Search" :hideCancel="true" :disabled="true"/>
+          <uni-search-bar :value="hotelName" radius="100" placeholder="Search" :hideCancel="true" :disabled="true" />
         </view>
       </view>
       <view class="uni-flex" style="align-items:center;">
@@ -21,7 +21,7 @@
           @tap="showPop('location')"
           :class="{'filter-select__light':selectKey == 'location'}"
         >
-          <text class="koa-date--desc">Location</text>
+          <text class="koa-date--desc">{{cityName}}</text>
           <uni-icons type="arrowdown" :color="selectKey == 'location'? '#0bb9ee': '#333'"></uni-icons>
         </view>
         <view
@@ -42,45 +42,54 @@
         </view>
       </view>
     </view>
-    <view class="uni-list search-list">
+    <view class="uni-list search-list" v-if="list && list.length > 0">
       <view
         class="uni-list-cell"
         hover-class="uni-list-cell-hover"
-        v-for="(value,key) in list"
+        v-for="(item,key) in list"
         :key="key"
-        @tap="goDetail($event,value)"
+        @tap="goDetail(item)"
       >
         <view class="uni-media-list">
           <view class="uni-media-list-logo">
-            <image :src="value.img" />
+            <image :src="item.propertyImageThumb" />
           </view>
           <view class="uni-media-list-body">
-            <view class="uni-media-list-text-top">{{value.title}}</view>
-            <view class="uni-media-list-text-bottom">{{value.address}}</view>
+            <view class="uni-media-list-text-top">{{item.propertyName}}</view>
+            <view
+              class="uni-media-list-text-bottom"
+            >{{item.propertyAddress1}} {{item.propertyAddress2}} {{item.propertyCity}} {{item.propertyState}}</view>
             <view class="panel">
               <uni-icons type="star-filled" color="#ffdc64" size="26" />
-              <text class="search-star--value">{{value.starValue}}</text>
-              <text class="search-star--num">{{value.ratingNum}} rating</text>
+              <text class="search-star--value">{{item.rate}}</text>
+              <text class="search-star--num">{{item.rateNum}} rating</text>
             </view>
-            <view
-              class="uni-product-price uni-flex"
-              style="width:50%;margin-left:auto;align-items:center"
-            >
-              <view class="uni-product-price-favour">￥{{value.money1}}</view>
-              <view class="uni-product-price-original">￥{{value.money2}}</view>
+            <view class="uni-product-price" style="text-align:right">
+              <view class="uni-product-price-original">
+                {{item.propertyCurrencySymbol}}{{item.minMoney}}
+                <text style="font-size:24upx;margin-left:6upx;">up</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
     </view>
+    <view class="no-data" v-else>cann't find any hotel~</view>
     <!-- location -->
     <uni-popup ref="location" type="top" class="filter-pop" @change="changePop">
       <view class="uni-list" style="margin:-30upx">
-        <radio-group>
-          <label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in 4" :key="index">
-            <view class="uni-flex-item">City{{item}}</view>
+        <radio-group @change="changeCity">
+          <label
+            class="uni-list-cell uni-list-cell-pd"
+            v-for="(item, index) in obtainCitys"
+            :key="index"
+          >
+            <view
+              class="uni-flex-item"
+              :class="{'text-light': item.cityName == cityName}"
+            >{{item.cityName}}</view>
             <view>
-              <radio :value="item" />
+              <radio :value="item.cityName" :checked="item.cityName == cityName" />
             </view>
           </label>
         </radio-group>
@@ -102,16 +111,16 @@
       <view class="panel uni-flex" style="flex-wrap: wrap;">
         <view
           class="filter-star"
-          :class="{'active':ratingIndex == '-1' }"
-          :data-value="-1"
+          :class="{'active':rank == '0' }"
+          :data-value="0"
           @tap="changeRating($event)"
         >Any</view>
         <view
           class="filter-star"
           v-for="i in 5"
           :key="i"
-          :class="{'active':ratingIndex == i }"
-          :data-value="i"
+          :class="{'active':rank == (i+1) }"
+          :data-value="i+1"
           @tap="changeRating($event)"
         >
           <uni-icons type="star-filled" color="#ffdc64" size="26" v-for="i2 in (i+1)" :key="i2" />
@@ -121,11 +130,41 @@
     <!-- sorting -->
     <uni-popup ref="sorting" type="top" class="filter-pop" @change="changePop">
       <view class="uni-list" style="margin:-30upx">
-        <radio-group>
-          <label class="uni-list-cell uni-list-cell-pd" v-for="(item, index) in 4" :key="index">
-            <view class="uni-flex-item">Price{{item}}</view>
+        <radio-group @change="changeSort">
+          <label class="uni-list-cell uni-list-cell-pd">
+            <view class="uni-flex-item" :class="{'text-light': selectSort == 'price1'}">
+              Price
+              <text style="font-size:24rpx">(from low to hight)</text>
+            </view>
             <view>
-              <radio :value="item" />
+              <radio value="price1" :checked="selectSort == 'price1'" />
+            </view>
+          </label>
+          <label class="uni-list-cell uni-list-cell-pd">
+            <view class="uni-flex-item" :class="{'text-light': selectSort == 'price2'}">
+              Price
+              <text style="font-size:24rpx">(from hight to low)</text>
+            </view>
+            <view>
+              <radio value="price2" :checked="selectSort == 'price2'" />
+            </view>
+          </label>
+          <label class="uni-list-cell uni-list-cell-pd">
+            <view class="uni-flex-item" :class="{'text-light': selectSort == 'rank1'}">
+              Ranking
+              <text style="font-size:24rpx">(from low to hight)</text>
+            </view>
+            <view>
+              <radio value="rank1" :checked="selectSort == 'rank1'" />
+            </view>
+          </label>
+          <label class="uni-list-cell uni-list-cell-pd">
+            <view class="uni-flex-item" :class="{'text-light': selectSort == 'rank2'}">
+              Ranking
+              <text style="font-size:24rpx">(from hight to low)</text>
+            </view>
+            <view>
+              <radio value="rank2" :checked="selectSort == 'rank2'" />
             </view>
           </label>
         </radio-group>
@@ -137,6 +176,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
 import uniSearchBar from "@/components/uni-search-bar/uni-search-bar.vue";
 import uniIcons from "@/components/uni-icons/uni-icons.vue";
 import uniPopup from "@/components/uni-popup/uni-popup.vue";
@@ -150,39 +190,108 @@ export default {
     sliderRange,
     calendar
   },
-  data() {
-    let now = new Date();
-    const dayCount = 1;
-    const startDate = now.toString().substr(4, 6);
-    now.setDate(now.getDate() + dayCount);
-    const endDate = now.toString().substr(4, 6);
-    let list = [];
-    for (let i = 0; i < 20; i++) {
-      list.push({
-        title: "ROOM A",
-        address: "address addressaddressaddressaddressaddress",
-        img: "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-        money1: new Number(parseInt(Math.random() * 1000)).toFixed(2),
-        money2: new Number(parseInt(Math.random() * 1000)).toFixed(2),
-        starValue: new Number(Math.random() * 5).toFixed(1),
-        ratingNum: parseInt(Math.random() * 1000)
-      });
+  computed: {
+    ...mapState({
+      cityName: state => {
+        return state.cityName == "Choose City" ? "Location" : state.cityName;
+      }
+    }),
+    i18n() {
+      return this.$t("pages.search");
+    },
+    startDate() {
+      return this.$store.state.hotel.startDate.toString().substr(4, 6);
+    },
+    endDate() {
+      return this.$store.state.hotel.endDate.toString().substr(4, 6);
+    },
+    dayCount() {
+      return this.$store.state.hotel.dayCount;
+    },
+    //显示的城市数据
+    obtainCitys() {
+      return this.$store.state.citys;
+    },
+    hotelName(){
+      return this.$store.state.hotel.search
     }
+  },
+  data() {
     return {
       showCaledar: false,
-      startDate,
-      endDate,
-      dayCount: 1,
       existPop: ["location", "filter", "sorting"],
       selectKey: "",
       filter: {
         maxMoney: 2000
       },
-      ratingIndex: -1,
-      list
+      priceStart: 0,
+      priceEnd: 2000,
+      rank: 0,
+      moneySort: 0,
+      rankSort: 0,
+      selectSort: "",
+      list: [],
+      timeout: -1
     };
   },
+  onLoad(options) {
+    
+  },
+  onShow(){
+    console.log('show')
+  },
   methods: {
+    getHotels() {
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=searchHotels",
+        data: {
+          city: this.cityName == "Location" ? "" : this.cityName,
+          checkInDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
+          checkOutDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
+          hotelName: this.hotelName,
+          moneySort: this.moneySort,
+          rankSort: this.rankSort,
+          priceStart: this.priceStart,
+          priceEnd: this.priceEnd,
+          rank: this.rank
+        },
+        showLoading: true
+      }).then(res => {
+        if (!res.data || res.data.length <= 0) {
+          this.list = [];
+          return;
+        }
+        this.list = res.data.map(item => {
+          return {
+            ...item,
+            ...item.details,
+            propertyImageThumb: item.details.propertyImageThumb.split(",")[0]
+          };
+        });
+        if (this.$store.state.hotelTemps.length <= 0) {
+          this.$store.commit('setHotelTemps', this.list);
+        }
+      });
+    },
+    changeCity(e) {
+      this.$store.commit("setCity", {
+        cityCode: "123",
+        cityName: e.target.value
+      });
+      this.getHotels();
+    },
+    changeSort(e) {
+      this.selectSort = e.target.value;
+      if (this.selectSort.indexOf("price") >= 0) {
+        this.moneySort = this.selectSort.split("price")[0];
+        this.rankSort = 0;
+      }
+      if (this.selectSort.indexOf("rank") >= 0) {
+        this.rankSort = this.selectSort.split("rank")[0];
+        this.moneySort = 0;
+      }
+      this.getHotels();
+    },
     format(val) {
       return val;
     },
@@ -190,9 +299,14 @@ export default {
       this.showCaledar = !this.showCaledar;
     },
     dateChange({ choiceDate, dayCount }) {
-      this.startDate = new Date(choiceDate[0].dateTime).toString().substr(4, 6);
-      this.endDate = new Date(choiceDate[1].dateTime).toString().substr(4, 6);
-      this.dayCount = dayCount;
+      const startDate = new Date(choiceDate[0].dateTime);
+      const endDate = new Date(choiceDate[1].dateTime);
+      this.$store.commit("setHotelDate", {
+        startDate,
+        endDate,
+        dayCount
+      });
+      this.getHotels();
     },
     goSearch() {
       uni.navigateTo({
@@ -221,18 +335,25 @@ export default {
       }
     },
     changePop({ show }) {
-      console.log(arguments)
       if (!show) {
         this.selectKey = "";
       }
     },
-    sliderChange() {},
-    changeRating(event) {
-      this.ratingIndex = event.currentTarget.dataset.value;
+    sliderChange(values) {
+      this.priceStart = values[0];
+      this.priceEnd = values[1];
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        this.getHotels();
+      }, 500);
     },
-    goDetail() {
+    changeRating(event) {
+      this.rank = event.currentTarget.dataset.value;
+      this.getHotels();
+    },
+    goDetail(item) {
       uni.navigateTo({
-        url: "/pages/hotel/detail/detail"
+        url: "/pages/hotel/detail/detail?id=" + item.propertyID
       });
     }
   }
@@ -253,8 +374,8 @@ export default {
 .filter-pop .uni-popup {
   top: 196upx;
 }
-.filter-pop .uni-list:before{
-  background:none
+.filter-pop .uni-list:before {
+  background: none;
 }
 .filter-select {
   text-align: center;
@@ -312,9 +433,5 @@ export default {
 .search-list .uni-media-list-logo {
   width: 182rpx;
   height: 182rpx;
-}
-
-.uni-product-price-original {
-  color: #d83c2a;
 }
 </style>
