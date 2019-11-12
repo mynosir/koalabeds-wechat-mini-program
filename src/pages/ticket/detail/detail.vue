@@ -177,6 +177,7 @@ export default {
         showLoading: true
       }).then(res => {
         let ticket = res.data;
+        ticket.type = this.type;
         ticket.productPrice = ticket.productPrice.map(pp => {
           return {
             ...pp,

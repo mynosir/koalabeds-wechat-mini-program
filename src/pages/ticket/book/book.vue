@@ -167,16 +167,6 @@
         </view>
         <view class="koa-pop-content">
           <view>Our mission is to empower people to experience the world, by offering the world's best places to stay and greatest places and attractions to visit in the most convenient way. In order to achieve this goal, we will live up to the following good practices:</view>
-
-          <view>We care about you: and therefore offer our Platform and customer service in 40+ languages</view>
-          <view>We bring and allow you to experience: 1.5m+ properties from high (high) end to whatever serves your needs for your next stay in a hotel, motel, hostel, B&B, etc. wherever on the planet</view>
-          <view>We bring and allow you to experience attractions and other Trip Providers</view>
-          <view>We can facilitate the payment of any (entrance) fee, purchase or hire of any Trip product and service which uses our payment service</view>
-          <view>We help you (24/7): our customer service centers are here to help you 24-7-365-40+</view>
-          <view>We listen to you: our Platform is the product of what YOU (the users) prefer and find most convenient when using our service</view>
-          <view>We hear you: we show uncensored reviews (of customers who have actually stayed)</view>
-          <view>We promise you an informative, user-friendly website that guarantees the best available prices.</view>
-          <view>We Price Match</view>
         </view>
         <button type="primary" @tap="setTerms">I Agree</button>
       </view>
@@ -267,7 +257,9 @@ export default {
         },
         showLoading: true
       }).then(res => {
-        this.coupons = res.data.filter(item => item.totalAmount <= this.ticketSum);
+        this.coupons = res.data.filter(
+          item => item.totalAmount <= this.ticketSum
+        );
       });
     },
     change(e) {
@@ -282,44 +274,78 @@ export default {
     },
     testPay() {
       let subQty = {};
-      this.ticketInfo.productPrice(item => {
+      this.ticketInfo.productPrice.map(item => {
         subQty[item.id] = item.num;
       });
+      console.log(this.ticketInfo)
       this.$fetch({
-        url: this.$store.state.domain + "api/get?actionxm=getGraylinePay",
+        url: this.$store.state.domain + "api/post?actionxm=getGraylinePay",
+        method: "post",
         data: {
-          type: this.ticketInfo.type,
-          productId: this.ticketInfo.productId,
-          date: this.validDate,
-          subQty
+          params: JSON.stringify({
+            openid: this.$store.state.openid,
+            type: this.ticketInfo.type,
+            productId: this.ticketInfo.productId,
+            date: this.validDate,
+            subQty,
+            travelTime: '',
+            hotel: 'testhotel',
+            title: 'Mr',
+            firstName: 'lin',
+            lastName: 'lin',
+            passport: '111',
+            guestEmail: '361789273@qq.com',
+            totalPrice: this.ticketSum,
+            telephone: ''
+          })
         },
         showLoading: true
       }).then(res => {
-        const { data } = res;
-        const payInfo = JSON.parse(data.pay_info);
+        const { id, payParams } = res.data;
+        const payInfo = JSON.parse(payParams.pay_info);
         // 仅作为示例，非真实参数信息。
         uni.requestPayment({
           provider: "wxpay",
           ...payInfo,
-          success: function(res) {
-            uni.redirectTo({
-              url: "/pages/common/result/result?type=ticket"
-            });
+          success: (res)=> {
+            this.commitTicket(id);
           },
-          fail: function(err) {
+          fail: (err)=> {
             this.errorTips("pay error");
           }
         });
       });
     },
+    commitTicket(id) {
+      this.$fetch({
+        url: this.$store.state.domain + "api/post?actionxm=orderProduct",
+        data: {
+          id
+        },
+        method: "post",
+        showLoading: true
+      }).then(res => {
+        if (res.status == "0") {
+          uni.redirectTo({
+            url: "/pages/common/result/result?type=ticket&id=" + id
+          });
+        } else {
+          uni.showToast({
+            icon: "none",
+            title: res.msg || "system error"
+          });
+        }
+      });
+    },
     bookTicket() {
-      if (!this.selectedAddress) {
-        uni.showToast({
-          icon: "none",
-          title: "Please select Shipping address~"
-        });
-        return;
-      }
+      // if (!this.selectedAddress) {
+      //   uni.showToast({
+      //     icon: "none",
+      //     title: "Please select Shipping address~"
+      //   });
+      //   return;
+      // }
+      this.testPay();
     },
     goSelectAddress() {
       uni.navigateTo({

@@ -485,7 +485,7 @@ export default {
         method: "post",
         showLoading: true
       }).then(res => {
-        if (res.status === "0") {
+        if (res.status == "0") {
           uni.redirectTo({
             url: "/pages/common/result/result?type=hotel&id=" + id
           });

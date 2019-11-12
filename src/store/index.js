@@ -70,7 +70,7 @@ const store = new Vuex.Store({
 				method: 'POST',
 				data: {
 					openid: state.openid,
-					userinfo: userInfo
+					userinfo: JSON.stringify(userInfo)
 				}
 			})
 		},

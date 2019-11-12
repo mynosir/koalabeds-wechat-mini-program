@@ -1,16 +1,16 @@
 {
     "pages": [
         {
-            "path": "pages/hotel/detail/detail"
-        },
-        {
-            "path": "pages/my/my-booking/my-booking"
+            "path": "pages/index/tickets/tickets"
         },
         {
             "path": "pages/ticket/detail/detail"
         },
         {
-            "path": "pages/index/tickets/tickets"
+            "path": "pages/hotel/detail/detail"
+        },
+        {
+            "path": "pages/my/my-booking/my-booking"
         },
         {
             "path": "pages/ticket/book/book"

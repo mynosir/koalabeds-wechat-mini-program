@@ -47,7 +47,8 @@ export default {
         url:
           this.$store.state.domain + "api/get?actionxm=getGraylineProductList",
         data: {
-          language: this.$store.state.language
+          language: this.$store.state.language,
+          type: "transportation"
         },
         showLoading: true
       }).then(res => {
