@@ -42,14 +42,6 @@
           <uni-icons type="email" size="26" />
           <text style="margin-left:14upx">{{hotelInfo.propertyEmail}}</text>
         </view>
-        <view class="uni-panel">
-          <image
-            class="koa-icon-image"
-            :key="index"
-            v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
-            :src="item"
-          />
-        </view>
         <view class="uni-panel koa-desc" v-html="hotelInfo.propertyDescription"></view>
       </view>
       <view class="uni-panel">
@@ -201,7 +193,7 @@ export default {
       list: [],
       selectRoom: null,
       comments: [],
-      hotelId: "170048",
+      hotelId: "173267",
       existPop: ["popup", "guest"]
     };
   },
@@ -213,9 +205,7 @@ export default {
   },
   onNavigationBarButtonTap(e) {},
   onLoad(options) {
-    this.hotelId = options.id || "170048";
-    this.getHotel();
-    this.getReviews();
+    this.hotelId = options.id || "173267";
   },
   onReady() {},
   onShow() {},
@@ -273,16 +263,11 @@ export default {
         const { data } = res;
         this.hotelInfo = {
           ...data,
-          propertyImage: data.propertyImage.split(","),
-          propertyTermsAndConditions: data.propertyTermsAndConditions
-            .split(",")
-            .map(item => {
-              return this.$store.state.hotel.keymaps[item];
-            })
-            .filter(item => !!item)
+          propertyImage: data.propertyImage.split(",")
         };
         this.$store.commit("setHotel", this.hotelInfo);
         this.getRoomsByHotelId();
+        this.getReviews();
       });
     },
     goMap() {
@@ -300,6 +285,11 @@ export default {
         endDate: new Date(choiceDate[1].dateTime),
         dayCount
       });
+      if (!this.hotelInfo) {
+        this.getHotel();
+      } else {
+        this.getRoomsByHotelId();
+      }
     },
     toggleCalendar() {
       this.showCaledar = !this.showCaledar;
@@ -310,10 +300,10 @@ export default {
         url: "/pages/hotel/book/book"
       });
     },
-    goReviews(){
+    goReviews() {
       uni.navigateTo({
-				url: '/pages/common/reviews/reviews?id'+this.hotelId
-			})
+        url: "/pages/common/reviews/reviews?id" + this.hotelId
+      });
     },
     showPop(key) {
       if (this.existPop.includes(key)) {
@@ -337,14 +327,18 @@ export default {
         ...this.guestInfo,
         adult: value
       });
-      // this.getRoomsByHotelId();
+      if (this.hotelInfo) {
+        this.getRoomsByHotelId();
+      }
     },
     changeChildNum(value) {
       this.$store.commit("setGuestInfo", {
         ...this.guestInfo,
         child: value
       });
-      // this.getRoomsByHotelId();
+      if (this.hotelInfo) {
+        this.getRoomsByHotelId();
+      }
     },
     callPhone(phoneNumber) {
       uni.makePhoneCall({

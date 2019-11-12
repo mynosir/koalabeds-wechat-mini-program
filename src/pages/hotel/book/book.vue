@@ -91,12 +91,12 @@
           <text style="margin-left:14upx">{{hotelInfo.propertyEmail}}</text>
         </view>
         <view class="uni-panel">
-          <image
+          <!-- <image
             class="koa-icon-image"
             :key="index"
             v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
             :src="item"
-          />
+          /> -->
         </view>
         <view class="uni-panel koa-desc" v-html="hotelInfo.propertyDescription"></view>
       </view>
@@ -118,12 +118,12 @@
             <template
               v-if="hotelInfo.propertyTermsAndConditions && hotelInfo.propertyTermsAndConditions.length > 0"
             >
-              <image
+              <!-- <image
                 class="koa-icon-image"
                 :key="index"
                 v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
                 :src="item"
-              />
+              /> -->
             </template>
             <template v-else>Look Hotel Detail</template>
           </uni-list-item>
@@ -165,7 +165,7 @@
           </uni-list-item>
         </uni-list>
       </view>
-      <view class="uni-panel">
+      <view class="uni-panel" v-if="hotelInfo.propertyTermsAndConditions">
         <uni-list>
           <uni-list-item :showArrow="false" :showExtra="true" @click="showPop('termInfo')">
             <view>
@@ -193,7 +193,9 @@
               v-if="selectCoupon"
             >
               {{hotelInfo.propertyCurrencySymbol}}{{roomInfo.roomRate - selectCoupon.discountAmount}}
-              <text style="font-size:20upx;color:#333;margin-left:6upx;">({{roomInfo.roomRate}}-{{selectCoupon.discountAmount}})</text>
+              <text
+                style="font-size:20upx;color:#333;margin-left:6upx;"
+              >({{roomInfo.roomRate}}-{{selectCoupon.discountAmount}})</text>
             </view>
             <view
               class="uni-flex-item uni-product-price-original"
@@ -249,12 +251,12 @@
           <text style="margin-left:14upx">{{hotelInfo.propertyEmail}}</text>
         </view>
         <view class="uni-panel">
-          <image
+          <!-- <image
             class="koa-icon-image"
             :key="index"
             v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
             :src="item"
-          />
+          /> -->
         </view>
         <view class="uni-panel koa-desc" v-html="hotelInfo.propertyDescription"></view>
       </view>
@@ -326,6 +328,11 @@ export default {
   },
   computed: {
     hotelInfo() {
+      if (!this.$store.state.hotel.selectHotel.propertyTermsAndConditions) {
+        this.isTerms = true;
+      } else {
+        this.isTerms = false;
+      }
       return this.$store.state.hotel.selectHotel;
     },
     roomInfo() {
@@ -392,7 +399,9 @@ export default {
         },
         showLoading: true
       }).then(res => {
-        this.coupons = res.data.filter(item => item.totalAmount <= this.roomInfo.roomRate);;
+        this.coupons = res.data.filter(
+          item => item.totalAmount <= this.roomInfo.roomRate
+        );
       });
     },
     changeCoupon(e) {
@@ -419,82 +428,77 @@ export default {
     },
     testPay() {
       this.$fetch({
-        url: this.$store.state.domain + "api/get?actionxm=getPay",
+        url: this.$store.state.domain + "api/post?actionxm=getPay",
+        method: "post",
         data: {
-          propertyID: this.hotelInfo.propertyID,
-          startDate: this.startDate,
-          endDate: this.endDate,
-          guestFirstName: this.userInfo.name,
-          guestLastName: this.userInfo.name,
-          guestCountry:
-            country[this.$store.state.userInfo.country] || country["China"],
-          guestZip: "123456",
-          guestEmail: this.userInfo.email,
-          guestPhone: this.userInfo.phone,
-          rooms: [{
-            roomTypeID: this.roomInfo.roomTypeID,
-            quantity: 1
-          }],
-          adults: [{
-            roomTypeID: this.roomInfo.roomTypeID,
-            quantity: this.$store.state.hotel.guestInfo.adults
-          }],
-          children: [{
-            roomTypeID: this.roomInfo.roomTypeID,
-            quantity: this.$store.state.hotel.guestInfo.child
-          }]
+          params: JSON.stringify({
+            openid: this.$store.state.openid,
+            propertyID: this.hotelInfo.propertyID,
+            startDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
+            endDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
+            guestFirstName: this.userInfo.name,
+            guestLastName: this.userInfo.name,
+            guestCountry:
+              country[this.$store.state.userInfo.country] || country["China"],
+            guestZip: "123456",
+            guestEmail: this.userInfo.email,
+            guestPhone: this.userInfo.phone,
+            rooms: {
+              roomTypeID: this.roomInfo.roomTypeID,
+              quantity: 1
+            },
+            adults: {
+              roomTypeID: this.roomInfo.roomTypeID,
+              quantity: this.$store.state.hotel.guestInfo.adult || "0"
+            },
+            children: {
+              roomTypeID: this.roomInfo.roomTypeID,
+              quantity: this.$store.state.hotel.guestInfo.child
+            },
+            frontend_total: this.roomInfo.roomRate
+          })
         },
         showLoading: true
       }).then(res => {
-        const { data } = res;
-        const payInfo = JSON.parse(data.pay_info);
+        const { id, payParams } = res.data;
+        const payInfo = JSON.parse(payParams.pay_info);
         // 仅作为示例，非真实参数信息。
         uni.requestPayment({
           provider: "wxpay",
           ...payInfo,
-          success: function(res) {
-            uni.redirectTo({
-              url: "/pages/common/result/result?type=hotel"
-            });
+          success: res => {
+            console.log("wxpay", res);
+            this.commitHotel(id);
           },
-          fail: function(err) {
+          fail: err => {
             this.errorTips("pay error");
           }
         });
       });
     },
-    commitHotel() {
+    commitHotel(id) {
       this.$fetch({
         url: this.$store.state.domain + "api/post?actionxm=saveOrder",
         data: {
-          propertyID: this.hotelInfo.propertyID,
-          startDate: this.startDate,
-          endDate: this.endDate,
-          guestFirstName: this.userInfo.name,
-          guestLastName: this.userInfo.name,
-          guestCountry:
-            country[this.$store.state.userInfo.country] || country["China"],
-          guestZip: "123456",
-          guestEmail: this.userInfo.email,
-          guestPhone: this.userInfo.phone,
-          rooms: [{
-            roomTypeID: this.roomInfo.roomTypeID,
-            quantity: 1
-          }],
-          adults: [{
-            roomTypeID: this.roomInfo.roomTypeID,
-            quantity: this.$store.state.hotel.guestInfo.adults
-          }],
-          children: [{
-            roomTypeID: this.roomInfo.roomTypeID,
-            quantity: this.$store.state.hotel.guestInfo.child
-          }]
+          id
         },
+        method: "post",
         showLoading: true
-      }).then(res => {});
+      }).then(res => {
+        if (res.status === "0") {
+          uni.redirectTo({
+            url: "/pages/common/result/result?type=hotel&id=" + id
+          });
+        } else {
+          uni.showToast({
+            icon: "none",
+            title: res.msg || "system error"
+          });
+        }
+      });
     },
     bookHotel() {
-      console.log(this.roomInfo)
+      console.log(this.roomInfo);
       if (this.userInfo.name === "") {
         this.errorTips("input your name");
         return;
@@ -514,8 +518,8 @@ export default {
         });
         return;
       }
-      this.commitHotel();
-      // this.testPay();
+      // this.commitHotel();
+      this.testPay();
     },
     errorTips(msg) {
       uni.showToast({

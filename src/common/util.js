@@ -103,14 +103,21 @@ function fetch({
 	url,
 	method = 'GET',
 	data,
-	showLoading = false
+	showLoading = false,
+	header = {
+		'content-type': 'application/json'
+	},
 }) {
 	if (showLoading) {
 		uni.showLoading();
 	}
+	if(method.toLowerCase() == 'post'){
+		header['content-type'] = 'application/x-www-form-urlencoded'
+	}
 	return new Promise((resolve, reject) => {
 		uni.request({
 			url, //仅为示例，并非真实接口地址。
+			header,
 			data:{
 				...data,
 				openid: uni.getStorageSync('openid')

@@ -1,6 +1,12 @@
 {
     "pages": [
         {
+            "path": "pages/hotel/detail/detail"
+        },
+        {
+            "path": "pages/my/my-booking/my-booking"
+        },
+        {
             "path": "pages/ticket/detail/detail"
         },
         {
@@ -20,9 +26,6 @@
         },
         {
             "path": "pages/hotel/search/search"
-        },
-        {
-            "path": "pages/hotel/detail/detail"
         }, {
             "path": "pages/hotel/book/book"
         },
@@ -47,9 +50,6 @@
             "path": "pages/common/address/list"
         }, {
             "path": "pages/common/address/detail"
-        },
-        {
-            "path": "pages/my/my-booking/my-booking"
         },
         {
             "path": "pages/common/search/search"
