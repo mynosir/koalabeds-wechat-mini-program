@@ -136,6 +136,7 @@ export default {
   },
   watch: {
     ticketInfo(newVal) {
+      this.totalSum = 0;
       if (newVal.productPrice) {
         newVal.productPrice.map(item => {
           this.totalSum += item.price * item.num;
