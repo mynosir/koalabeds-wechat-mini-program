@@ -96,7 +96,7 @@
             :key="index"
             v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
             :src="item"
-          /> -->
+          />-->
         </view>
         <view class="uni-panel koa-desc" v-html="hotelInfo.propertyDescription"></view>
       </view>
@@ -123,7 +123,7 @@
                 :key="index"
                 v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
                 :src="item"
-              /> -->
+              />-->
             </template>
             <template v-else>Look Hotel Detail</template>
           </uni-list-item>
@@ -185,7 +185,7 @@
     <view style="height:80px"></view>
     <view class="goods-carts" :class="{'iphonexBottom': isIphoneX}">
       <uni-list>
-        <uni-list-item :showArrow="false" :showFull="true">
+        <uni-list-item :showArrow="false" :showFull="true" v-if="!isOrder">
           <view class="uni-flex" style="align-items:center;">
             <view
               class="uni-flex-item uni-product-price-original"
@@ -204,6 +204,35 @@
             >{{hotelInfo.propertyCurrencySymbol}}{{roomInfo.roomRate}}</view>
             <view>
               <button type="primary" style="border-radius:0;" @tap="bookHotel">Booking Now</button>
+            </view>
+          </view>
+        </uni-list-item>
+        <uni-list-item :showArrow="false" :showFull="true" v-else>
+          <view class="uni-flex" style="align-items:center;">
+            <view
+              class="uni-flex-item uni-product-price-original"
+              style="padding-left:24upx"
+            >{{hotelInfo.propertyCurrencySymbol}}{{hotelInfo.total}}</view>
+            <view v-if="hotelInfo.status == '0'" class="uni-flex">
+              <button type="info" style="border-radius:0;" @tap="cancelBook">Cancel Booking</button>
+              <button type="warn" style="border-radius:0;" @tap="testPayAgain">PAY NOW</button>
+            </view>
+            <view v-else-if="hotelInfo.status == '1'">
+              <button type="primary" loading="true" disabled style="border-radius:0;">
+                <text style="margin-left:8upx">Booking loading</text>
+              </button>
+            </view>
+            <view v-else-if="hotelInfo.status == '-1'">
+              <button type="warn" disabled style="border-radius:0;">
+                <uni-icons type="clear" size="32" color="#fff"></uni-icons>
+                <text style="margin-left:8upx">Cancel</text>
+              </button>
+            </view>
+            <view v-else class="uni-flex">
+              <button type="primary" style="border-radius:0;">
+                <uni-icons type="checkbox-filled" size="32" color="#fff"></uni-icons>
+                <text style="margin-left:8upx">Completed</text>
+              </button>
             </view>
           </view>
         </uni-list-item>
@@ -256,7 +285,7 @@
             :key="index"
             v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
             :src="item"
-          /> -->
+          />-->
         </view>
         <view class="uni-panel koa-desc" v-html="hotelInfo.propertyDescription"></view>
       </view>
@@ -268,7 +297,7 @@
         <uni-icons type="close" color="#ccc" size="30" />
       </view>
       <view class="koa-pop-content" style="width: 80%;">
-        <view class="uni-list pop-coupon">
+        <view class="uni-list pop-coupon" v-if="coupons.length > 0">
           <radio-group @change="changeCoupon">
             <label
               class="uni-list-cell uni-list-cell-pd"
@@ -284,13 +313,15 @@
                   :price="item.discountAmount"
                   :fullPrice="item.totalAmount"
                   :valid="item.validateDate"
+                  :footer="item.validateDateStr"
                 ></ticket>
               </view>
             </label>
           </radio-group>
         </view>
+        <view class="no-data" v-else>no valid coupons</view>
       </view>
-      <button type="primary" @tap="chooseCoupon">Select It</button>
+      <button type="primary" @tap="chooseCoupon" v-if="coupons.length > 0">Select It</button>
     </uni-popup>
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
@@ -315,6 +346,8 @@ import uniList from "@/components/uni-list/uni-list.vue";
 import uniListItem from "@/components/uni-list-item/uni-list-item.vue";
 import Ticket from "@/components/ticket/ticket.vue";
 import country from "./country";
+
+const Utils = require("../../../common/util.js");
 
 export default {
   components: {
@@ -362,26 +395,101 @@ export default {
       selectCouponIndex: -1,
       weixinExtra: { color: "#05db6c", type: "weixin", size: 24 },
       coupons: [],
-      isOrder: true
+      isOrder: false,
+      orderId: 1
     };
   },
   onLoad(options) {
-    this.isOrder = options.type == "detail";
+    this.isOrder = options.type == "order";
     if (this.isOrder) {
-      this.getOrder();
+      this.isOrder = true;
+      this.orderId = options.id || 1;
     } else {
       this.getCoupons();
     }
   },
-  onUnload() {
+  onShow() {
     if (this.isOrder) {
-      uni.navigateBack({
-        delta: 10
-      });
+      console.log("获取订单");
+      this.getOrder();
     }
   },
   methods: {
-    getOrder() {},
+    async getOrder() {
+      const res = await this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getHotelOrders",
+        data: {
+          id: this.orderId
+        },
+        showLoading: true
+      });
+      const orderHotel = res.data.filter(item => {
+        return item.id == this.orderId;
+      })[0];
+      const startDate = new Date(orderHotel.startDate);
+      const endDate = new Date(orderHotel.endDate);
+      const dayCount = Utils.dateUtils.getDiff(
+        orderHotel.startDate,
+        orderHotel.endDate
+      );
+
+      let hotelInfo = {
+        search: "",
+        startDate,
+        endDate,
+        dayCount,
+        guestInfo: {
+          adult: orderHotel.adults_quantity,
+          child: orderHotel.children_quantity
+        }
+      };
+
+      this.userInfo = {
+        phone: orderHotel.guestPhone,
+        name: orderHotel.guestFirstName,
+        email: orderHotel.guestEmail
+      };
+
+      const hotelRes = await this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getHotel",
+        data: {
+          propertyID: orderHotel.propertyID
+        },
+        showLoading: true
+      });
+
+      const selectHotel = {
+        ...hotelRes.data,
+        status: orderHotel.status,
+        total: orderHotel.total,
+        propertyImage: hotelRes.data.propertyImage.split(",")
+      };
+      hotelInfo.selectHotel = selectHotel;
+
+      const roomRes = await this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getRoomTypeById",
+        data: {
+          propertyID: orderHotel.propertyID,
+          roomTypeID: orderHotel.rooms_roomTypeID
+        },
+        showLoading: true
+      });
+      const roomInfo = roomRes.data[0];
+      hotelInfo.roomInfo = {
+        ...roomInfo,
+        ...roomInfo.propertyCurrency,
+        title: roomInfo.roomTypeName,
+        content: roomInfo.roomTypeDescription,
+        roomTypePhotos: roomInfo.roomTypePhotos.map(item => {
+          return {
+            image: item
+          };
+        }),
+        img: roomInfo.roomTypePhotos[0]
+      };
+      console.log(hotelInfo);
+      this.$store.commit("setHotelInfo", hotelInfo);
+    },
     goMap() {
       wx.openLocation({
         latitude: Number(this.hotelInfo.propertyLatitude),
@@ -393,14 +501,29 @@ export default {
     },
     getCoupons() {
       this.$fetch({
-        url: this.$store.state.domain + "/api/get?actionxm=getCoupons",
-        data: {
-          type: 2
-        },
+        url: this.$store.state.domain + "/api/get?actionxm=getCouponByOpenid", //仅为示例，并非真实接口地址。
+        data: {},
         showLoading: true
       }).then(res => {
-        this.coupons = res.data.filter(
-          item => item.totalAmount <= this.roomInfo.roomRate
+        if (!res.data || res.data.length <= 0) {
+          return;
+        }
+        const list = res.data.map(item => {
+          let status = item.status;
+          let date = new Date(Number(item.create_time + "000"));
+          date.setDate(date.getDate() + Number(item.validateDate));
+          if (new Date() >= date) {
+            status = 2;
+          }
+          return {
+            ...item,
+            status,
+            validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
+          };
+        });
+        console.log("coupons:", list);
+        this.coupons = list.filter(
+          item => item.status == 0 //未使用 且 大于可使用金额
         );
       });
     },
@@ -408,11 +531,15 @@ export default {
       this.selectCouponIndex = e.detail.value;
     },
     chooseCoupon() {
+      if (!this.coupons[this.selectCouponIndex]) {
+        this.errorTips("no choose coupon");
+        return;
+      }
       this.selectCoupon = this.coupons[this.selectCouponIndex];
       this.closePopup("coupon");
+      this.selectCouponIndex = -1;
     },
     showPop(key) {
-      console.log(key, this.$refs);
       if (this.existPop.includes(key)) {
         this.$refs[key].open();
       }
@@ -425,6 +552,45 @@ export default {
     setTerms() {
       this.isTerms = true;
       this.closePopup("termInfo");
+    },
+    testPayAgain() {
+      this.$fetch({
+        url: this.$store.state.domain + "api/post?actionxm=getPayAgain",
+        method: "post",
+        data: {
+          id: this.orderId
+        },
+        showLoading: true
+      }).then(res => {
+        const { id, payParams } = res.data;
+        const payInfo = JSON.parse(payParams.pay_info);
+        this.wxPay({
+          id,
+          payInfo
+        });
+      });
+    },
+    cancelBook() {
+      uni.showModal({
+        content: "You wanna cancel the order?",
+        success: res => {
+          if (res.confirm) {
+            this.$fetch({
+              url:
+                this.$store.state.domain + "api/post?actionxm=cancleHotelOrder",
+              method: "post",
+              data: {
+                id: this.orderId
+              },
+              showLoading: true
+            }).then(res => {
+              uni.navigateTo({
+                url: `/pages/common/result/result?type=hotel&id=${this.orderId}&status=-1`
+              });
+            });
+          }
+        }
+      });
     },
     testPay() {
       this.$fetch({
@@ -440,13 +606,17 @@ export default {
             guestLastName: this.userInfo.name,
             guestCountry:
               country[this.$store.state.userInfo.country] || country["China"],
-            guestZip: "123456",
+            guestZip: "000000",
             guestEmail: this.userInfo.email,
             guestPhone: this.userInfo.phone,
             rooms: {
               roomTypeID: this.roomInfo.roomTypeID,
-              quantity: 1
+              quantity: 1,
+              roomTypeName: this.roomInfo.roomTypeName
             },
+            rooms_roomTypeName: this.roomInfo.roomTypeName,
+            rooms_roomTypeImg: this.roomInfo.roomTypePhotos[0].thumb,
+            rooms_roomTypeDesc: this.roomInfo.roomTypeDescription,
             adults: {
               roomTypeID: this.roomInfo.roomTypeID,
               quantity: this.$store.state.hotel.guestInfo.adult || "0"
@@ -455,25 +625,37 @@ export default {
               roomTypeID: this.roomInfo.roomTypeID,
               quantity: this.$store.state.hotel.guestInfo.child
             },
-            frontend_total: this.roomInfo.roomRate
+            frontend_total: this.roomInfo.roomRate,
+            coupon_id: this.selectCoupon.id
           })
         },
         showLoading: true
       }).then(res => {
         const { id, payParams } = res.data;
         const payInfo = JSON.parse(payParams.pay_info);
-        // 仅作为示例，非真实参数信息。
-        uni.requestPayment({
-          provider: "wxpay",
-          ...payInfo,
-          success: res => {
-            console.log("wxpay", res);
-            this.commitHotel(id);
-          },
-          fail: err => {
-            this.errorTips("pay error");
-          }
+        this.wxPay({
+          id,
+          payInfo
         });
+      });
+    },
+    wxPay({ id, payInfo }) {
+      // 仅作为示例，非真实参数信息。
+      uni.requestPayment({
+        provider: "wxpay",
+        ...payInfo,
+        success: res => {
+          uni.navigateTo({
+            url: `/pages/common/result/result?type=hotel&id=${id}&status=1`
+          });
+          // this.commitHotel(id);
+        },
+        fail: err => {
+          this.errorTips("pay cancel");
+          uni.navigateTo({
+            url: `/pages/common/result/result?type=hotel&id=${id}&status=0`
+          });
+        }
       });
     },
     commitHotel(id) {
@@ -486,7 +668,7 @@ export default {
         showLoading: true
       }).then(res => {
         if (res.status == "0") {
-          uni.redirectTo({
+          uni.navigateTo({
             url: "/pages/common/result/result?type=hotel&id=" + id
           });
         } else {

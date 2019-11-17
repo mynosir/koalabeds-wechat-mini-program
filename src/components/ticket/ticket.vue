@@ -91,6 +91,7 @@ export default {
   background-image: linear-gradient(to right, #11c0ee, #4df2ee);
   padding: 30upx 30upx 0upx 30upx;
   overflow: hidden;
+  opacity: 0.8;
 }
 .koa-ticket:after{
   position: absolute;
@@ -104,6 +105,9 @@ export default {
   text-align: center;
   transform: rotate(-45deg);
   display: none;
+}
+.koa-ticket--get{
+  background-color: #1094b5;
 }
 /* .koa-ticket--get:after{
   display: block;

@@ -81,6 +81,11 @@ var dateUtils = {
 	parse: function (str) { //将"yyyy-mm-dd HH:MM:ss"格式的字符串，转化为一个Date对象
 		var a = str.split(/[^0-9]/);
 		return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
+	},
+	getDiff(startDate, endDate){
+		const date1 = new Date(startDate);
+		const date2 = new Date(endDate);
+		return parseInt((date2-date1)/(24*60*60*1000))
 	}
 };
 

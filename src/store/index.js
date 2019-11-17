@@ -120,6 +120,9 @@ const store = new Vuex.Store({
 		},
 		setTicketImg(state, imgurl) {
 			state.ticket.image = imgurl
+		},
+		setHotelInfo(state, hotelInfo) {
+			state.hotel = hotelInfo;
 		}
 	},
 	actions: {

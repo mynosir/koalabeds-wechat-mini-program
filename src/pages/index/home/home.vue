@@ -81,11 +81,11 @@
     </view>
     <view>
       <panel-image
-        @click="goHotel(item.propertyID)"
         v-for="item in hotelList"
         :key="item.id"
         :title="item.propertyName"
         :imgUrl="item.propertyImage"
+        :goUrl="`/pages/hotel/detail/detail?id=${item.propertyID}`"
       ></panel-image>
       <uni-load-more iconType="spinner" :status="loadmoreStatus" />
     </view>
@@ -106,9 +106,7 @@
           </view>
         </view>
         <button type="primary" @tap="postCoupon('all')" v-if="hasLogin">Get All</button>
-        <button type="primary" 
-          open-type="getUserInfo"
-          @getuserinfo="mpGetUserInfo" v-else>Get All</button>
+        <button type="primary" open-type="getUserInfo" @getuserinfo="mpGetUserInfo" v-else>Get All</button>
       </view>
     </uni-popup>
     <!-- 日期选择 -->
@@ -143,7 +141,7 @@ export default {
   computed: {
     ...mapState({
       cityName: state => state.cityName,
-      hasLogin: state => state.hasLogin,
+      hasLogin: state => state.hasLogin
     }),
     i18n() {
       return this.$t("pages.home");
@@ -209,7 +207,7 @@ export default {
         });
         return;
       }
-      this.$store.commit('LOGIN', result.detail.userInfo);
+      this.$store.commit("LOGIN", result.detail.userInfo);
     },
     input({ value }) {
       this.searchContent = value;
@@ -233,7 +231,12 @@ export default {
         },
         showLoading: true
       }).then(res => {
-        this.coupons = res.data;
+        this.coupons = res.data.map(item => {
+          return {
+            ...item,
+            status: item.hasRecord ? "1" : "0"
+          };
+        });
       });
     },
     getRecommend() {
@@ -316,12 +319,14 @@ export default {
           ids
         },
         method: "POST"
-      }).then(res => {
-        this.getCoupons();
-        this.closePopup();
-      }).catch((e)=>{
-        this.closePopup();
-      });
+      })
+        .then(res => {
+          this.getCoupons();
+          this.closePopup();
+        })
+        .catch(e => {
+          this.closePopup();
+        });
     },
     goHotel(id) {
       uni.navigateTo({

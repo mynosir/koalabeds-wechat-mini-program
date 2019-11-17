@@ -1,11 +1,13 @@
 <template>
   <view class="koa-ticket-book uni-container">
-
-    <view class="uni-panel">
-    </view>
+    <view class="uni-panel"></view>
     <view class="uni-panel" v-for="(item, index) in orderList" :key="index">
       <uni-list>
-        <uni-list-item :show-arrow="false" :title="'Order date:'+item.date" @click="goOrderDetail(item)"/></uni-list-item>
+        <uni-list-item
+          :show-arrow="false"
+          :title="'Order date:'+item.date"
+          @click="goOrderDetail(item)"
+        />
         <uni-list-item
           :showArrow="false"
           :showExtra="true"
@@ -41,89 +43,87 @@
           :showExtra="true"
           title="Valid date"
           @click="goOrderDetail(item)"
-         >
-         <view slot="extra">
-           <text class="uni-product-price-original">{{item.valid}}</text>
-         </view>
-       </uni-list-item>
-       <uni-list-item
-         :show-arrow="false"
-         :showExtra="true"
-         @click="goOrderDetail(item)"
         >
-        <view>
-          <view class="panel" style="font-size:32upx">Ship to</view>
-          <view>{{item.shipping}}</view>
-        </view>
-      </uni-list-item>
-
+          <view slot="extra">
+            <text class="uni-product-price-original">{{item.valid}}</text>
+          </view>
+        </uni-list-item>
+        <uni-list-item :show-arrow="false" :showExtra="true" @click="goOrderDetail(item)">
+          <view>
+            <view class="panel" style="font-size:32upx">Ship to</view>
+            <view>{{item.shipping}}</view>
+          </view>
+        </uni-list-item>
       </uni-list>
     </view>
-
   </view>
-
 </template>
 <script>
 import uniList from "@/components/uni-list/uni-list.vue";
 import uniListItem from "@/components/uni-list-item/uni-list-item.vue";
 
-    export default {
-        components: {
-          uniList,
-          uniListItem
+export default {
+  components: {
+    uniList,
+    uniListItem
+  },
+  data() {
+    let orderList = [
+      {
+        adult: {
+          money1: 300.0,
+          money2: 200.0,
+          ticketNum: 2
         },
-        data() {
-          let orderList = [
-            {
-                adult: {
-                  money1: 300.0,
-                  money2: 200.0,
-                  ticketNum: 2
-                },
-                child: {
-                  money1: 200.0,
-                  money2: 100.0,
-                  ticketNum: 1
-                },
-                date: '2019/01/30',
-                valid: '2019/12/31',
-                shipping: 'sdfsdfsdds'
-            },
-            {
-                adult: {
-                  money1: 300.0,
-                  money2: 200.0,
-                  ticketNum: 2
-                },
-                child: {
-                  money1: 200.0,
-                  money2: 100.0,
-                  ticketNum: 1
-                },
-                date: '2019/01/30',
-                valid: '2019/12/31',
-                shipping: 'sdfsdfsdds'
-            }
-          ]
-          return {
-            orderList
-
-          }
+        child: {
+          money1: 200.0,
+          money2: 100.0,
+          ticketNum: 1
         },
-        onLoad() {
-
+        date: "2019/01/30",
+        valid: "2019/12/31",
+        shipping: "sdfsdfsdds"
+      },
+      {
+        adult: {
+          money1: 300.0,
+          money2: 200.0,
+          ticketNum: 2
         },
-        methods: {
-          goOrderDetail(item) {
-            uni.navigateTo({
-              url: "/pages/my/my-ticket/detail?data="+JSON.stringify(item)
-            });
-
-          }
-        }
+        child: {
+          money1: 200.0,
+          money2: 100.0,
+          ticketNum: 1
+        },
+        date: "2019/01/30",
+        valid: "2019/12/31",
+        shipping: "sdfsdfsdds"
+      }
+    ];
+    return {
+      orderList
+    };
+  },
+  onLoad() {
+    this.getOrders();
+  },
+  methods: {
+    getOrders() {
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getTicketOrders"
+      }).then(res => {
+        this.orderList = res.data;
+      });
+    },
+    goOrderDetail(item) {
+      uni.navigateTo({
+        url: "/pages/my/my-ticket/detail?data=" + JSON.stringify(item)
+      });
     }
+  }
+};
 </script>
 
 <style>
-    @import '../../../common/uni-nvue.css';
+@import "../../../common/uni-nvue.css";
 </style>

@@ -62,17 +62,17 @@ export default {
       tabBars: [
         {
           name: "Valid",
-          id: "1",
+          id: "0",
           data: []
         },
         {
           name: "Used",
-          id: "2",
+          id: "1",
           data: []
         },
         {
           name: "Expired",
-          id: "3",
+          id: "2",
           data: []
         }
       ]
@@ -84,17 +84,21 @@ export default {
   methods: {
     getCoupons() {
       this.$fetch({
-        url: this.$store.state.domain + "/api/get?actionxm=getCoupons", //仅为示例，并非真实接口地址。
-        data: {
-          type: 2
-        },
+        url: this.$store.state.domain + "/api/get?actionxm=getCouponByOpenid", //仅为示例，并非真实接口地址。
+        data: {},
         showLoading: true
       }).then(res => {
         this.list = res.data.map(item => {
+          let status = item.status
+          let date = new Date(Number(item.create_time + '000'))
+          date.setDate(date.getDate() + Number(item.validateDate));
+          if(new Date() >= date){
+            status = 2
+          }
           return {
             ...item,
-            status: parseInt(Math.random() * 3 + 1),
-            validateDateStr: "Valid date: " + new Date().format("yyyy/MM/dd")
+            status,
+            validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
           };
         });
         this.initTabs();
@@ -102,7 +106,7 @@ export default {
     },
     initTabs() {
       this.list.map(item => {
-        this.tabBars[Number(item.status) - 1].data.push(item);
+        this.tabBars[Number(item.status)].data.push(item);
       });
     },
     ontabtap(e) {

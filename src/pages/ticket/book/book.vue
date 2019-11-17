@@ -32,6 +32,42 @@
     </view>
     <view class="uni-panel">
       <uni-list>
+        <uni-list-item :showArrow="false">
+          <view class="uni-flex" style="align-items:center">
+            <view class="koa-form-item__right">Name</view>
+            <view class="uni-flex-item">
+              <input class="uni-input" focus placeholder="Name" v-model="userInfo.name" />
+            </view>
+          </view>
+        </uni-list-item>
+        <uni-list-item :showArrow="false">
+          <view class="uni-flex" style="align-items:center">
+            <view class="koa-form-item__right">Passport</view>
+            <view class="uni-flex-item">
+              <input class="uni-input" focus placeholder="Passport" v-model="userInfo.passport" />
+            </view>
+          </view>
+        </uni-list-item>
+        <uni-list-item :showArrow="false">
+          <view class="uni-flex" style="align-items:center">
+            <view class="koa-form-item__right">Hotel</view>
+            <view class="uni-flex-item">
+              <input class="uni-input" placeholder="Hotel" v-model="userInfo.hotel" />
+            </view>
+          </view>
+        </uni-list-item>
+        <uni-list-item :showArrow="false">
+          <view class="uni-flex" style="align-items:center">
+            <view class="koa-form-item__right">Email</view>
+            <view class="uni-flex-item">
+              <input class="uni-input" placeholder="Remark" v-model="userInfo.email" />
+            </view>
+          </view>
+        </uni-list-item>
+      </uni-list>
+    </view>
+    <view class="uni-panel">
+      <uni-list>
         <uni-list-item title="Shipping Address" :showArrow="false" />
         <uni-list-item @click="goSelectAddress">
           <view class="koa-desc" v-if="selectedAddress == null">Choose Shipping Address</view>
@@ -134,7 +170,7 @@
         <uni-icons type="close" color="#ccc" size="30" />
       </view>
       <view class="koa-pop-content" style="width: 80%;">
-        <view class="uni-list pop-coupon">
+        <view class="uni-list pop-coupon" v-if="coupons.length > 0">
           <radio-group @change="changeCoupon">
             <label
               class="uni-list-cell uni-list-cell-pd"
@@ -150,11 +186,13 @@
                   :price="item.discountAmount"
                   :fullPrice="item.totalAmount"
                   :valid="item.validateDate"
+                  :footer="item.validateDateStr"
                 ></ticket>
               </view>
             </label>
           </radio-group>
         </view>
+        <view class="no-data" v-else>no valid coupons</view>
       </view>
       <button type="primary" @tap="chooseCoupon">Select It</button>
     </uni-popup>
@@ -202,7 +240,13 @@ export default {
       coupons: [],
       selectCouponIndex: -1,
       selectCoupon: null,
-      isIphoneX: this.$store.state.isIphoneX
+      isIphoneX: this.$store.state.isIphoneX,
+      userInfo: {
+        hotel: "123",
+        name: "123",
+        passport: "123",
+        email: "123"
+      }
     };
   },
   computed: {
@@ -251,19 +295,33 @@ export default {
     },
     getCoupons() {
       this.$fetch({
-        url: this.$store.state.domain + "/api/get?actionxm=getCoupons",
-        data: {
-          type: 2
-        },
+        url: this.$store.state.domain + "/api/get?actionxm=getCouponByOpenid", //仅为示例，并非真实接口地址。
+        data: {},
         showLoading: true
       }).then(res => {
-        this.coupons = res.data.filter(
-          item => item.totalAmount <= this.ticketSum
+        if (!res.data || res.data.length <= 0) {
+          return;
+        }
+        const list = res.data.map(item => {
+          let status = item.status;
+          let date = new Date(Number(item.create_time + "000"));
+          date.setDate(date.getDate() + Number(item.validateDate));
+          if (new Date() >= date) {
+            status = 2;
+          }
+          return {
+            ...item,
+            status,
+            validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
+          };
+        });
+        console.log("coupons:", list);
+        this.coupons = list.filter(
+          item => item.status == 0 //未使用 且 大于可使用金额
         );
       });
     },
     change(e) {
-      console.log(e);
       this.validDate = e.fulldate;
     },
     changeAdultNum(value) {
@@ -277,7 +335,6 @@ export default {
       this.ticketInfo.productPrice.map(item => {
         subQty[item.id] = item.num;
       });
-      console.log(this.ticketInfo)
       this.$fetch({
         url: this.$store.state.domain + "api/post?actionxm=getGraylinePay",
         method: "post",
@@ -288,15 +345,16 @@ export default {
             productId: this.ticketInfo.productId,
             date: this.validDate,
             subQty,
-            travelTime: '',
-            hotel: 'testhotel',
-            title: 'Mr',
-            firstName: 'lin',
-            lastName: 'lin',
-            passport: '111',
-            guestEmail: '361789273@qq.com',
+            travelTime: "",
+            title: "Mr",
+            hotel: this.userInfo.hotel,
+            firstName: this.userInfo.name,
+            lastName: this.userInfo.name,
+            passport: this.userInfo.passport,
+            guestEmail: this.userInfo.email,
             totalPrice: this.ticketSum,
-            telephone: ''
+            frontend_total: this.ticketSum,
+            telephone: ""
           })
         },
         showLoading: true
@@ -307,11 +365,16 @@ export default {
         uni.requestPayment({
           provider: "wxpay",
           ...payInfo,
-          success: (res)=> {
-            this.commitTicket(id);
+          success: res => {
+            uni.navigateTo({
+              url: `/pages/common/result/result?type=ticket&id=${id}&status=1`
+            });
           },
-          fail: (err)=> {
-            this.errorTips("pay error");
+          fail: err => {
+            this.errorTips("pay cancel");
+            uni.navigateTo({
+              url: `/pages/common/result/result?type=ticket&id=${id}&status=0`
+            });
           }
         });
       });
@@ -338,13 +401,22 @@ export default {
       });
     },
     bookTicket() {
-      // if (!this.selectedAddress) {
-      //   uni.showToast({
-      //     icon: "none",
-      //     title: "Please select Shipping address~"
-      //   });
-      //   return;
-      // }
+      if (this.userInfo.name === "") {
+        this.errorTips("input your name");
+        return;
+      }
+      if (this.userInfo.email === "") {
+        this.errorTips("input your email");
+        return;
+      }
+      if (this.userInfo.hotel === "") {
+        this.errorTips("input your hotel");
+        return;
+      }
+      if (this.userInfo.passport === "") {
+        this.errorTips("input your passport");
+        return;
+      }
       this.testPay();
     },
     goSelectAddress() {
@@ -388,5 +460,11 @@ export default {
 .koa-ticket-book .uni-list-item__icon-img {
   width: 120upx;
   height: 120upx;
+}
+.koa-form-item__right {
+  font-size: 30upx;
+  margin-right: 20upx;
+  width: 130upx;
+  text-align: right;
 }
 </style>

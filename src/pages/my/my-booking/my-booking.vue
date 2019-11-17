@@ -29,15 +29,18 @@
       :duration="300"
       @change="ontabchange"
     >
-      <swiper-item class="swiper-item" v-for="(tab,index1) in newsList" :key="index1">
+      <swiper-item class="swiper-item" v-for="(tab,index1) in tabBars" :key="index1">
         <!-- #ifndef APP-NVUE -->
         <scroll-view class="scroll-v list" enableBackToTop="true" scroll-y>
-          <booking-order
-            :list="tab.data"
-            @click="showProduct"
-            @book="goBook"
-            @cancel="cancelBook(index1,tab.data)"
-          ></booking-order>
+          <template v-if="tab.data.length > 0">
+            <booking-order
+              :list="tab.data"
+              @click="showProduct"
+              @book="goBook"
+              @cancel="cancelBook"
+            ></booking-order>
+          </template>
+          <view class="no-data" v-else>no data show</view>
         </scroll-view>
         <!-- #endif -->
       </swiper-item>
@@ -65,21 +68,26 @@
       <view class="uni-panel" style="margin:60upx 0 80upx">
         <view class="example-body">
           Rating:
-          <uni-rate style="margin-left:20px" :value="2" @change="onChange" />
+          <uni-rate style="margin-left:20px" :value="rateNum" @change="changeRate" />
         </view>
         <view class="uni-textarea">
           <textarea
-            @blur="bindTextAreaBlur"
-            :value="popHotel.textAreaValue"
+            v-model="rateContent"
             style="border: 1px solid gray"
             placeholder-style="color:black"
             placeholder="Share your experience.."
           />
         </view>
       </view>
-      <view class="popup-button">
+      <view class="popup-button" v-if="!popHotel.isReview">
         <button class="mini-btn" @click="closePopup('popup')" type="default" size="mini">Later</button>
-        <button class="mini-btn" type="primary" size="mini" style="background-color:#1AAD19">Submit</button>
+        <button
+          class="mini-btn"
+          type="primary"
+          size="mini"
+          style="background-color:#1AAD19"
+          @tap="submitRate"
+        >Submit</button>
       </view>
     </uni-popup>
   </view>
@@ -89,6 +97,8 @@ import bookingOrder from "@/components/booking-order/booking-order.vue";
 import uniPopup from "@/components/uni-popup/uni-popup.vue";
 import uniIcons from "@/components/uni-icons/uni-icons.vue";
 import uniRate from "@/components/uni-rate/uni-rate.vue";
+
+const Utils = require("../../../common/util.js");
 export default {
   components: {
     bookingOrder,
@@ -98,153 +108,87 @@ export default {
   },
   data() {
     return {
-      list: [
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: 2,
-          status: "01",
-          statusName: "To be paid",
-          textAreaValue: "",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: 2,
-          status: "02",
-          statusName: "Confirm",
-          textAreaValue: "",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: 2,
-          status: "03",
-          statusName: "Complete",
-          textAreaValue: "",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: 2,
-          status: "04",
-          statusName: "Cancel",
-          textAreaValue: "",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        }
-      ],
-
-      newsList: [],
-      cacheTab: [],
       tabIndex: 0,
       tabBars: [
         {
+          data: [],
           name: "All",
-          id: "s01"
+          id: "all"
         },
         {
+          data: [],
           name: "To be paid",
-          id: "s02"
+          id: "0"
         },
         {
+          data: [],
           name: "Confirm",
-          id: "s03"
+          id: "1"
         },
         {
+          data: [],
           name: "Complete",
-          id: "s04"
+          id: "2"
         },
         {
+          data: [],
           name: "Cancel",
-          id: "s05"
+          id: "-1"
         }
       ],
       scrollInto: "",
       showTips: false,
       navigateFlag: false,
       pulling: false,
-      refreshIcon:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRFcHBw3Nzct7e39vb2ycnJioqK7e3tpqam29vb////D8oK7wAAAAp0Uk5T////////////ALLMLM8AAABxSURBVHja7JVBDoAgDASrjqj//7CJBi90iyYeOHTPMwmFZrHjYyyFYYUy1bwUZqtJIYVxhf1a6u0R7iUvWsCcrEtwJHp8MwMdvh2amHduiZD3rpWId9+BgPd7Cc2LIkPyqvlQvKxKBJ//Qwq/CacAAwDUv0a0YuKhzgAAAABJRU5ErkJggg==",
       existPop: ["popup", "guest"],
       popHotel: {},
-      textAreaValue: "123"
+      textAreaValue: "",
+      statusNames: {
+        0: "To be paid",
+        1: "Confirm",
+        2: "Complete",
+        "-1": "Cancel"
+      },
+      rateNum: 2,
+      rateContent: ""
     };
   },
   onLoad() {
-    setTimeout(() => {
-      this.tabBars.forEach(tabBar => {
-        this.newsList.push({
-          data: []
-        });
-      });
-      this.getList(0);
-    }, 350);
-    this.getOrders()
+    this.getOrders();
+  },
+  onUnload() {
+    uni.reLaunch({
+      url: "/pages/index/my/my"
+    });
+    return false;
   },
   methods: {
-    getOrders(){
-      this.$fetch({
-        url: this.$store.state.domain + 'api/get?actionxm=getHotelOrders'
-      }).then(res=>{
-
-      })
-    },
-    getList(index) {
-      let activeTab = this.newsList[index];
-      let list = [];
-      if (index == 0) {
-        list = list.concat(this.list);
-      } else if (index == 1) {
-        for (var i = 0; i < this.list.length; i++) {
-          if (this.list[i].status == "01") {
-            list.push(this.list[i]);
-          }
-        }
-      } else if (index == 2) {
-        for (var i = 0; i < this.list.length; i++) {
-          if (this.list[i].status == "02") {
-            list.push(this.list[i]);
-          }
-        }
-      } else if (index == 3) {
-        for (var i = 0; i < this.list.length; i++) {
-          if (this.list[i].status == "03") {
-            list.push(this.list[i]);
-          }
-        }
-      } else if (index == 4) {
-        for (var i = 0; i < this.list.length; i++) {
-          if (this.list[i].status == "04") {
-            list.push(this.list[i]);
-          }
-        }
+    getOrders() {
+      let data = {};
+      if (this.tabBars[this.tabIndex].id != "all") {
+        data.status = this.tabBars[this.tabIndex].id;
       }
-      activeTab.data = activeTab.data.concat(list);
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getHotelOrders",
+        data,
+        showLoading: true
+      }).then(res => {
+        this.tabBars[this.tabIndex].data = (res.data || []).map(item => {
+          return {
+            id: item.id,
+            title: item.propertyName || "hotelName",
+            name: item.rooms_roomTypeName || "roomName",
+            type: item.rooms_roomTypeDesc || "roomDesc",
+            startDate: item.startDate,
+            endDate: item.endDate,
+            dayCount: Utils.dateUtils.getDiff(item.startDate, item.endDate),
+            status: item.status,
+            statusName: this.statusNames[item.status],
+            img: item.rooms_roomTypeImg
+          };
+        });
+      });
     },
-    // loadMore(e) {
-    //     setTimeout(() => {
-    //         this.getList(this.tabIndex);
-    //     }, 500)
-    // },
     ontabtap(e) {
       let index = e.target.dataset.current || e.currentTarget.dataset.current;
       this.switchTab(index);
@@ -254,81 +198,27 @@ export default {
       this.switchTab(index);
     },
     switchTab(index) {
-      if (this.newsList[index].data.length === 0) {
-        this.getList(index);
-      }
-
       if (this.tabIndex === index) {
         return;
       }
-
-      // // 缓存 tabId
-      // if (this.newsList[this.tabIndex].data.length > MAX_CACHE_DATA) {
-      //     let isExist = this.cacheTab.indexOf(this.tabIndex);
-      //     if (isExist < 0) {
-      //         this.cacheTab.push(this.tabIndex);
-      //         //console.log("cache index:: " + this.tabIndex);
-      //     }
-      // }
-
       this.tabIndex = index;
+      this.getOrders();
       this.scrollInto = this.tabBars[index].id;
-
-      // // 释放 tabId
-      // if (this.cacheTab.length > MAX_CACHE_PAGE) {
-      //     let cacheIndex = this.cacheTab[0];
-      //     this.clearTabData(cacheIndex);
-      //     this.cacheTab.splice(0, 1);
-      //     //console.log("remove cache index:: " + cacheIndex);
-      // }
     },
-    // clearTabData(e) {
-    //     this.newsList[e].data.length = 0;
-    //     this.newsList[e].loadingText = "加载更多...";
-    // },
-    // refreshData() {},
-    // onrefresh(e) {
-    //     var tab = this.newsList[this.tabIndex];
-    //     if (!tab.refreshFlag) {
-    //         return;
-    //     }
-    //     tab.refreshing = true;
-    //     tab.refreshText = "正在刷新...";
-    //
-    //     setTimeout(() => {
-    //         this.refreshData();
-    //         this.pulling = true;
-    //         tab.refreshing = false;
-    //         tab.refreshFlag = false;
-    //         tab.refreshText = "已刷新";
-    //         setTimeout(() => { // TODO fix ios和Android 动画时间相反问题
-    //             this.pulling = false;
-    //         }, 500);
-    //     }, 2000);
-    // },
-    // onpullingdown(e) {
-    //     var tab = this.newsList[this.tabIndex];
-    //     if (tab.refreshing || this.pulling) {
-    //         return;
-    //     }
-    //     if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
-    //         tab.refreshFlag = true;
-    //         tab.refreshText = "释放立即刷新";
-    //     } else {
-    //         tab.refreshFlag = false;
-    //         tab.refreshText = "下拉可以刷新";
-    //     }
-    // },
     showProduct(item) {
-      if (item.status == "02") {
+      this.popHotel = item;
+      this.selectRoom = item;
+      this.getRate(item);
+      if (item.status == "2") {
         this.popHotel = item;
         this.selectRoom = item;
-        this.showPop("popup", item);
+        this.getRate(item);
       }
     },
-    goBook(value) {
+    goBook(order) {
+      console.log(order);
       uni.navigateTo({
-        url: "/pages/hotel/book/book"
+        url: "/pages/hotel/book/book?type=order&id=" + order.id
       });
     },
     showPop(key, item) {
@@ -339,23 +229,77 @@ export default {
     closePopup(key) {
       if (this.existPop.includes(key)) {
         this.$refs[key].close();
-        // this.textAreaValue = "";
       }
     },
     bindTextAreaBlur(e) {
       this.popHotel.textAreaValue = e.detail.value;
     },
-    cancelBook(index1, value) {
+    cancelBook(item) {
       uni.showModal({
-        content: "是否取消本条订单？",
+        content: "You wanna cancel the order?",
         success: res => {
           if (res.confirm) {
-            // this.list[index1].status = "05";
-            // this.list[index1].statusName = "Cancel";
-            value[index1].status = "04";
-            value[index1].statusName = "Cancel";
+            this.$fetch({
+              url:
+                this.$store.state.domain + "api/post?actionxm=cancleHotelOrder",
+              method: "post",
+              data: {
+                id: item.id
+              },
+              showLoading: true
+            }).then(res => {
+              this.getOrders();
+            });
           }
         }
+      });
+    },
+    getRate(item) {
+      this.$fetch({
+        url: this.$store.state.domain + "api/get?actionxm=getReview",
+        data: {
+          id: this.popHotel.id, //订单id
+          propertyID: this.popHotel.propertyID //酒店id
+        },
+        showLoading: true
+      }).then(res => {
+        const { data } = res;
+        if (data) {
+          this.rateNum = data.rate;
+          this.rateContent = data.rate;
+          this.popHotel.isReview = true;
+        }
+        this.showPop("popup", item);
+      });
+    },
+    changeRate({ value }) {
+      this.rateNum = value;
+    },
+    submitRate() {
+      if (this.rateContent == "") {
+        uni.showToast({
+          icon: "none",
+          title: "please input review!",
+          duration: 2000
+        });
+        return;
+      }
+      this.$fetch({
+        url: this.$store.state.domain + "api/post?actionxm=saveReviews",
+        method: "post",
+        data: {
+          propertyID: this.popHotel.propertyID,
+          rate: this.rateNum,
+          content: this.rateContent
+        },
+        showLoading: true
+      }).then(res => {
+        uni.showToast({
+          icon: "success",
+          title: "Thank you!",
+          duration: 2000
+        });
+        this.closePopup("popup");
       });
     }
   }

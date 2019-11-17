@@ -47,7 +47,7 @@
               </view>
             </view>
             <view slot="extra">
-              <uni-number-box :value="item.ticketNum" @change="changeNum($event, index)" />
+              <uni-number-box :value="item.num" @change="changeNum($event, index)" />
             </view>
           </uni-list-item>
         </uni-list>
@@ -181,7 +181,7 @@ export default {
         ticket.productPrice = ticket.productPrice.map(pp => {
           return {
             ...pp,
-            num: 0
+            num: 1
           };
         });
         this.$store.commit("setTicket", ticket);

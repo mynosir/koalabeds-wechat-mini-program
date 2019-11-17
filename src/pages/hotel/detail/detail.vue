@@ -220,6 +220,9 @@ export default {
           num: 3
         }
       }).then(res => {
+        if(!res.data || res.data.length <= 0){
+          return;
+        }
         this.comments = res.map(item => {
           return {
             username: item.nickName,
@@ -297,7 +300,7 @@ export default {
     goBook(item) {
       this.$store.commit("setRoomInfo", item);
       uni.navigateTo({
-        url: "/pages/hotel/book/book"
+        url: "/pages/hotel/book/book?type=detail"
       });
     },
     goReviews() {
