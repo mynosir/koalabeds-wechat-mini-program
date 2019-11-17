@@ -98,10 +98,13 @@
         <view class="popup-content">
           <view class="ticke-box" v-for="(item) in coupons" :key="item.id">
             <ticket
-              :canClick="false"
+              :status="item.status"
+              :canClick="true"
               :price="item.discountAmount"
               :fullPrice="item.totalAmount"
               :valid="item.validateDate"
+              @click="postCoupon(item.id)"
+              :isSmall="true"
             ></ticket>
           </view>
         </view>

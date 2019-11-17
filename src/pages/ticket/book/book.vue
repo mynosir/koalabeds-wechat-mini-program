@@ -5,7 +5,7 @@
         <uni-list-item
           :showArrow="false"
           :showExtra="true"
-          :thumb="tempImg"
+          :thumb="ticketImg"
           v-for="item in ticketInfo.productPrice"
           :key="item.id"
         >
@@ -34,6 +34,23 @@
       <uni-list>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
+            <view class="koa-form-item__right">Hotel</view>
+            <view class="uni-flex-item">
+              <picker @change="hotelChange" :value="hotelSelectIndex" :range="hotelList">
+                <view>{{hotelList[hotelSelectIndex]}}</view>
+              </picker>
+            </view>
+            <view>
+              <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
+            </view>
+          </view>
+        </uni-list-item>
+      </uni-list>
+    </view>
+    <view class="uni-panel">
+      <uni-list>
+        <uni-list-item :showArrow="false">
+          <view class="uni-flex" style="align-items:center">
             <view class="koa-form-item__right">Name</view>
             <view class="uni-flex-item">
               <input class="uni-input" focus placeholder="Name" v-model="userInfo.name" />
@@ -50,23 +67,15 @@
         </uni-list-item>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view class="koa-form-item__right">Hotel</view>
-            <view class="uni-flex-item">
-              <input class="uni-input" placeholder="Hotel" v-model="userInfo.hotel" />
-            </view>
-          </view>
-        </uni-list-item>
-        <uni-list-item :showArrow="false">
-          <view class="uni-flex" style="align-items:center">
             <view class="koa-form-item__right">Email</view>
             <view class="uni-flex-item">
-              <input class="uni-input" placeholder="Remark" v-model="userInfo.email" />
+              <input class="uni-input" placeholder="xxx@mail.com" v-model="userInfo.email" />
             </view>
           </view>
         </uni-list-item>
       </uni-list>
     </view>
-    <view class="uni-panel">
+    <!-- <view class="uni-panel">
       <uni-list>
         <uni-list-item title="Shipping Address" :showArrow="false" />
         <uni-list-item @click="goSelectAddress">
@@ -77,7 +86,7 @@
           </view>
         </uni-list-item>
       </uni-list>
-    </view>
+    </view>-->
     <view class="uni-panel normal-list">
       <uni-list>
         <uni-list-item
@@ -124,16 +133,7 @@
           style="font-size:24upx"
         >
           <view>Discount</view>
-          <view slot="extra" class="uni-product-price-original">￥{{discount}}</view>
-        </uni-list-item>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          @click="showPop('termInfo')"
-          style="font-size:24upx"
-        >
-          <view>Shipping Fee</view>
-          <view slot="extra" class="uni-product-price-original">￥{{shippingFee}}</view>
+          <view slot="extra" class="uni-product-price-original">-￥{{discount}}</view>
         </uni-list-item>
         <uni-list-item
           :showArrow="false"
@@ -145,7 +145,7 @@
           <view
             slot="extra"
             class="uni-product-price-original"
-          >￥{{ticketSum - discount + shippingFee}}</view>
+          >￥{{ticketSum - discount }}</view>
         </uni-list-item>
       </uni-list>
     </view>
@@ -242,11 +242,12 @@ export default {
       selectCoupon: null,
       isIphoneX: this.$store.state.isIphoneX,
       userInfo: {
-        hotel: "123",
-        name: "123",
+        name: "username",
         passport: "123",
-        email: "123"
-      }
+        email: "123@qq.com"
+      },
+      hotelSelectIndex: 0,
+      hotelList: []
     };
   },
   computed: {
@@ -281,12 +282,34 @@ export default {
   },
   onLoad() {
     this.getCoupons();
+    this.getHotels();
   },
   methods: {
+    hotelChange(e) {
+      this.hotelSelectIndex = e.target.value;
+    },
+    getHotels() {
+      this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getHotelListInDB", //仅为示例，并非真实接口地址。
+        data: {},
+        showLoading: true
+      }).then(res => {
+        if (!res.data || res.data.length <= 0) {
+          return;
+        }
+        this.hotelList = res.data.map(item => {
+          return item.propertyName;
+        });
+      });
+    },
     changeCoupon(e) {
       this.selectCouponIndex = e.detail.value;
     },
     chooseCoupon() {
+      if (!this.coupons[this.selectCouponIndex]) {
+        this.errorTips("no choose coupon");
+        return;
+      }
       this.selectCoupon = this.coupons[this.selectCouponIndex];
       this.closePopup("coupon");
     },
@@ -335,6 +358,8 @@ export default {
       this.ticketInfo.productPrice.map(item => {
         subQty[item.id] = item.num;
       });
+      this.ticketInfo.thumb = this.ticketImg;
+      this.ticketInfo.discount = this.discount;
       this.$fetch({
         url: this.$store.state.domain + "api/post?actionxm=getGraylinePay",
         method: "post",
@@ -346,15 +371,17 @@ export default {
             date: this.validDate,
             subQty,
             travelTime: "",
-            title: "Mr",
-            hotel: this.userInfo.hotel,
+            title: "Mrs",
+            hotel: this.hotelList[this.hotelSelectIndex],
             firstName: this.userInfo.name,
             lastName: this.userInfo.name,
             passport: this.userInfo.passport,
             guestEmail: this.userInfo.email,
             totalPrice: this.ticketSum,
             frontend_total: this.ticketSum,
-            telephone: ""
+            telephone: "",
+            coupon_id: this.selectCoupon ? this.selectCoupon.id : "",
+            extinfo: JSON.stringify(this.ticketInfo)
           })
         },
         showLoading: true
@@ -372,9 +399,9 @@ export default {
           },
           fail: err => {
             this.errorTips("pay cancel");
-            uni.navigateTo({
-              url: `/pages/common/result/result?type=ticket&id=${id}&status=0`
-            });
+            // uni.navigateTo({
+            //   url: `/pages/common/result/result?type=ticket&id=${id}&status=0`
+            // });
           }
         });
       });

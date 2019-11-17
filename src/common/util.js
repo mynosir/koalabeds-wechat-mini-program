@@ -125,7 +125,8 @@ function fetch({
 			header,
 			data:{
 				...data,
-				openid: uni.getStorageSync('openid')
+				openid: uni.getStorageSync('openid') || '',
+				language: uni.getStorageSync('language') || 'en'
 			},
 			method,
 			success: (res) => {

@@ -417,15 +417,26 @@ export default {
   methods: {
     async getOrder() {
       const res = await this.$fetch({
-        url: this.$store.state.domain + "/api/get?actionxm=getHotelOrders",
+        url: this.$store.state.domain + "/api/get?actionxm=getHotelOrderById",
         data: {
           id: this.orderId
         },
         showLoading: true
       });
-      const orderHotel = res.data.filter(item => {
-        return item.id == this.orderId;
-      })[0];
+      if (!res.data) {
+        uni.showToast({
+          icon: "none",
+          title: "error",
+          duration: 2000
+        });
+        setTimeout(() => {
+          uni.navigateBack({
+            delta: 1
+          });
+        }, 2000);
+        return;
+      }
+      const orderHotel = res.data;
       const startDate = new Date(orderHotel.startDate);
       const endDate = new Date(orderHotel.endDate);
       const dayCount = Utils.dateUtils.getDiff(
@@ -521,10 +532,15 @@ export default {
             validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
           };
         });
-        console.log("coupons:", list);
         this.coupons = list.filter(
-          item => item.status == 0 //未使用 且 大于可使用金额
+          item => {
+            return (
+              item.status == 0 &&
+              Number(item.totalAmount) <= Number(this.roomInfo.roomRate)
+            );
+          } //未使用 且 大于可使用金额
         );
+        console.log("优惠券：", this.coupons);
       });
     },
     changeCoupon(e) {
@@ -576,17 +592,20 @@ export default {
         success: res => {
           if (res.confirm) {
             this.$fetch({
-              url:
-                this.$store.state.domain + "api/post?actionxm=cancleHotelOrder",
+              url: this.$store.state.domain + "api/post?actionxm=cancelOrder",
               method: "post",
               data: {
                 id: this.orderId
               },
               showLoading: true
             }).then(res => {
+              uni.showLoading();
               uni.navigateTo({
                 url: `/pages/common/result/result?type=hotel&id=${this.orderId}&status=-1`
               });
+              setTimeout(() => {
+                uni.hideLoading();
+              }, 2000);
             });
           }
         }
@@ -612,21 +631,25 @@ export default {
             rooms: {
               roomTypeID: this.roomInfo.roomTypeID,
               quantity: 1,
-              roomTypeName: this.roomInfo.roomTypeName
+              roomTypeName: this.roomInfo.roomTypeName,
+              rate: this.roomInfo.roomRate
             },
             rooms_roomTypeName: this.roomInfo.roomTypeName,
             rooms_roomTypeImg: this.roomInfo.roomTypePhotos[0].thumb,
             rooms_roomTypeDesc: this.roomInfo.roomTypeDescription,
             adults: {
               roomTypeID: this.roomInfo.roomTypeID,
-              quantity: this.$store.state.hotel.guestInfo.adult || "0"
+              quantity: this.$store.state.hotel.guestInfo.adult || "0",
+              rate: this.roomInfo.roomRate
             },
             children: {
               roomTypeID: this.roomInfo.roomTypeID,
-              quantity: this.$store.state.hotel.guestInfo.child
+              quantity: this.$store.state.hotel.guestInfo.child,
+              rate: this.roomInfo.roomRate
             },
             frontend_total: this.roomInfo.roomRate,
-            coupon_id: this.selectCoupon.id
+            coupon_id: this.selectCoupon ? this.selectCoupon.id : "",
+            extinfo: ""
           })
         },
         showLoading: true
@@ -645,16 +668,23 @@ export default {
         provider: "wxpay",
         ...payInfo,
         success: res => {
+          uni.showLoading();
           uni.navigateTo({
             url: `/pages/common/result/result?type=hotel&id=${id}&status=1`
           });
+          setTimeout(() => {
+            uni.hideLoading();
+          }, 2000);
           // this.commitHotel(id);
         },
         fail: err => {
-          this.errorTips("pay cancel");
+          uni.showLoading();
           uni.navigateTo({
             url: `/pages/common/result/result?type=hotel&id=${id}&status=0`
           });
+          setTimeout(() => {
+            uni.hideLoading();
+          }, 2000);
         }
       });
     },

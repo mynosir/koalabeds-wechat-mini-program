@@ -1,45 +1,36 @@
 <template>
   <view class="koa-ticket-book uni-container">
+    <view
+      class="koa-ticket-status"
+      :class="'koa-ticket-status__'+statusText[item.status]"
+    >{{statusText[item.status]}}</view>
     <view class="uni-panel">
       <uni-list>
-        <uni-list-item :show-arrow="false" :title="'Order date:'+order.date" />
-        <uni-list-item :show-arrow="false" :title="'Order Number:'+order.number" />
-        <uni-list-item :show-arrow="false" :showExtra="true">
-          <view>
-            <view class="panel" style="font-size:32upx">Ship to</view>
-            <view>{{order.shipping}}</view>
-          </view>
+        <uni-list-item :show-arrow="false">
+          <view>Order Number:</view>
+          <view>{{order.outTradeNo}}</view>
         </uni-list-item>
+        <uni-list-item :show-arrow="false" :title="'Order Date: '+order.date.format('yyyy/MM/dd')" />
       </uni-list>
     </view>
     <view class="uni-panel">
       <uni-list>
         <uni-list-item
           :showArrow="false"
-          :showExtra="true"
-          thumb="https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
+          :showExtra="false"
+          :thumb="order.extinfo.thumb"
+          v-for="product in order.extinfo.productPrice"
+          :key="product.id"
         >
           <view>
-            <view class="panel" style="font-size:32upx">HONGKONG DISNEY TICKET</view>
-            <view>Adult</view>
-          </view>
-          <view slot="extra">
-            <text>{{order.adult.ticketNum}} X</text>
-            <text class="uni-product-price-original">￥{{order.adult.money2}}</text>
-          </view>
-        </uni-list-item>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          thumb="https://picjumbo.com/wp-content/uploads/night-car-lights-on-the-road-1080x720.jpg"
-        >
-          <view>
-            <view class="panel" style="font-size:32upx">HONGKONG DISNEY TICKET</view>
-            <view>Child</view>
-          </view>
-          <view slot="extra">
-            <text>{{order.child.ticketNum}} X</text>
-            <text class="uni-product-price-original">￥{{order.child.money2}}</text>
+            <view class="panel" style="font-size:32upx">{{order.extinfo.title}}</view>
+            <view class="uni-flex">
+              <view>{{product.title}}</view>
+              <view class="uni-flex-item" style="text-align:right">
+                <text>{{product.num}} X</text>
+                <text class="uni-product-price-original">￥{{product.price}}</text>
+              </view>
+            </view>
           </view>
         </uni-list-item>
       </uni-list>
@@ -48,51 +39,52 @@
       <uni-list>
         <uni-list-item :show-arrow="false" :showExtra="true" title="Valid date">
           <view slot="extra">
-            <text class="uni-product-price-original">{{order.valid}}</text>
+            <text>{{order.travelDate}}</text>
           </view>
         </uni-list-item>
       </uni-list>
     </view>
     <view class="uni-panel">
       <uni-list>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          @click="showPop('termInfo')"
-          style="font-size:24upx"
-        >
+        <uni-list-item :show-arrow="false" :showExtra="true" title="Name">
+          <view slot="extra">
+            <text>{{order.firstName}}</text>
+          </view>
+        </uni-list-item>
+        <uni-list-item :show-arrow="false" :showExtra="true" title="Email">
+          <view slot="extra">
+            <text>{{order.guestEmail}}</text>
+          </view>
+        </uni-list-item>
+        <uni-list-item :show-arrow="false" :showExtra="true" title="Passport">
+          <view slot="extra">
+            <text>{{order.passport}}</text>
+          </view>
+        </uni-list-item>
+        <uni-list-item :show-arrow="false" :showExtra="true" title="Shipping Hotel">
+          <view slot="extra">
+            <text>{{order.hotel}}</text>
+          </view>
+        </uni-list-item>
+      </uni-list>
+    </view>
+    <view class="uni-panel">
+      <uni-list>
+        <uni-list-item :showArrow="false" :showExtra="true" style="font-size:24upx">
           <view>Merchandise</view>
-          <view slot="extra" class="uni-product-price-original">￥{{ticketSum}}</view>
+          <view slot="extra" class="uni-product-price-original">￥{{order.totalPrice}}</view>
         </uni-list-item>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          @click="showPop('termInfo')"
-          style="font-size:24upx"
-        >
+        <uni-list-item :showArrow="false" :showExtra="true" style="font-size:24upx">
           <view>Discount</view>
-          <view slot="extra" class="uni-product-price-original">￥{{discount}}</view>
+          <view slot="extra" class="uni-product-price-original">￥{{order.discount}}</view>
         </uni-list-item>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          @click="showPop('termInfo')"
-          style="font-size:24upx"
-        >
-          <view>Shipping Fee</view>
-          <view slot="extra" class="uni-product-price-original">￥{{shippingFee}}</view>
-        </uni-list-item>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          @click="showPop('termInfo')"
-          style="font-size:32upx"
-        >
-          <view>Total</view>
+        <uni-list-item :showArrow="false" :showExtra="true">
+          <view style="font-size:32upx">Total</view>
           <view
             slot="extra"
             class="uni-product-price-original"
-          >￥{{ticketSum - discount + shippingFee}}</view>
+            style="font-size:32upx"
+          >￥{{order.totalPrice - order.discount}}</view>
         </uni-list-item>
       </uni-list>
     </view>
@@ -110,51 +102,59 @@ export default {
   data() {
     return {
       order: {},
-      ticketSum: 0,
-      discount: 0,
-      shippingFee: 0
+      statusText: {
+        0: "Wait",
+        "-1": "Cancel",
+        1: "Confirm",
+        2: "Complete"
+      }
     };
   },
   onLoad(options) {
-    this.orderId = options.id;
-    setTimeout(() => {
-      console.log(options.data);
-      let order = this.order;
-      this.order = JSON.parse(options.data);
-      console.log(this.order);
-
-      this.ticketSum =
-        this.order.adult.money2 * this.order.adult.ticketNum +
-        this.order.child.money2 * this.order.child.ticketNum;
-      this.order.number = "12837892347";
-    }, 350);
+    this.orderId = options.id || "11";
+    this.getOrderDetail();
   },
   methods: {
+    errorOut() {
+      uni.showToast({
+        icon: "none",
+        title: "error",
+        duration: 2000
+      });
+      uni.navigateBack({
+        delta: 1
+      });
+    },
     getOrderDetail() {
+      if (!this.orderId) {
+        this.errorOut();
+        return;
+      }
       this.$fetch({
-        url: this.$store.state.domain + "api/get?actionxm=getTicketOrderById",
+        url:
+          this.$store.state.domain +
+          "api/get?actionxm=getTicketByOrderIdAndOpenid",
         data: {
-          id: this.orderId
+          orderId: this.orderId
         }
       }).then(res => {
-        let data = res.data;
-        this.order = {
-          ...data,
-          adult: {
-            money1: 300.0,
-            money2: 200.0,
-            ticketNum: 2
-          },
-          child: {
-            money1: 200.0,
-            money2: 100.0,
-            ticketNum: 1
-          },
-          date: "2019/01/30",
-          valid: "2019/12/31",
-          shipping: "sdfsdfsdds",
-          number: "1238908902342"
-        };
+        if (!res.data) {
+          this.errorOut();
+          return;
+        }
+        const data = res.data;
+        let extinfo = {};
+        try {
+          extinfo = JSON.parse(data.extinfo);
+        } catch (e) {}
+        let date = data.create_time
+          ? new Date(Number(item.create_time + "000"))
+          : new Date();
+        this.order = res.data;
+        this.order.extinfo = extinfo;
+        this.order.date = date;
+        this.order.discount = extinfo.discount || 0;
+        this.$forceUpdate();
       });
     }
   }

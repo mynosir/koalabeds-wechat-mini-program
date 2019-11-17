@@ -68,7 +68,12 @@
       <view class="uni-panel" style="margin:60upx 0 80upx">
         <view class="example-body">
           Rating:
-          <uni-rate style="margin-left:20px" :value="rateNum" @change="changeRate" />
+          <uni-rate
+            style="margin-left:20px"
+            :value="rateNum"
+            @change="changeRate"
+            :disabled="!!popHotel.isReview"
+          />
         </view>
         <view class="uni-textarea">
           <textarea
@@ -76,6 +81,7 @@
             style="border: 1px solid gray"
             placeholder-style="color:black"
             placeholder="Share your experience.."
+            :disabled="!!popHotel.isReview"
           />
         </view>
       </view>
@@ -149,7 +155,7 @@ export default {
         2: "Complete",
         "-1": "Cancel"
       },
-      rateNum: 2,
+      rateNum: 5,
       rateContent: ""
     };
   },
@@ -175,8 +181,9 @@ export default {
       }).then(res => {
         this.tabBars[this.tabIndex].data = (res.data || []).map(item => {
           return {
+            ...item,
             id: item.id,
-            title: item.propertyName || "hotelName",
+            title: item.hotelInfo.data.propertyName || "hotelName",
             name: item.rooms_roomTypeName || "roomName",
             type: item.rooms_roomTypeDesc || "roomDesc",
             startDate: item.startDate,
@@ -184,7 +191,7 @@ export default {
             dayCount: Utils.dateUtils.getDiff(item.startDate, item.endDate),
             status: item.status,
             statusName: this.statusNames[item.status],
-            img: item.rooms_roomTypeImg
+            img: item.hotelInfo.data.propertyImageThumb
           };
         });
       });
@@ -206,9 +213,6 @@ export default {
       this.scrollInto = this.tabBars[index].id;
     },
     showProduct(item) {
-      this.popHotel = item;
-      this.selectRoom = item;
-      this.getRate(item);
       if (item.status == "2") {
         this.popHotel = item;
         this.selectRoom = item;
@@ -240,8 +244,7 @@ export default {
         success: res => {
           if (res.confirm) {
             this.$fetch({
-              url:
-                this.$store.state.domain + "api/post?actionxm=cancleHotelOrder",
+              url: this.$store.state.domain + "api/post?actionxm=cancelOrder",
               method: "post",
               data: {
                 id: item.id
@@ -256,26 +259,32 @@ export default {
     },
     getRate(item) {
       this.$fetch({
-        url: this.$store.state.domain + "api/get?actionxm=getReview",
+        url:
+          this.$store.state.domain +
+          "api/get?actionxm=getReviewsByOrderIdAndOpenid",
         data: {
-          id: this.popHotel.id, //订单id
-          propertyID: this.popHotel.propertyID //酒店id
+          orderId: this.popHotel.id //订单id
         },
         showLoading: true
       }).then(res => {
         const { data } = res;
         if (data) {
-          this.rateNum = data.rate;
-          this.rateContent = data.rate;
+          this.rateNum = Number(data.rate);
+          this.rateContent = data.content;
           this.popHotel.isReview = true;
+        } else {
+          this.rateNum = 5;
+          this.rateContent = "";
+          this.popHotel.isReview = false;
         }
+        this.$forceUpdate();
         this.showPop("popup", item);
       });
     },
     changeRate({ value }) {
       this.rateNum = value;
     },
-    submitRate() {
+    submitRate(item) {
       if (this.rateContent == "") {
         uni.showToast({
           icon: "none",
@@ -288,18 +297,27 @@ export default {
         url: this.$store.state.domain + "api/post?actionxm=saveReviews",
         method: "post",
         data: {
-          propertyID: this.popHotel.propertyID,
+          orderId: this.popHotel.id,
           rate: this.rateNum,
-          content: this.rateContent
+          content: this.rateContent,
+          propertyID: this.popHotel.propertyID
         },
         showLoading: true
       }).then(res => {
-        uni.showToast({
-          icon: "success",
-          title: "Thank you!",
-          duration: 2000
-        });
-        this.closePopup("popup");
+        if (res.status == 0) {
+          uni.showToast({
+            icon: "success",
+            title: "Thank you!",
+            duration: 2000
+          });
+          this.closePopup("popup");
+        } else {
+          uni.showToast({
+            icon: "none",
+            title: res.msg,
+            duration: 2000
+          });
+        }
       });
     }
   }

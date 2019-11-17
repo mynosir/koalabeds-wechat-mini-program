@@ -1,11 +1,16 @@
 <template>
-	<view class="uni-list">
+	<view class="uni-list" @tap="click">
 		<slot />
 	</view>
 </template>
 <script>
 	export default {
-		name: 'UniList'
+		name: 'UniList',
+		methods:{
+			click(){
+				this.$emit('click')
+			}
+		}
 	}
 </script>
 <style>

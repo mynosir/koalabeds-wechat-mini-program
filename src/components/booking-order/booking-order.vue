@@ -18,8 +18,8 @@
             class="uni-media-list-text-top"
             style="font-size: 23rpx"
           >IN:{{value.startDate}} END:{{value.endDate}} {{value.dayCount}}N</view>
-          <view class="uni-media-list-text-bottom uni-ellipsis">{{value.type}}</view>
-          <view class="uni-media-list-extra2" style="display: block;float:right">
+          <view class="uni-media-list-text-bottom uni-ellipsis" style="height:30upx;" v-html="value.type"></view>
+          <view class="uni-media-list-extra2" style="display: block;float:right;margin-top:20upx;">
             <template v-if="value.status=='0'">
               <button
                 id="product-list-btn1"
@@ -64,54 +64,6 @@ export default {
           statusName: "To be paid",
           img:
             "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: "2",
-          status: "02",
-          statusName: "To be paid",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: "2",
-          status: "02",
-          statusName: "To be paid",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: "2",
-          status: "02",
-          statusName: "To be paid",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
-        },
-        {
-          title: "Lee Garden Guest House",
-          name: "ROOM A",
-          type: "Twin bed",
-          startDate: "07/07/2019(Wed)",
-          endDate: "09/07/2019(Tus)",
-          dayCount: "2",
-          status: "02",
-          statusName: "To be paid",
-          img:
-            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg"
         }
       ]
     } // 列表
@@ -138,7 +90,7 @@ export default {
 </script>
 <style>
 .uni-media-list-body {
-  height: 200upx;
+  height: 220upx;
 }
 .uni-media-list-logo {
   width: 142rpx;

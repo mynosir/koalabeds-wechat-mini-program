@@ -43,16 +43,30 @@ export default {
       this.$store.commit("setTicketImg", imgUrl);
     },
     getGraylineNationalityList() {
-      this.$fetch({
-        url:
-          this.$store.state.domain + "api/get?actionxm=getGraylineProductList",
-        data: {
-          language: this.$store.state.language,
-          type: "transportation"
-        },
-        showLoading: true
-      }).then(res => {
-        this.list = res.data;
+      Promise.all([
+        this.$fetch({
+          url:
+            this.$store.state.domain +
+            "api/get?actionxm=getGraylineProductList",
+          data: {
+            language: this.$store.state.language,
+            type: "ticket"
+          },
+          showLoading: true
+        }),
+        this.$fetch({
+          url:
+            this.$store.state.domain +
+            "api/get?actionxm=getGraylineProductList",
+          data: {
+            language: this.$store.state.language,
+            type: "tour"
+          },
+          showLoading: true
+        })
+      ]).then(res => {
+        console.log("getGraylineProductList", res);
+        this.list = [...res[0].data, ...res[1].data];
       });
     }
   }

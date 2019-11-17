@@ -12,7 +12,7 @@
               :duration="swiperSetting.duration"
             >
               <swiper-item v-for="(item, index) in hotelInfo.propertyImage" :key="index">
-                <image style="width: 100%; " :src="item" />
+                <image style="width: 100%; " :src="item" class="koa-hotel-img" />
               </swiper-item>
             </swiper>
           </view>
@@ -77,7 +77,6 @@
         <view class="no-data" v-else>Hotel Not Have Rooms~</view>
       </view>
       <view class="uni-panel uni-panel-h" v-if="comments && comments.length > 0">
-        {{comments}}
         <comments :list="comments" :showMore="true" @click="goReviews"></comments>
       </view>
     </template>
@@ -206,6 +205,7 @@ export default {
   onNavigationBarButtonTap(e) {},
   onLoad(options) {
     this.hotelId = options.id || "173267";
+    this.getHotel();
   },
   onReady() {},
   onShow() {},
@@ -220,13 +220,13 @@ export default {
           num: 3
         }
       }).then(res => {
-        if(!res.data || res.data.length <= 0){
+        if (!res.data || res.data.length <= 0) {
           return;
         }
-        this.comments = res.map(item => {
+        this.comments = res.data.map(item => {
           return {
-            username: item.nickName,
-            userimg: item.nickName,
+            username: item.userinfo.wx_nickname,
+            userimg: item.userinfo.wx_avatarUrl,
             stars: item.rate,
             content: item.content
           };
@@ -239,10 +239,15 @@ export default {
         data: {
           propertyID: this.hotelId,
           checkInDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
-          checkOutDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd")
+          checkOutDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
+          adults: this.guestInfo.adult,
+          children: this.guestInfo.child
         },
         showLoading: true
       }).then(res => {
+        if(!res.data || res.data.length <=0){
+          return;
+        }
         this.list = res.data[0].propertyRooms.map(item => {
           return {
             ...item,
@@ -288,9 +293,7 @@ export default {
         endDate: new Date(choiceDate[1].dateTime),
         dayCount
       });
-      if (!this.hotelInfo) {
-        this.getHotel();
-      } else {
+      if (this.hotelInfo) {
         this.getRoomsByHotelId();
       }
     },
@@ -305,7 +308,7 @@ export default {
     },
     goReviews() {
       uni.navigateTo({
-        url: "/pages/common/reviews/reviews?id" + this.hotelId
+        url: "/pages/common/reviews/reviews?id=" + this.hotelId
       });
     },
     showPop(key) {

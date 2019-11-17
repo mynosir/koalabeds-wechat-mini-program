@@ -11,8 +11,8 @@ Vue.use(VueI18n)
 export default new VueI18n({
     locale: 'en-US', 
     messages:{
-        'en-US': enUS,
-        'zh-CN': zhCN,
-        'zh-HK': zhHK
+        'en': enUS,
+        'zh-cn': zhCN,
+        'zh-hk': zhHK
     }
 })

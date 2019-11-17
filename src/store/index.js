@@ -31,7 +31,7 @@ const mobile = wx.getSystemInfoSync();
 
 const store = new Vuex.Store({
 	state: {
-		language: 'en',
+		language: uni.getStorageSync('language') || 'en',
 		domain,
 		hasLogin: false,
 		userInfo: null,
@@ -47,7 +47,7 @@ const store = new Vuex.Store({
 			dayCount,
 			selectHotel: {},
 			guestInfo: {
-				adult: 2,
+				adult: 1,
 				child: 0
 			},
 			roomInfo: {},
@@ -123,6 +123,10 @@ const store = new Vuex.Store({
 		},
 		setHotelInfo(state, hotelInfo) {
 			state.hotel = hotelInfo;
+		},
+		setLanguage(state, language) {
+			state.language = language
+			uni.setStorageSync('language', language)
 		}
 	},
 	actions: {
@@ -186,6 +190,20 @@ const store = new Vuex.Store({
 					})
 				}
 			})
+		},
+		'getLang': async function ({
+			state,
+			commit
+		}) {
+			if (!!uni.getStorageSync('language')) {
+				return;
+			}
+			fetch({
+				url: domain + "/api/get?actionxm=getLang",
+				data: {}
+			}).then(res => {
+				commit('setLanguage', res.data || 'en')
+			})
 		}
 	}
 })
@@ -194,5 +212,6 @@ const store = new Vuex.Store({
 //获取城市
 store.dispatch(GETCITYS)
 store.dispatch(GETOPENID)
+store.dispatch('getLang')
 
 export default store

@@ -74,7 +74,7 @@
         </view>
       </view>
     </view>
-    <view class="no-data" v-else>cann't find any hotel~</view>
+    <view class="no-data" v-else>loading...</view>
     <!-- location -->
     <uni-popup ref="location" type="top" class="filter-pop" @change="changePop">
       <view class="uni-list" style="margin:-30upx">
@@ -267,7 +267,7 @@ export default {
             ...item.details,
             propertyImageThumb: item.details.propertyImageThumb.split(",")[0]
           };
-        });
+        }).filter(item => !!item.minMoney);
         if (this.$store.state.hotelTemps.length <= 0) {
           this.$store.commit('setHotelTemps', this.list);
         }

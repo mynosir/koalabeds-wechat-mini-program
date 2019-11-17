@@ -6,7 +6,8 @@ export default {
         search: 'Search',
         chooseCity: 'Choose City',
         total: 'Total',
-        night: 'nights'
+        night: 'nights',
+        tabBars: ['Home','Ticket', 'My Booking']
     },
     pages: {
         home: {

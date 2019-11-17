@@ -48,17 +48,19 @@ export default {
           page: this.page,
           num: this.num
         }
-      }).then(data => {
-        if (data.length <= 0) {
+      }).then(res => {
+        if (!res.data || res.data.length <= 0) {
           this.loadmoreStatus = "noMore";
         } else {
-          this.comments = data.map(item => {
+          if(res.data.length < this.num){
+            this.loadmoreStatus = "noMore";
+          }
+          this.comments = res.data.map(item => {
             return {
-              ...item,
-              title: item.roomTypeName,
-              content: item.roomTypeDescription,
-              img: item.roomTypePhotos[0].thumb,
-              money2: item.roomRate
+              username: item.userinfo.wx_nickname,
+              userimg: item.userinfo.wx_avatarUrl,
+              stars: item.rate,
+              content: item.content
             };
           });
           this.page++;

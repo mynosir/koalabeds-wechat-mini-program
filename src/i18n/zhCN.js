@@ -4,7 +4,11 @@ export default {
     },
     pages: {
         home: {
-            title: 'Koalabeds'
+            title: 'Koalabeds',
+            searchPlaceHolod: '查询酒店的地址或名称',
+            couponTitle: '优惠券',
+            recommendTitle: '推荐酒店',
+
         },
         my:{
             wechat: '微信授权登录',

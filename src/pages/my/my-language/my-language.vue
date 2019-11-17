@@ -26,15 +26,15 @@ export default {
     return {
       languages: [
         {
-          key: "en-US",
+          key: "en",
           value: "English"
         },
         {
-          key: "zh-CN",
+          key: "zh-cn",
           value: "简体中文"
         },
         {
-          key: "zh-HK",
+          key: "zh-hk",
           value: "繁體中文"
         }
       ],
@@ -50,9 +50,19 @@ export default {
       this.selected = value;
     },
     confirm() {
-      this.$i18n.locale = this.selected
-      uni.navigateBack({
-        delta: 1
+      this.$fetch({
+        url: this.$store.state.domain + "api/post?actionxm=updateLang",
+        method: "post",
+        data: {
+          lang: this.selected
+        },
+        showLoading: true
+      }).then(res => {
+        this.$i18n.locale = this.selected;
+        this.$store.commit("setLanguage", this.selected);
+        uni.navigateBack({
+          delta: 1
+        });
       });
     }
   }
