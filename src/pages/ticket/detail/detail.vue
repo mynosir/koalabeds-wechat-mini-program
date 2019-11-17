@@ -11,7 +11,7 @@
               :duration="swiperSetting.duration"
             >
               <swiper-item>
-                <image style="width: 100%; " :src="ticketImg" />
+                <image style="width: 100%; " :src="ticketImg"  mode="widthFix"/>
               </swiper-item>
             </swiper>
           </view>

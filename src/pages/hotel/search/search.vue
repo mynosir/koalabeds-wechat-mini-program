@@ -66,7 +66,7 @@
             </view>
             <view class="uni-product-price" style="text-align:right">
               <view class="uni-product-price-original">
-                {{item.propertyCurrencySymbol}}{{item.minMoney}}
+                ￥{{item.minMoney}}
                 <text style="font-size:24upx;margin-left:6upx;">up</text>
               </view>
             </view>

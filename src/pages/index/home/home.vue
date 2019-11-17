@@ -16,7 +16,7 @@
             :duration="swiperSetting.duration"
           >
             <swiper-item v-for="(item, index) in imglist" :key="index">
-              <image style="width: 100%; " :src="item.img" />
+              <image style="width: 100%; " :src="item.img" mode="widthFix"/>
             </swiper-item>
           </swiper>
         </view>
@@ -72,7 +72,7 @@
             @tap="goHotel(item.propertyID)"
           >
             <view class="recommend-image">
-              <image :src="item.propertyImageThumb" />
+              <image :src="item.propertyImageThumb" mode="widthFix"/>
             </view>
             <view class="recommend-text">{{item.propertyName}}</view>
           </view>

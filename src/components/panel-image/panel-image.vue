@@ -2,7 +2,7 @@
   <view class="uni-panel uni-panel-h" @tap="onClick">
     <view class="panel-image-title uni-center">{{title}}</view>
     <view class="panel-image-content">
-      <image :src="imgUrl" />
+      <image :src="imgUrl"  mode="widthFix"/>
     </view>
   </view>
 </template>

@@ -82,10 +82,10 @@ var dateUtils = {
 		var a = str.split(/[^0-9]/);
 		return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
 	},
-	getDiff(startDate, endDate){
+	getDiff(startDate, endDate) {
 		const date1 = new Date(startDate);
 		const date2 = new Date(endDate);
-		return parseInt((date2-date1)/(24*60*60*1000))
+		return parseInt((date2 - date1) / (24 * 60 * 60 * 1000))
 	}
 };
 
@@ -116,14 +116,14 @@ function fetch({
 	if (showLoading) {
 		uni.showLoading();
 	}
-	if(method.toLowerCase() == 'post'){
+	if (method.toLowerCase() == 'post') {
 		header['content-type'] = 'application/x-www-form-urlencoded'
 	}
 	return new Promise((resolve, reject) => {
 		uni.request({
 			url, //仅为示例，并非真实接口地址。
 			header,
-			data:{
+			data: {
 				...data,
 				openid: uni.getStorageSync('openid') || '',
 				language: uni.getStorageSync('language') || 'en'
@@ -132,8 +132,16 @@ function fetch({
 			success: (res) => {
 				console.log(url, data, method, res);
 				if (res.statusCode == 200) {
+					if (res.data.status != 0) {
+						uni.showToast({
+							icon: "none",
+							title: res.data.msg,
+							duration: 2000
+						})
+						return;
+					}
 					resolve(res.data)
-					if(showLoading){
+					if (showLoading) {
 						uni.hideLoading();
 					}
 				} else {

@@ -2,7 +2,7 @@
 	<view :class="{ 'uni-card--full': isFull === true || isFull === 'true', 'uni-card--shadow': isShadow === true || isShadow === 'true' }" class="uni-card" @click="onClick">
 		<view v-if="mode === 'style'" class="uni-card__thumbnailimage">
 			<image :src="thumbnail" mode="aspectFill" />
-			<view v-if="title" class="uni-card__thumbnailimage-title">{{ title }}</view>
+			<view v-if="title" class="uni-card__thumbnailimage-title" v-html="title"></view>
 		</view>
 		<view v-if="mode === 'title'" class="uni-card__title">
 			<view class="uni-card__title-header">

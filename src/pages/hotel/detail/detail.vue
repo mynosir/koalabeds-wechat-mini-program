@@ -12,7 +12,7 @@
               :duration="swiperSetting.duration"
             >
               <swiper-item v-for="(item, index) in hotelInfo.propertyImage" :key="index">
-                <image style="width: 100%; " :src="item" class="koa-hotel-img" />
+                <image style="width: 100%; " :src="item" class="koa-hotel-img"  mode="widthFix"/>
               </swiper-item>
             </swiper>
           </view>
@@ -96,7 +96,7 @@
             <view class="page-section-spacing">
               <swiper class="swiper" :indicator-dots="true">
                 <swiper-item v-for="(item, index) in selectRoom.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image" />
+                  <image style="width: 100%; " :src="item.image"  mode="widthFix"/>
                 </swiper-item>
               </swiper>
             </view>

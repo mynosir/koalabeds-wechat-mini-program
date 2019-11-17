@@ -3,7 +3,7 @@
     <view class="uni-panel uni-panel-d">
       <uni-card
         :is-shadow="true"
-        :title="hotelInfo.propertyName + ' ' + roomInfo.roomTypeName"
+        :title="hotelInfo.propertyName + '<br>' + roomInfo.roomTypeName"
         note="true"
       >
         <view class="hotel-desc">
@@ -139,9 +139,7 @@
             @click="showPop('coupon')"
           >
             <view slot="extra">
-              <text
-                v-if="selectCoupon"
-              >{{`-${hotelInfo.propertyCurrencySymbol}${selectCoupon.discountAmount}`}}</text>
+              <text v-if="selectCoupon">{{`-￥${selectCoupon.discountAmount}`}}</text>
               <text v-else style="color:#ccc">Not Yet</text>
               <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
             </view>
@@ -192,16 +190,16 @@
               style="padding-left:24upx"
               v-if="selectCoupon"
             >
-              {{hotelInfo.propertyCurrencySymbol}}{{roomInfo.roomRate - selectCoupon.discountAmount}}
+              ￥{{grandTotal - selectCoupon.discountAmount}}
               <text
                 style="font-size:20upx;color:#333;margin-left:6upx;"
-              >({{roomInfo.roomRate}}-{{selectCoupon.discountAmount}})</text>
+              >({{grandTotal}}-{{selectCoupon.discountAmount}})</text>
             </view>
             <view
               class="uni-flex-item uni-product-price-original"
               style="padding-left:24upx"
               v-else
-            >{{hotelInfo.propertyCurrencySymbol}}{{roomInfo.roomRate}}</view>
+            >￥{{grandTotal}}</view>
             <view>
               <button type="primary" style="border-radius:0;" @tap="bookHotel">Booking Now</button>
             </view>
@@ -212,7 +210,7 @@
             <view
               class="uni-flex-item uni-product-price-original"
               style="padding-left:24upx"
-            >{{hotelInfo.propertyCurrencySymbol}}{{hotelInfo.total}}</view>
+            >￥{{hotelInfo.total}}</view>
             <view v-if="hotelInfo.status == '0'" class="uni-flex">
               <button type="info" style="border-radius:0;" @tap="cancelBook">Cancel Booking</button>
               <button type="warn" style="border-radius:0;" @tap="testPayAgain">PAY NOW</button>
@@ -251,7 +249,7 @@
             <view class="page-section-spacing">
               <swiper class="swiper" :indicator-dots="true">
                 <swiper-item v-for="(item, index) in roomInfo.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image" />
+                  <image style="width: 100%; " :src="item.image" mode="widthFix"/>
                 </swiper-item>
               </swiper>
             </view>
@@ -396,7 +394,8 @@ export default {
       weixinExtra: { color: "#05db6c", type: "weixin", size: 24 },
       coupons: [],
       isOrder: false,
-      orderId: 1
+      orderId: 1,
+      grandTotal: this.$store.state.hotel.roomInfo.roomRate
     };
   },
   onLoad(options) {
@@ -406,6 +405,7 @@ export default {
       this.orderId = options.id || 1;
     } else {
       this.getCoupons();
+      this.getRoomsFeesAndTaxes();
     }
   },
   onShow() {
@@ -415,6 +415,25 @@ export default {
     }
   },
   methods: {
+    getRoomsFeesAndTaxes() {
+      this.$fetch({
+        url:
+          this.$store.state.domain + "/api/get?actionxm=getRoomsFeesAndTaxes",
+        data: {
+          propertyID: this.hotelInfo.propertyID,
+          startDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
+          endDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
+          frontend_total: this.$store.state.hotel.roomInfo.roomRate,
+          rooms_quantity: 1
+        },
+        showLoading: true
+      }).then(res => {
+        if (!res.data) {
+          return;
+        }
+        this.grandTotal = res.data.grandTotal;
+      });
+    },
     async getOrder() {
       const res = await this.$fetch({
         url: this.$store.state.domain + "/api/get?actionxm=getHotelOrderById",
@@ -536,7 +555,7 @@ export default {
           item => {
             return (
               item.status == 0 &&
-              Number(item.totalAmount) <= Number(this.roomInfo.roomRate)
+              Number(item.totalAmount) <= Number(this.grandTotal)
             );
           } //未使用 且 大于可使用金额
         );
@@ -647,7 +666,8 @@ export default {
               quantity: this.$store.state.hotel.guestInfo.child,
               rate: this.roomInfo.roomRate
             },
-            frontend_total: this.roomInfo.roomRate,
+            unRoomRate: this.roomInfo.roomRate,
+            frontend_total: this.grandTotal,
             coupon_id: this.selectCoupon ? this.selectCoupon.id : "",
             extinfo: ""
           })
