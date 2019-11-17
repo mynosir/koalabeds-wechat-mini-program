@@ -237,7 +237,7 @@ export default {
         this.coupons = res.data.map(item => {
           return {
             ...item,
-            status: item.hasRecord ? "1" : "0"
+            status: item.hasRecord ? "0" : "-1"
           };
         });
       });

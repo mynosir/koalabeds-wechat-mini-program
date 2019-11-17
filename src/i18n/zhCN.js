@@ -1,6 +1,13 @@
 export default {
     global:{
-        title: 'Koalabeds'
+        title: 'Koalabeds',
+        checkIn: 'Check In',
+        checkOut: 'Check Out',
+        search: 'Search',
+        chooseCity: 'Choose City',
+        total: 'Total',
+        night: 'nights',
+        tabBars: ['酒店','门票', '我的']
     },
     pages: {
         home: {

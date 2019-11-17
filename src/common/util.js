@@ -114,7 +114,9 @@ function fetch({
 	},
 }) {
 	if (showLoading) {
-		uni.showLoading();
+		uni.showLoading({
+			mask: true
+		});
 	}
 	if (method.toLowerCase() == 'post') {
 		header['content-type'] = 'application/x-www-form-urlencoded'
@@ -132,14 +134,13 @@ function fetch({
 			success: (res) => {
 				console.log(url, data, method, res);
 				if (res.statusCode == 200) {
-					if (res.data.status != 0) {
-						uni.showToast({
-							icon: "none",
-							title: res.data.msg,
-							duration: 2000
-						})
-						return;
-					}
+					// if (res.data.status != 0) {
+					// 	uni.showToast({
+					// 		icon: "none",
+					// 		title: res.data.msg,
+					// 		duration: 2000
+					// 	})
+					// }
 					resolve(res.data)
 					if (showLoading) {
 						uni.hideLoading();

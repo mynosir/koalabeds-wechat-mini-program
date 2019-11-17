@@ -147,7 +147,7 @@ export default {
     }
   },
   onLoad(options) {
-    this.productId = options.productId || "6";
+    this.productId = options.id || "6";
     this.type = options.type || "tour";
     this.getGraylineProductDetails();
   },

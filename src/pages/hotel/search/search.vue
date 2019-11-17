@@ -12,7 +12,13 @@
           </view>
         </view>
         <view style="width:200upx" @tap="goSearch">
-          <uni-search-bar :value="hotelName" radius="100" placeholder="Search" :hideCancel="true" :disabled="true" />
+          <uni-search-bar
+            :value="hotelName"
+            radius="100"
+            placeholder="Search"
+            :hideCancel="true"
+            :disabled="true"
+          />
         </view>
       </view>
       <view class="uni-flex" style="align-items:center;">
@@ -74,6 +80,7 @@
         </view>
       </view>
     </view>
+    <view class="no-data" v-else-if="!loading">can't not find hotels</view>
     <view class="no-data" v-else>loading...</view>
     <!-- location -->
     <uni-popup ref="location" type="top" class="filter-pop" @change="changePop">
@@ -212,8 +219,8 @@ export default {
     obtainCitys() {
       return this.$store.state.citys;
     },
-    hotelName(){
-      return this.$store.state.hotel.search
+    hotelName() {
+      return this.$store.state.hotel.search;
     }
   },
   data() {
@@ -231,17 +238,18 @@ export default {
       rankSort: 0,
       selectSort: "",
       list: [],
-      timeout: -1
+      timeout: -1,
+      loading: false
     };
   },
-  onLoad(options) {
-    
-  },
-  onShow(){
-    console.log('show')
+  onLoad(options) {},
+  onShow() {
+    console.log("show");
   },
   methods: {
     getHotels() {
+      this.loading = true;
+      this.$forceUpdate();
       this.$fetch({
         url: this.$store.state.domain + "api/get?actionxm=searchHotels",
         data: {
@@ -257,20 +265,26 @@ export default {
         },
         showLoading: true
       }).then(res => {
+        this.loading = false;
         if (!res.data || res.data.length <= 0) {
           this.list = [];
           return;
         }
-        this.list = res.data.map(item => {
-          return {
-            ...item,
-            ...item.details,
-            propertyImageThumb: item.details.propertyImageThumb.split(",")[0]
-          };
-        }).filter(item => !!item.minMoney);
+        this.list = res.data
+          .map(item => {
+            return {
+              ...item,
+              ...item.details,
+              propertyImageThumb: item.details.propertyImageThumb
+                ? item.details.propertyImageThumb.split(",")[0]
+                : ""
+            };
+          })
+          .filter(item => !!item.minMoney);
         if (this.$store.state.hotelTemps.length <= 0) {
-          this.$store.commit('setHotelTemps', this.list);
+          this.$store.commit("setHotelTemps", this.list);
         }
+        this.$forceUpdate();
       });
     },
     changeCity(e) {

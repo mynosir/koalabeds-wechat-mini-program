@@ -48,17 +48,17 @@ export default {
   },
   data() {
     const classes = {
-      "1": "koa-ticket--get",
-      "2": "koa-ticket--used",
-      "3": "koa-ticket--expired"
+      "0": "koa-ticket--get",
+      "1": "koa-ticket--used",
+      "2": "koa-ticket--expired"
     };
     return {
       statusClass: classes[this.status] || "",
       footerText: {
-        "0": "GET IT",
-        "1": "GOT",
-        "2": "USED",
-        "3": "EXPIRED"
+        "-1": "GET IT",
+        "0": "GOT",
+        "1": "USED",
+        "2": "EXPIRED"
       }
     };
   },
@@ -141,11 +141,11 @@ export default {
 }
 .koa-ticket--full {
   flex: 1;
-  font-size: 14upx;
+  font-size: 16upx;
   text-align: left;
 }
 .koa-ticket--valid {
-  font-size: 14upx;
+  font-size: 16upx;
   text-align: right;
 }
 .koa-ticket--line {

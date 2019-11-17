@@ -15,7 +15,6 @@ export default {
             searchPlaceHolod: 'Search location or hotel name',
             couponTitle: 'Get your coupon',
             recommendTitle: 'Recommend',
-
         },
         my:{
             wechat: 'Wechat Authorization',

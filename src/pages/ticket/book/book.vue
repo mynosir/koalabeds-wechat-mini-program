@@ -242,9 +242,9 @@ export default {
       selectCoupon: null,
       isIphoneX: this.$store.state.isIphoneX,
       userInfo: {
-        name: "username",
-        passport: "123",
-        email: "123@qq.com"
+        name: "",
+        passport: "",
+        email: ""
       },
       hotelSelectIndex: 0,
       hotelList: []
