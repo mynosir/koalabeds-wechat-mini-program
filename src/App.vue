@@ -2,18 +2,19 @@
 export default {
   computed: {
     i18n() {
-      const { tabBars } = this.$t("global");
-      tabBars.map((item, index) => {
-          console.log(item)
-        uni.setTabBarItem({
-          index,
-          text: item
-        });
-      });
       return this.$t("global");
     }
   },
-  onLaunch: function() {},
+  onLaunch: function() {
+    const { tabBars } = this.i18n;
+    tabBars.map((item, index) => {
+      console.log(item);
+      uni.setTabBarItem({
+        index,
+        text: item
+      });
+    });
+  },
   onShow: function() {},
   onHide: function() {},
   globalData: {}

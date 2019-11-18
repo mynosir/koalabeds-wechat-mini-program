@@ -11,11 +11,7 @@
             @getuserinfo="mpGetUserInfo"
           />
         </view>
-        <button
-          type="primary"
-          open-type="getUserInfo"
-          @getuserinfo="mpGetUserInfo"
-        >{{i18n.wechat}}</button>
+        <button type="primary" open-type="getUserInfo" @getuserinfo="mpGetUserInfo">{{i18n.wechat}}</button>
       </view>
       <block v-else>
         <view style="padding-top:30upx; text-align:center;">
@@ -80,6 +76,9 @@ export default {
     }),
     i18n() {
       return this.$t("pages.my");
+    },
+    global() {
+      return this.$t("global");
     }
   },
   onShareAppMessage() {
@@ -95,7 +94,16 @@ export default {
   },
   onLoad() {},
   onReady() {},
-  onShow() {},
+  onShow() {
+    const { tabBars } = this.global;
+    tabBars.map((item, index) => {
+      console.log(item);
+      uni.setTabBarItem({
+        index,
+        text: item
+      });
+    });
+  },
   onHide() {},
   methods: {
     mpGetUserInfo(result) {

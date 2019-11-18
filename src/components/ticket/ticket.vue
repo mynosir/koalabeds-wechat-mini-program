@@ -1,5 +1,5 @@
 <template>
-  <view :class="statusClass" class="koa-ticket" @click="onClick">
+  <view :class="classes[status] || ''" class="koa-ticket" @click="onClick">
     <view class="koa-ticket--price" :class="{'bigger':!isSmall}">￥{{price}}</view>
     <view class="koa-ticket-desc">
       <view class="koa-ticket--full">With purchase ￥{{fullPrice}}</view>
@@ -19,7 +19,7 @@ export default {
   props: {
     isSmall: {
       type: Boolean,
-      default: false,
+      default: false
     },
     price: {
       type: String,
@@ -53,7 +53,7 @@ export default {
       "2": "koa-ticket--expired"
     };
     return {
-      statusClass: classes[this.status] || "",
+      classes,
       footerText: {
         "-1": "GET IT",
         "0": "GOT",
@@ -62,17 +62,12 @@ export default {
       }
     };
   },
-  computed: {
-    isGetted() {
-      return this.status == "1";
-    }
-  },
   methods: {
     onClick() {
       if (!this.canClick) {
         return;
       }
-      if(this.status != '0'){
+      if (this.status != "-1") {
         return;
       }
       this.$emit("click");
@@ -92,9 +87,9 @@ export default {
   padding: 30upx 30upx 0upx 30upx;
   overflow: hidden;
 }
-.koa-ticket:after{
+.koa-ticket:after {
   position: absolute;
-  content: '';
+  content: "";
   width: 80rpx;
   height: 80rpx;
   line-height: 80rpx;
@@ -106,25 +101,25 @@ export default {
   opacity: 0.6;
   display: none;
 }
-.koa-ticket--get:after{
+.koa-ticket--get:after {
   display: block;
   border: 2px dashed rgb(237, 107, 52);
-  content: 'GOT';
+  content: "GOT";
   color: rgb(237, 70, 52);
 }
 .koa-ticket--used:after {
   display: block;
   border: 2px dashed rgb(237, 107, 52);
-  content: 'USED';
+  content: "USED";
   color: rgb(237, 70, 52);
 }
-.koa-ticket--expired{
+.koa-ticket--expired {
   background: rgb(232, 232, 232);
 }
 .koa-ticket--expired:after {
   display: block;
   border: 2px dashed rgb(237, 107, 52);
-  content: 'NOT';
+  content: "NOT";
   color: rgb(237, 70, 52);
 }
 
@@ -133,7 +128,7 @@ export default {
   line-height: 1.4;
   text-align: left;
 }
-.koa-ticket--price.bigger{
+.koa-ticket--price.bigger {
   font-size: 60upx;
 }
 .koa-ticket-desc {
@@ -179,11 +174,11 @@ export default {
   font-size: 28upx;
   text-align: center;
 }
-.footer{
-  color:rgb(78, 82, 96);
+.footer {
+  color: rgb(78, 82, 96);
   text-align: left;
 }
-.koa-ticket--expired .footer{
-  color:#fff
+.koa-ticket--expired .footer {
+  color: #fff;
 }
 </style>

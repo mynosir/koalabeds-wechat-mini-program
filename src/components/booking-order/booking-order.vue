@@ -90,7 +90,7 @@ export default {
 </script>
 <style>
 .uni-media-list-body {
-  height: 220upx;
+  height: auto;
 }
 .uni-media-list-logo {
   width: 142rpx;
