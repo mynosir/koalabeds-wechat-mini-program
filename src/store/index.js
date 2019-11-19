@@ -37,7 +37,7 @@ const store = new Vuex.Store({
 		userInfo: null,
 		citys: [],
 		activeCity: null,
-		cityName: 'Choose City',
+		cityName: '',
 		openid: null,
 		selectedAddress: null,
 		hotel: {

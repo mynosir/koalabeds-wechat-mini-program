@@ -2,8 +2,8 @@
   <view :class="classes[status] || ''" class="koa-ticket" @click="onClick">
     <view class="koa-ticket--price" :class="{'bigger':!isSmall}">￥{{price}}</view>
     <view class="koa-ticket-desc">
-      <view class="koa-ticket--full">With purchase ￥{{fullPrice}}</view>
-      <view class="koa-ticket--valid">Valid {{valid}} days</view>
+      <view class="koa-ticket--full">{{$t('components.ticket.purchase')}} ￥{{fullPrice}}</view>
+      <view class="koa-ticket--valid">{{$t('components.ticket.valid', {valid})}}</view>
     </view>
     <view style="margin:0 -30upx">
       <view class="koa-ticket--line"></view>
@@ -54,12 +54,7 @@ export default {
     };
     return {
       classes,
-      footerText: {
-        "-1": "GET IT",
-        "0": "GOT",
-        "1": "USED",
-        "2": "EXPIRED"
-      }
+      footerText: this.$t('components.ticket.footerText')
     };
   },
   methods: {

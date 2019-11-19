@@ -3,14 +3,14 @@
 	<view class="city-select">
 		<scroll-view :scroll-top="scrollTop" scroll-y="true" class="city-select-main" id="city-select-main">
 			<!-- 预留搜索-->
-			<view class="city-serach" v-if="isSearch"><input @input="keyInput" placeholder="请输入城市名称" class="city-serach-input" /></view>
+			<view class="city-serach" v-if="isSearch"><input @input="keyInput" :placeholder="$t('components.cityselect.placeholder')" class="city-serach-input" /></view>
 			<!-- 当前定位城市 -->
-			<view class="hot-title" v-if="activeCity && !serachCity">Selected City</view>
+			<view class="hot-title" v-if="activeCity && !serachCity">{{$t('components.cityselect.selectedCity')}}</view>
 			<view class="hot-city" v-if="activeCity && !serachCity">
 				<view class="hot-item selected-item" @click="cityTrigger(activeCity)">{{ activeCity[formatName] }}</view>
 			</view>
 			<!-- 热门城市 -->
-			<view class="hot-title" v-if="hotCity.length > 0 && !serachCity">HOT CITY</view>
+			<view class="hot-title" v-if="hotCity.length > 0 && !serachCity">{{$t('components.cityselect.hotCity')}}</view>
 			<view class="hot-city" v-if="hotCity.length > 0 && !serachCity">
 				<template v-for="(item, index) in hotCity">
 					<view :key="index" @click="cityTrigger(item, 'hot')" class="hot-item">{{ item[formatName] }}</view>

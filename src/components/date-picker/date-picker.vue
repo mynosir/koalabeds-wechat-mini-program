@@ -3,13 +3,13 @@
 		<view class="order-time" @tap="showCalendar()" v-if="!modal">
 			<view class="time-viewer" v-if="singleDate">{{ choiceDate[0].year }}/{{ choiceDate[0].month }}/{{ choiceDate[0].day }}</view>
 			<view class="time-viewer" v-else>
-				<text class="goInHotel">CheckIn</text>
+				<text class="goInHotel">{{$t('global.checkIn')}}</text>
 				<text class="date-wrappper">{{ choiceDate[0].month }}/{{ choiceDate[0].day }}</text>
-				<text class="goInHotel2" v-if="choiceDate[0].year + '' + choiceDate[0].month + '' + choiceDate[0].day == today">Today</text>
-				<text class="left-hotel">CheckOut</text>
+				<text class="goInHotel2" v-if="choiceDate[0].year + '' + choiceDate[0].month + '' + choiceDate[0].day == today">{{$t('components.calendar.toady')}}</text>
+				<text class="left-hotel">{{$t('global.checkOut')}}</text>
 				<text class="date-wrappper">{{ choiceDate[1].month }}/{{ choiceDate[1].day }}</text>
 				<text class="goInHotel2" v-if="choiceDate[choiceDate.length - 1].year + '' + choiceDate[choiceDate.length - 1].month + '' + choiceDate[choiceDate.length - 1].day == tomorrow">
-					Tomorrow
+					{{$t('components.calendar.tomorrow')}}
 				</text>
 				<text class="sumCount">{{ dayCount2 }}</text>
 			</view>
@@ -22,7 +22,7 @@
 			<view class="layer-content" :class="{ choiceDate: choice === true || singleDate }">
 				<view class="layer-header">
 					<view class="layer-close" @tap="hideCalendar(false)"></view>
-					<text class="layer-title">Choose Date</text>
+					<text class="layer-title">{{$t('components.calendar.chooseDate')}}</text>
 				</view>
 				<!--  -->
 				<view class="layer-body">
@@ -55,7 +55,7 @@
 										</text>
 										<text class="day-tip">{{ data.act.tip }}</text>
 									</view>
-									<view class="beginTip" v-if="choice === false  &&  !singleDate">Choose CheckOut</view>
+									<view class="beginTip" v-if="choice === false  &&  !singleDate">{{$t('components.calendar.chooseCheckOut')}}</view>
 									<view class="endTip" v-if="choice">{{ dayCount2 }}</view>
 								</view>
 							</view>
@@ -64,7 +64,7 @@
 				</view>
 				<!--  -->
 				<view class="layer-footer">
-					<view class="submitBtn" @tap="submitbtn" v-if="choice === true || singleDate">Done It</view>
+					<view class="submitBtn" @tap="submitbtn" v-if="choice === true || singleDate">{{$t('components.calendar.done')}}</view>
 				</view>
 			</view>
 		</view>
@@ -78,7 +78,7 @@
 				date: [],
 				weeks: [],
 				dayCount: 1,
-				dayCount2: '1 Night',
+				dayCount2: this.$t('components.calendar.dayCount2', {dayCount:1}),
 				festival: {
 					// '101': '元旦',
 					// '214': '情人节',
@@ -109,8 +109,8 @@
 				choiceDateArr: [],
 				tomorrow: "",
 				afterTomorrow: "",
-				weekNameArr: ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'],
-				monthNameArr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+				weekNameArr: this.$t('components.calendar.weekNameArr'),
+				monthNameArr: this.$t('components.calendar.monthNameArr'),
 				animation: null,
 				animationData: null,
 				curScrollTop: 0,
@@ -274,7 +274,7 @@
 				this.dateFlag = {};
 				this.choice = '';
 				this.dayCount = this.bak_dayCount;
-				this.dayCount2 =  this.dayCount + ' Night';
+				this.dayCount2 =  this.$t('components.calendar.dayCount2', {dayCount:this.dayCount});
 				//
 				this.date = JSON.parse(JSON.stringify(this.bak_date));
 				this.weeks = JSON.parse(JSON.stringify(this.bak_weeks));
@@ -687,7 +687,7 @@
 						this.choice = true;
 						// console.log('count', count);
 						this.dayCount = count + 1;
-						this.dayCount2 =  (count + 1) + ' Night';
+						this.dayCount2 =  this.$t('components.calendar.dayCount2', {dayCount:this.dayCount});
 					}
 				} else {
 					var that = this;
@@ -716,7 +716,7 @@
 			submitbtn: function() {
 				this.choiceDate[0] = this.choiceDateArr[0];
 				this.choiceDate[1] = this.choiceDateArr[this.choiceDateArr.length - 1];
-				this.dayCount2 = '共' + this.dayCount + '晚';
+				this.dayCount2 = this.$t('components.calendar.dayCount2', {dayCount:this.dayCount});
 				this.hideCalendar(true);
 				/**派发事件
 				 * 参数：

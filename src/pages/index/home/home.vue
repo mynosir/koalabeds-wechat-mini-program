@@ -28,25 +28,27 @@
             <uni-icons type="location" size="20"></uni-icons>
           </view>
           <view class="uni-flex-item">
-            <uni-search-bar placeholder="Search location or hotel name" @input="changeSearch" />
+            <uni-search-bar :placeholder="$t('pages.home.searchPlaceHolod')" @input="changeSearch" />
           </view>
         </view>
         <view class="uni-flex koa-date-home" @tap="toggleCalendar">
           <view class="uni-center uni-flex-item">
             <view class="koa-date--text">{{startDate}}</view>
-            <view class="koa-date--desc">Check In</view>
+            <view class="koa-date--desc">{{$t('global.checkIn')}}</view>
           </view>
-          <view class="koa-date-count--text uni-flex">- Total {{dayCount}} nights -</view>
+          <view
+            class="koa-date-count--text uni-flex"
+          >- {{$t("pages.home.totalNights", {dayCount})}} -</view>
           <view class="uni-center uni-flex-item">
             <view class="koa-date--text">{{endDate}}</view>
-            <view class="koa-date--desc">Check Out</view>
+            <view class="koa-date--desc">{{$t('global.checkOut')}}</view>
           </view>
         </view>
-        <button type="primary" @tap="goSearch">Search</button>
+        <button type="primary" @tap="goSearch">{{$t('global.search')}}</button>
       </view>
     </view>
     <view class="uni-panel uni-panel-h">
-      <uni-card :title="i18n.couponTitle" :isFull="true" :isShadow="false">
+      <uni-card :title="$t('pages.home.couponTitle')" :isFull="true" :isShadow="false">
         <view class="panel-scroll" :scroll-x="true">
           <view class="ticke-box" v-for="item in coupons" :key="item.id">
             <ticket
@@ -63,7 +65,7 @@
       </uni-card>
     </view>
     <view class="uni-panel uni-panel-h">
-      <uni-card :title="i18n.recommendTitle" :isFull="true" :isShadow="false">
+      <uni-card :title="$t('pages.home.recommendTitle')" :isFull="true" :isShadow="false">
         <view class="panel-scroll" :scroll-x="true">
           <view
             class="recommend-box"
@@ -108,8 +110,13 @@
             ></ticket>
           </view>
         </view>
-        <button type="primary" @tap="postCoupon('all')" v-if="hasLogin">Get All</button>
-        <button type="primary" open-type="getUserInfo" @getuserinfo="mpGetUserInfo" v-else>Get All</button>
+        <button type="primary" @tap="postCoupon('all')" v-if="hasLogin">{{$t("pages.home.getAll")}}</button>
+        <button
+          type="primary"
+          open-type="getUserInfo"
+          @getuserinfo="mpGetUserInfo"
+          v-else
+        >{{$t("pages.home.getAll")}}</button>
       </view>
     </uni-popup>
     <!-- 日期选择 -->
@@ -127,7 +134,6 @@ import panelImage from "@/components/panel-image/panel-image.vue";
 import uniLoadMore from "@/components/uni-load-more/uni-load-more.vue";
 import uniPopup from "@/components/uni-popup/uni-popup.vue";
 import uniIcons from "@/components/uni-icons/uni-icons.vue";
-import uniCalendar from "@/components/uni-calendar/uni-calendar.vue";
 
 export default {
   components: {
@@ -143,11 +149,13 @@ export default {
   },
   computed: {
     ...mapState({
-      cityName: state => state.cityName,
       hasLogin: state => state.hasLogin
     }),
-    i18n() {
-      return this.$t("pages.home");
+    cityName(state){
+      if (this.$store.state.cityName === "") {
+        return this.$t("pages.home.cityName");
+      }
+      return this.$store.state.cityName;
     },
     startDate() {
       return this.$store.state.hotel.startDate.toString().substr(4, 6);
