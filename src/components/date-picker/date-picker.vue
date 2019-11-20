@@ -187,10 +187,10 @@
 
 				if (this.modal) {
 					//如果是弹窗模式，那么初始时就派发change事件
-					this.$emit('change', {
-						choiceDate: this.choiceDate,
-						dayCount: this.dayCount
-					});
+					// this.$emit('change', {
+					// 	choiceDate: this.choiceDate,
+					// 	dayCount: this.dayCount
+					// });
 				}
 			},
 			getLayerTop: function() {
@@ -508,7 +508,7 @@
 				let endIndex2 = end_day - 1;
 				//
 				dataAll2[startIndex1][startIndex2].selected = 1;
-				dataAll2[startIndex1][startIndex2].act.tip = 'CheckIn';
+				dataAll2[startIndex1][startIndex2].act.tip = this.$t('global.checkIn');
 				dataAll2[startIndex1][startIndex2].act.defaultStr = 1;
 				this.choiceDate.push(dataAll2[startIndex1][startIndex2]);
 
@@ -516,7 +516,7 @@
 				if (startIndex1 == endIndex1 && endIndex2 - startIndex2 == 1) {
 					if (dataAll2[startIndex1][startIndex2 + 1]) {
 						dataAll2[startIndex1][startIndex2 + 1].selected = 1;
-						dataAll2[startIndex1][startIndex2 + 1].act.tip = 'CheckOut';
+						dataAll2[startIndex1][startIndex2 + 1].act.tip = this.$t('global.checkOut');
 						dataAll2[startIndex1][startIndex2 + 1].act.defaultStr = 1;
 						this.choiceDate.push(dataAll2[startIndex1][startIndex2 + 1]);
 					} else {
@@ -528,7 +528,7 @@
 
 				if (islastDay) {
 					dataAll2[endIndex1][endIndex2].selected = 1;
-					dataAll2[endIndex1][endIndex2].act.tip = 'CheckOut';
+					dataAll2[endIndex1][endIndex2].act.tip = this.$t('global.checkOut');
 					dataAll2[endIndex1][endIndex2].act.defaultStr = 1;
 					this.choiceDate.push(dataAll2[endIndex1][endIndex2]);
 				}
@@ -604,7 +604,7 @@
 					if (isUserClick) return;
 				}
 				curDate.selected = 1;
-				curDate.act.tip = 'CheckIn';
+				curDate.act.tip = this.$t('global.checkIn');
 				if (this.dateFlag.date && curDate.dateTime < this.dateFlag.date.dateTime) {
 					var flagIndex = this.dateFlag.index;
 					var flagIndexs = this.dateFlag.indexs;
@@ -623,7 +623,7 @@
 					if (this.dateFlag.index == index && this.dateFlag.indexs == indexs) {
 						return;
 					}
-					curDate.act.tip = 'CheckOut';
+					curDate.act.tip = this.$t('global.checkOut');
 					//
 					var that = this;
 					var dateFlagDateTime = that.dateFlag.date.dateTime;
@@ -633,8 +633,8 @@
 					var nonFlag = false;
 					var nonArr = [];
 					var count = 0;
-					this.date.forEach(function(dataItems) {
-						dataItems.forEach(function(dataItem) {
+					this.date.forEach((dataItems) =>{
+						dataItems.forEach((dataItem) =>{
 							if (dataItem.dateTime > dateFlagDateTime && dataItem.dateTime < choiceDateTime) {
 								if (dataItem.act.none) {
 									nonFlag = true;
@@ -653,13 +653,13 @@
 					//
 					if (nonFlag) {
 						var that = this;
-						this.date.forEach(function(dataItems) {
-							dataItems.forEach(function(dataItem) {
+						this.date.forEach((dataItems)=> {
+							dataItems.forEach((dataItem)=> {
 								if (dataItem.dateTime != choiceDateTime) {
 									dataItem.act.tip = '';
 									dataItem.selected = 0;
 								} else {
-									dataItem.act.tip = 'CheckIn';
+									dataItem.act.tip = this.$t('global.checkIn');
 								}
 							});
 						});
@@ -691,14 +691,14 @@
 					}
 				} else {
 					var that = this;
-					this.date.forEach(function(dataItems) {
-						dataItems.forEach(function(dataItem) {
+					this.date.forEach((dataItems) =>{
+						dataItems.forEach((dataItem) =>{
 							dataItem.act.defaultStr = 0;
 							if (dataItem.dateTime != that.date[index][indexs].dateTime) {
 								dataItem.selected = 0;
 								dataItem.act.tip = '';
 							} else {
-								dataItem.act.tip = 'CheckIn';
+								dataItem.act.tip = this.$t('global.checkIn');
 							}
 						});
 					});

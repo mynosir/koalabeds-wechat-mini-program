@@ -109,8 +109,8 @@ export default {
     mpGetUserInfo(result) {
       if (result.detail.errMsg !== "getUserInfo:ok") {
         uni.showModal({
-          title: "get userinfo error",
-          content: "reason:" + result.detail.errMsg,
+          title: this.$t("global.getUserError"),
+          content: this.$t("global.getUserErrMsg", {errMsg: result.detail.errMsg}),
           showCancel: false
         });
         return;

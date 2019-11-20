@@ -24,7 +24,7 @@
       <uni-list>
         <uni-list-item
           title="Valid Date"
-          :desc="validDate == ''?'Choose A Date': validDate"
+          :desc="validDate == ''?$t('pages.ticketDetail.chooseDate'): validDate"
           :showDesc="true"
           @click="goDate"
         />
@@ -34,7 +34,7 @@
       <uni-list>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view class="koa-form-item__right">Hotel</view>
+            <view class="koa-form-item__right">{{$t("pages.ticketBook.Hotel")}}</view>
             <view class="uni-flex-item">
               <picker @change="hotelChange" :value="hotelSelectIndex" :range="hotelList">
                 <view>{{hotelList[hotelSelectIndex]}}</view>
@@ -45,29 +45,35 @@
             </view>
           </view>
         </uni-list-item>
-      </uni-list>
-    </view>
-    <view class="uni-panel">
-      <uni-list>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view class="koa-form-item__right">Name</view>
+            <view class="koa-form-item__right">{{$t('pages.ticketBook.Name')}}</view>
             <view class="uni-flex-item">
-              <input class="uni-input" focus placeholder="Name" v-model="userInfo.name" />
+              <input
+                class="uni-input"
+                focus
+                :placeholder="$t('pages.ticketBook.Name')"
+                v-model="userInfo.name"
+              />
             </view>
           </view>
         </uni-list-item>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view class="koa-form-item__right">Passport</view>
+            <view class="koa-form-item__right">{{$t('pages.ticketBook.Passport')}}</view>
             <view class="uni-flex-item">
-              <input class="uni-input" focus placeholder="Passport" v-model="userInfo.passport" />
+              <input
+                class="uni-input"
+                focus
+                :placeholder="$t('pages.ticketBook.Passport')"
+                v-model="userInfo.passport"
+              />
             </view>
           </view>
         </uni-list-item>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view class="koa-form-item__right">Email</view>
+            <view class="koa-form-item__right">{{$t('pages.ticketBook.Email')}}</view>
             <view class="uni-flex-item">
               <input class="uni-input" placeholder="xxx@mail.com" v-model="userInfo.email" />
             </view>
@@ -98,7 +104,7 @@
         >
           <view slot="extra">
             <text v-if="selectCoupon">{{`-￥${selectCoupon.discountAmount}`}}</text>
-            <text v-else style="color:#ccc">Not Yet</text>
+            <text v-else style="color:#ccc">{{$t("global.notYet")}}</text>
             <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
           </view>
         </uni-list-item>
@@ -123,7 +129,7 @@
           @click="showPop('termInfo')"
           style="font-size:24upx"
         >
-          <view>Merchandise</view>
+          <view>{{$t("pages.ticketBook.Merchandise")}}</view>
           <view slot="extra" class="uni-product-price-original">￥{{ticketSum}}</view>
         </uni-list-item>
         <uni-list-item
@@ -132,7 +138,7 @@
           @click="showPop('termInfo')"
           style="font-size:24upx"
         >
-          <view>Discount</view>
+          <view>{{$t("pages.ticketBook.Discount")}}</view>
           <view slot="extra" class="uni-product-price-original">-￥{{discount}}</view>
         </uni-list-item>
         <uni-list-item
@@ -141,18 +147,15 @@
           @click="showPop('termInfo')"
           style="font-size:32upx"
         >
-          <view>Total</view>
-          <view
-            slot="extra"
-            class="uni-product-price-original"
-          >￥{{ticketSum - discount }}</view>
+          <view>{{$t("pages.ticketBook.Total")}}</view>
+          <view slot="extra" class="uni-product-price-original">￥{{ticketSum - discount }}</view>
         </uni-list-item>
       </uni-list>
     </view>
     <view class="uni-panel">
       <view style="height:60px"></view>
       <view class="goods-carts" :class="{'iphonexBottom': isIphoneX}">
-        <button type="primary" style="border-radius:0;" @tap="bookTicket">Booking Now</button>
+        <button type="primary" style="border-radius:0;" @tap="bookTicket">{{$t('global.Booking')}}</button>
       </view>
     </view>
 
@@ -165,7 +168,7 @@
     />
     <!-- 优惠券选择详情 -->
     <uni-popup ref="coupon" type="bottom">
-      <view class="popup-title">Select Coupon</view>
+      <view class="popup-title">{{$t("global.selectCoupon")}}</view>
       <view class="popup-close" @tap="closePopup('coupon')">
         <uni-icons type="close" color="#ccc" size="30" />
       </view>
@@ -192,9 +195,9 @@
             </label>
           </radio-group>
         </view>
-        <view class="no-data" v-else>no valid coupons</view>
+        <view class="no-data" v-else>{{$t("global.noValidCoupon")}}</view>
       </view>
-      <button type="primary" @tap="chooseCoupon">Select It</button>
+      <button type="primary" @tap="chooseCoupon">{{$t("global.selectCoupon")}}</button>
     </uni-popup>
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
@@ -307,7 +310,7 @@ export default {
     },
     chooseCoupon() {
       if (!this.coupons[this.selectCouponIndex]) {
-        this.errorTips("no choose coupon");
+        this.errorTips(this.$t("global.noSelectCouponTip"));
         return;
       }
       this.selectCoupon = this.coupons[this.selectCouponIndex];
@@ -335,12 +338,16 @@ export default {
           return {
             ...item,
             status,
-            validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
+            validateDateStr: this.$t("global.validDateStr", {
+              dateStr: date.format("yyyy/MM/dd")
+            })
           };
         });
         console.log("coupons:", list);
         this.coupons = list.filter(
-          item => item.status == 0 //未使用 且 大于可使用金额
+          item =>
+            item.status == 0 &&
+            Number(item.totalAmount) <= Number(this.ticketSum) //未使用 且 大于可使用金额
         );
       });
     },
@@ -388,6 +395,7 @@ export default {
       }).then(res => {
         const { id, payParams } = res.data;
         const payInfo = JSON.parse(payParams.pay_info);
+        uni.showLoading();
         // 仅作为示例，非真实参数信息。
         uni.requestPayment({
           provider: "wxpay",
@@ -396,12 +404,11 @@ export default {
             uni.navigateTo({
               url: `/pages/common/result/result?type=ticket&id=${id}&status=1`
             });
+            uni.hideLoading();
           },
           fail: err => {
-            this.errorTips("pay cancel");
-            // uni.navigateTo({
-            //   url: `/pages/common/result/result?type=ticket&id=${id}&status=0`
-            // });
+            this.errorTips(this.$t("pages.ticketBook.payCancel"));
+            uni.hideLoading();
           }
         });
       });
@@ -422,26 +429,26 @@ export default {
         } else {
           uni.showToast({
             icon: "none",
-            title: res.msg || "system error"
+            title: res.msg || this.$t("global.systemerr")
           });
         }
       });
     },
     bookTicket() {
+      if (this.userInfo.hotel === "") {
+        this.errorTips(this.$t("pages.ticketBook.hotelSelectTip"));
+        return;
+      }
       if (this.userInfo.name === "") {
-        this.errorTips("input your name");
+        this.errorTips(this.$t("pages.ticketBook.nameInputTip"));
         return;
       }
       if (this.userInfo.email === "") {
-        this.errorTips("input your email");
-        return;
-      }
-      if (this.userInfo.hotel === "") {
-        this.errorTips("input your hotel");
+        this.errorTips(this.$t("pages.ticketBook.mailInputTip"));
         return;
       }
       if (this.userInfo.passport === "") {
-        this.errorTips("input your passport");
+        this.errorTips(this.$t("pages.ticketBook.passportInputTip"));
         return;
       }
       this.testPay();

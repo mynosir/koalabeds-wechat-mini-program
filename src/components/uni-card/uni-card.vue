@@ -18,7 +18,7 @@
 			<view v-if="thumbnail" class="uni-card__header-extra-img-view">
 				<image :src="thumbnail" class="uni-card__header-extra-img" />
 			</view>
-			<view class="uni-card__header-title-text">{{ title }}</view>
+			<view class="uni-card__header-title-text" v-html="title"></view>
 			<view v-if="extra" class="uni-card__header-extra-text">{{ extra }}</view>
 		</view>
 		<!-- 内容 -->

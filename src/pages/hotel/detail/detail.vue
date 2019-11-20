@@ -23,7 +23,7 @@
           <uni-list-item :show-arrow="false" :title="hotelInfo.propertyName" />
           <uni-list-item
             :title="`${hotelInfo.propertyAddress1} ${hotelInfo.propertyAddress2}`"
-            desc="Map"
+            :desc="$t('global.Map')"
             :showDesc="true"
             @click="goMap"
           />
@@ -52,15 +52,15 @@
             :thumb="orderInfo.thumb"
           >
             <view>
-              <text class="date-text--desc">IN</text>
+              <text class="date-text--desc">{{$t('global.IN')}}</text>
               <text class="date-text--value">{{orderInfo.startDate}}</text>
-              <text class="date-text--desc">OUT</text>
+              <text class="date-text--desc">{{$t('global.OUT')}}</text>
               <text class="date-text--value">{{orderInfo.endDate}}</text>
             </view>
           </uni-list-item>
           <uni-list-item @click="showGuest">
             <view class="uni-flex">
-              <view>Guest</view>
+              <view>{{$t('pages.hotelDetail.Guest')}}</view>
               <view
                 class="koa-desc uni-flex-item"
                 style="text-align:right"
@@ -74,14 +74,14 @@
         <template v-if="list && list.length > 0">
           <product-list :list="list" @click="showProduct" @book="goBook"></product-list>
         </template>
-        <view class="no-data" v-else>Hotel Not Have Rooms~</view>
+        <view class="no-data" v-else>{{$t('pages.hotelDetail.nodata')}}</view>
       </view>
       <view class="uni-panel uni-panel-h" v-if="comments && comments.length > 0">
         <comments :list="comments" :showMore="true" @click="goReviews"></comments>
       </view>
     </template>
     <template v-else>
-      <view class="no-data">Something Wrong,cann't find Hotel!</view>
+      <view class="no-data">{{$t('pages.hotelDetail.nohotel')}}</view>
     </template>
     <!-- 房间详情 -->
     <uni-popup ref="popup" type="bottom">
@@ -108,27 +108,27 @@
     <!-- 客人人数设置 -->
     <uni-popup ref="guest" type="bottom">
       <view>
-        <view class="popup-title">Guest Setting</view>
+        <view class="popup-title">{{$t('pages.hotelDetail.guestSetting')}}</view>
         <view class="popup-close" @tap="closePopup('guest')">
           <uni-icons type="close" color="#ccc" size="30" />
         </view>
         <view class="koa-pop-content">
           <uni-list>
             <uni-list-item :showArrow="false" :showExtra="true">
-              <view>Adult</view>
+              <view>{{$t('pages.hotelDetail.Adult')}}</view>
               <view slot="extra">
                 <uni-number-box :value="guestInfo.adult" @change="changeAdultNum" />
               </view>
             </uni-list-item>
             <uni-list-item :showArrow="false" :showExtra="true">
-              <view>Child</view>
+              <view>{{$t('pages.hotelDetail.Child')}}</view>
               <view slot="extra">
                 <uni-number-box :value="guestInfo.child" @change="changeChildNum" />
               </view>
             </uni-list-item>
           </uni-list>
         </view>
-        <button type="primary" @tap="closePopup('guest')">Done It</button>
+        <button type="primary" @tap="closePopup('guest')">{{$t('pages.hotelDetail.Done')}}</button>
       </view>
     </uni-popup>
     <!-- 日期选择 -->

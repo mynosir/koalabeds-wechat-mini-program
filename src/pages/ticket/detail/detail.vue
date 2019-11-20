@@ -26,7 +26,7 @@
           <!-- <uni-list-item title="Booking Instruction" /> -->
           <uni-list-item
             title="Valid Date"
-            :desc="validDate == ''?'Choose A Date': validDate"
+            :desc="validDate == ''? $t('pages.ticketDetail.chooseDate'): validDate"
             :showDesc="true"
             @click="goDate"
           />
@@ -66,14 +66,14 @@
                     style="border-radius:0;"
                     @tap="bookTicket"
                     v-if="hasLogin"
-                  >Booking Now</button>
+                  >{{$t("global.Booking")}}</button>
                   <button
                     type="primary"
                     style="border-radius:0;"
                     open-type="getUserInfo"
                     @getuserinfo="mpGetUserInfo"
                     v-else
-                  >Booking Now</button>
+                  >{{$t("global.Booking")}}</button>
                 </view>
               </view>
             </uni-list-item>
@@ -82,7 +82,7 @@
       </view>
     </template>
     <template v-else>
-      <div class="no-data">loading....</div>
+      <div class="no-data">{{$t("global.loading")}}</div>
     </template>
     <uni-calendar
       ref="calendar"
@@ -158,8 +158,8 @@ export default {
     mpGetUserInfo(result) {
       if (result.detail.errMsg !== "getUserInfo:ok") {
         uni.showModal({
-          title: "get userinfo error",
-          content: "reason:" + result.detail.errMsg,
+          title: this.$t("global.getUserError"),
+          content: this.$t("global.getUserErrMsg", {errMsg: result.detail.errMsg}),
           showCancel: false
         });
         return;
@@ -203,7 +203,8 @@ export default {
       if (this.totalSum == 0) {
         uni.showToast({
           icon: "none",
-          title: "Please select num~"
+          title: this.$t("pages.ticketDetail.numTip"),
+          duration: 2000
         });
         return;
       }

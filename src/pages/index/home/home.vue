@@ -15,7 +15,7 @@
             :interval="swiperSetting.interval"
             :duration="swiperSetting.duration"
           >
-            <swiper-item v-for="(item, index) in imglist" :key="index">
+            <swiper-item v-for="(item, index) in imglist" :key="index" @tap="goUrl(item)">
               <image style="width: 100%; " :src="item.img" mode="widthFix" />
             </swiper-item>
           </swiper>
@@ -120,7 +120,13 @@
       </view>
     </uni-popup>
     <!-- 日期选择 -->
-    <calendar @change="dateChange" :modal="true" :show="showCaledar"></calendar>
+    <calendar
+      @change="dateChange"
+      :startDate="calendarStart"
+      :endDate="calendarEnd"
+      :modal="true"
+      :show="showCaledar"
+    ></calendar>
   </scroll-view>
 </template>
 <script>
@@ -151,17 +157,33 @@ export default {
     ...mapState({
       hasLogin: state => state.hasLogin
     }),
-    cityName(state){
+    cityName(state) {
       if (this.$store.state.cityName === "") {
         return this.$t("pages.home.cityName");
       }
       return this.$store.state.cityName;
     },
     startDate() {
-      return this.$store.state.hotel.startDate.toString().substr(4, 6);
+      const month = this.$store.state.hotel.startDate.getMonth();
+      const date = this.$store.state.hotel.startDate.getDate();
+      return (
+        this.$t("components.calendar.month")[month] +
+        this.$t("components.calendar.date", { date })
+      );
     },
     endDate() {
-      return this.$store.state.hotel.endDate.toString().substr(4, 6);
+      const month = this.$store.state.hotel.endDate.getMonth();
+      const date = this.$store.state.hotel.endDate.getDate();
+      return (
+        this.$t("components.calendar.month")[month] +
+        this.$t("components.calendar.date", { date })
+      );
+    },
+    calendarStart() {
+      return this.$store.state.hotel.startDate.format("yyyy-MM-dd");
+    },
+    calendarEnd() {
+      return this.$store.state.hotel.endDate.format("yyyy-MM-dd");
     },
     dayCount() {
       return this.$store.state.hotel.dayCount;
@@ -212,8 +234,10 @@ export default {
     mpGetUserInfo(result) {
       if (result.detail.errMsg !== "getUserInfo:ok") {
         uni.showModal({
-          title: "get userinfo error",
-          content: "reason:" + result.detail.errMsg,
+          title: this.$t("global.getUserError"),
+          content: this.$t("global.getUserErrMsg", {
+            errMsg: result.detail.errMsg
+          }),
           showCancel: false
         });
         return;
@@ -292,6 +316,7 @@ export default {
       this.getRecommendFlow();
     },
     dateChange({ choiceDate, dayCount }) {
+      console.log(dayCount)
       this.$store.commit("setHotelDate", {
         startDate: new Date(choiceDate[0].dateTime),
         endDate: new Date(choiceDate[1].dateTime),
@@ -349,6 +374,14 @@ export default {
       uni.navigateTo({
         url: "/pages/common/city/city"
       });
+    },
+    goUrl(item) {
+      if (item.link.indexOf("http") == 0) {
+      } else if (item.link.indexOf("/pages/") == 0) {
+        uni.navigateTo({
+          url: item.link
+        });
+      }
     }
   }
 };

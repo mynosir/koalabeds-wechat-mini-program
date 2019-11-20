@@ -3,21 +3,22 @@
             "path": "pages/index/home/home"
         }, {
             "path": "pages/my/my-ticket/my-ticket"
-        },
-        {
-            "path": "pages/index/tickets/tickets"
-        }, {
-            "path": "pages/my/my-ticket/detail"
-        },
-        {
-            "path": "pages/ticket/detail/detail"
-        }, {
-            "path": "pages/hotel/detail/detail"
         }, {
             "path": "pages/my/my-coupon/my-coupon"
         },
         {
             "path": "pages/my/my-booking/my-booking"
+        }, {
+            "path": "pages/ticket/detail/detail"
+        }, {
+            "path": "pages/common/result/result"
+        }, {
+            "path": "pages/hotel/detail/detail"
+        },
+        {
+            "path": "pages/index/tickets/tickets"
+        }, {
+            "path": "pages/my/my-ticket/detail"
         },
         {
             "path": "pages/ticket/book/book"
@@ -36,8 +37,6 @@
             "path": "pages/my/my-language/my-language"
         }, {
             "path": "pages/common/city/city"
-        }, {
-            "path": "pages/common/result/result"
         },
         {
             "path": "pages/common/contact/list"

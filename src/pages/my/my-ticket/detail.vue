@@ -2,15 +2,15 @@
   <view class="koa-ticket-book uni-container">
     <view
       class="koa-ticket-status"
-      :class="'koa-ticket-status__'+statusText[item.status]"
-    >{{statusText[item.status]}}</view>
+      :class="'koa-ticket-status__'+statusText[order.status]"
+    >{{statusText[order.status]}}</view>
     <view class="uni-panel">
       <uni-list>
         <uni-list-item :show-arrow="false">
-          <view>Order Number:</view>
+          <view>{{$t("pages.myticketDetail.orderNumber")}}:</view>
           <view>{{order.outTradeNo}}</view>
         </uni-list-item>
-        <uni-list-item :show-arrow="false" :title="'Order Date: '+order.date.format('yyyy/MM/dd')" />
+        <uni-list-item :show-arrow="false" :title="$t('pages.myticketDetail.orderDate')+order.date" />
       </uni-list>
     </view>
     <view class="uni-panel">
@@ -46,22 +46,22 @@
     </view>
     <view class="uni-panel">
       <uni-list>
-        <uni-list-item :show-arrow="false" :showExtra="true" title="Name">
+        <uni-list-item :show-arrow="false" :showExtra="true" :title="$t('pages.ticketBook.Name')">
           <view slot="extra">
             <text>{{order.firstName}}</text>
           </view>
         </uni-list-item>
-        <uni-list-item :show-arrow="false" :showExtra="true" title="Email">
+        <uni-list-item :show-arrow="false" :showExtra="true" :title="$t('pages.ticketBook.Email')">
           <view slot="extra">
             <text>{{order.guestEmail}}</text>
           </view>
         </uni-list-item>
-        <uni-list-item :show-arrow="false" :showExtra="true" title="Passport">
+        <uni-list-item :show-arrow="false" :showExtra="true" :title="$t('pages.ticketBook.Passport')">
           <view slot="extra">
             <text>{{order.passport}}</text>
           </view>
         </uni-list-item>
-        <uni-list-item :show-arrow="false" :showExtra="true" title="Shipping Hotel">
+        <uni-list-item :show-arrow="false" :showExtra="true" :title="$t('pages.ticketBook.Hotel')">
           <view slot="extra">
             <text>{{order.hotel}}</text>
           </view>
@@ -71,19 +71,19 @@
     <view class="uni-panel">
       <uni-list>
         <uni-list-item :showArrow="false" :showExtra="true" style="font-size:24upx">
-          <view>Merchandise</view>
+          <view>{{$t('pages.ticketBook.Merchandise')}}</view>
           <view slot="extra" class="uni-product-price-original">￥{{order.totalPrice}}</view>
         </uni-list-item>
         <uni-list-item :showArrow="false" :showExtra="true" style="font-size:24upx">
-          <view>Discount</view>
+          <view>{{$t('pages.ticketBook.Discount')}}</view>
           <view slot="extra" class="uni-product-price-original">￥{{order.discount}}</view>
         </uni-list-item>
         <uni-list-item :showArrow="false" :showExtra="true">
-          <view style="font-size:32upx">Total</view>
+          <view style="font-size:40upx">{{$t('pages.ticketBook.Total')}}</view>
           <view
             slot="extra"
             class="uni-product-price-original"
-            style="font-size:32upx"
+            style="font-size:40upx"
           >￥{{order.totalPrice - order.discount}}</view>
         </uni-list-item>
       </uni-list>
@@ -102,12 +102,7 @@ export default {
   data() {
     return {
       order: {},
-      statusText: {
-        0: "Wait",
-        "-1": "Cancel",
-        1: "Confirm",
-        2: "Complete"
-      }
+      statusText: this.$t("pages.myticket.statusText")
     };
   },
   onLoad(options) {
@@ -147,12 +142,12 @@ export default {
         try {
           extinfo = JSON.parse(data.extinfo);
         } catch (e) {}
-        let date = data.create_time
-          ? new Date(Number(item.create_time + "000"))
+        let date = res.data.create_time
+          ? new Date(Number(res.data.create_time + "000"))
           : new Date();
         this.order = res.data;
         this.order.extinfo = extinfo;
-        this.order.date = date;
+        this.order.date = date.format('yyyy/MM/dd');
         this.order.discount = extinfo.discount || 0;
         this.$forceUpdate();
       });

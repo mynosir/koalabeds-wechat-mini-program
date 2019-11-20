@@ -7,13 +7,15 @@
         note="true"
       >
         <view class="hotel-desc">
-          <view style="font-size:24upx">IN: {{startDate}} OUT: {{endDate}} {{dayCount}}N</view>
+          <view
+            style="font-size:24upx"
+          >{{$t('global.IN')}}: {{startDate}} {{$t('global.OUT')}}: {{endDate}} {{dayCount}}{{$t("global.N")}}</view>
           <view style="color:#707070;font-size:20upx">{{roomInfo.roomTypeName}}</view>
         </view>
         <template v-slot:footer>
           <view class="hotel-card-footer uni-right" @tap="showPop('roomInfo')">
             <uni-icons type="home" color="#0bb9ee"></uni-icons>
-            <text style="margin-left:12upx">Room Info</text>
+            <text style="margin-left:12upx">{{$t("pages.hotelBook.roomInfo")}}</text>
             <uni-icons type="arrowright"></uni-icons>
           </view>
         </template>
@@ -23,13 +25,13 @@
       <uni-list>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view style="font-size:30upx;margin-right:20upx">Name</view>
+            <view style="font-size:30upx;margin-right:20upx">{{$t("pages.hotelBook.Name")}}</view>
             <view class="uni-flex-item">
               <input
                 :disabled="isOrder"
                 class="uni-input"
                 focus
-                placeholder="Name"
+                :placeholder="$t('pages.hotelBook.Name')"
                 v-model="userInfo.name"
               />
             </view>
@@ -37,12 +39,13 @@
         </uni-list-item>
         <uni-list-item :showArrow="false" :showExtra="true">
           <view class="uni-flex" style="align-items:center">
-            <view style="font-size:30upx;margin-right:20upx">Phone</view>
+            <view style="font-size:30upx;margin-right:20upx">{{$t("pages.hotelBook.Phone")}}</view>
             <view class="uni-flex-item">
               <input
                 :disabled="isOrder"
+                type="tel"
                 class="uni-input"
-                placeholder="Phone"
+                :placeholder="$t('pages.hotelBook.Phone')"
                 v-model="userInfo.phone"
               />
             </view>
@@ -53,12 +56,13 @@
         </uni-list-item>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view style="font-size:30upx;margin-right:20upx">Email</view>
+            <view style="font-size:30upx;margin-right:20upx">{{$t('pages.hotelBook.Email')}}</view>
             <view class="uni-flex-item">
               <input
                 :disabled="isOrder"
                 class="uni-input"
-                placeholder="Remark"
+                type="mail"
+                placeholder="xxx@mail.com"
                 v-model="userInfo.email"
               />
             </view>
@@ -71,7 +75,7 @@
         <uni-list>
           <uni-list-item
             :title="`${hotelInfo.propertyAddress1} ${hotelInfo.propertyAddress2}`"
-            desc="Map"
+            desc="$t('global.Map')"
             :showDesc="true"
             @click="goMap"
           />
@@ -114,19 +118,7 @@
             :showDesc="true"
             :desc="hotelInfo.propertyName"
             @click="showPop('hotelDetail')"
-          >
-            <template
-              v-if="hotelInfo.propertyTermsAndConditions && hotelInfo.propertyTermsAndConditions.length > 0"
-            >
-              <!-- <image
-                class="koa-icon-image"
-                :key="index"
-                v-for="(item, index) in hotelInfo.propertyTermsAndConditions"
-                :src="item"
-              />-->
-            </template>
-            <template v-else>Look Hotel Detail</template>
-          </uni-list-item>
+          >{{$t('pages.hotelBook.lookDetail')}}</uni-list-item>
         </uni-list>
       </view>
       <view class="uni-panel book-coupon-list">
@@ -140,7 +132,7 @@
           >
             <view slot="extra">
               <text v-if="selectCoupon">{{`-￥${selectCoupon.discountAmount}`}}</text>
-              <text v-else style="color:#ccc">Not Yet</text>
+              <text v-else style="color:#ccc">{{$t("global.notYet")}}</text>
               <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
             </view>
           </uni-list-item>
@@ -149,7 +141,7 @@
       <view class="uni-panel">
         <uni-list>
           <uni-list-item
-            title="WeChat"
+            :title="$t('global.WeChat')"
             :showArrow="false"
             :showExtra="true"
             :showExtraIcon="true"
@@ -167,8 +159,8 @@
         <uni-list>
           <uni-list-item :showArrow="false" :showExtra="true" @click="showPop('termInfo')">
             <view>
-              I have read an book terms
-              <text style="color:#02b90b">"booking terms"</text>
+              {{$t("pages.hotelBook.termsText")}}
+              <text style="color:#02b90b">" {{$t("pages.hotelBook.bookingTerms")}}"</text>
             </view>
             <view slot="extra">
               <label class="radio">
@@ -201,7 +193,11 @@
               v-else
             >￥{{grandTotal}}</view>
             <view>
-              <button type="primary" style="border-radius:0;" @tap="bookHotel">Booking Now</button>
+              <button
+                type="primary"
+                style="border-radius:0;"
+                @tap="bookHotel"
+              >{{$t('global.Booking')}}</button>
             </view>
           </view>
         </uni-list-item>
@@ -212,24 +208,32 @@
               style="padding-left:24upx"
             >￥{{hotelInfo.total}}</view>
             <view v-if="hotelInfo.status == '0'" class="uni-flex">
-              <button type="info" style="border-radius:0;" @tap="cancelBook">Cancel Booking</button>
-              <button type="warn" style="border-radius:0;" @tap="testPayAgain">PAY NOW</button>
+              <button
+                type="info"
+                style="border-radius:0;"
+                @tap="cancelBook"
+              >{{$t('global.CancelBooking')}}</button>
+              <button
+                type="warn"
+                style="border-radius:0;"
+                @tap="testPayAgain"
+              >{{$t('global.PayNow')}}</button>
             </view>
             <view v-else-if="hotelInfo.status == '1'">
               <button type="primary" loading="true" disabled style="border-radius:0;">
-                <text style="margin-left:8upx">Booking loading</text>
+                <text style="margin-left:8upx">{{$t('global.bookLoading')}}</text>
               </button>
             </view>
             <view v-else-if="hotelInfo.status == '-1'">
               <button type="warn" disabled style="border-radius:0;">
                 <uni-icons type="clear" size="32" color="#fff"></uni-icons>
-                <text style="margin-left:8upx">Cancel</text>
+                <text style="margin-left:8upx">{{$t('global.Cancel')}}</text>
               </button>
             </view>
             <view v-else class="uni-flex">
               <button type="primary" style="border-radius:0;">
                 <uni-icons type="checkbox-filled" size="32" color="#fff"></uni-icons>
-                <text style="margin-left:8upx">Completed</text>
+                <text style="margin-left:8upx">{{$t('global.Completed')}}</text>
               </button>
             </view>
           </view>
@@ -249,7 +253,7 @@
             <view class="page-section-spacing">
               <swiper class="swiper" :indicator-dots="true">
                 <swiper-item v-for="(item, index) in roomInfo.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image" mode="widthFix"/>
+                  <image style="width: 100%; " :src="item.image" mode="widthFix" />
                 </swiper-item>
               </swiper>
             </view>
@@ -290,7 +294,7 @@
     </uni-popup>
     <!-- 优惠券选择详情 -->
     <uni-popup ref="coupon" type="bottom">
-      <view class="popup-title">Select Coupon</view>
+      <view class="popup-title">{{$t("global.selectCoupon")}}</view>
       <view class="popup-close" @tap="closePopup('coupon')">
         <uni-icons type="close" color="#ccc" size="30" />
       </view>
@@ -317,19 +321,23 @@
             </label>
           </radio-group>
         </view>
-        <view class="no-data" v-else>no valid coupons</view>
+        <view class="no-data" v-else>{{$t("global.noValidCoupon")}}</view>
       </view>
-      <button type="primary" @tap="chooseCoupon" v-if="coupons.length > 0">Select It</button>
+      <button
+        type="primary"
+        @tap="chooseCoupon"
+        v-if="coupons.length > 0"
+      >{{$t("global.selectCoupon")}}</button>
     </uni-popup>
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
       <view>
-        <view class="popup-title">Booking Terms</view>
+        <view class="popup-title">{{$t("pages.hotelBook.bookingTerms")}}</view>
         <view class="popup-close" @tap="closePopup('termInfo')">
           <uni-icons type="close" color="#ccc" size="30" />
         </view>
         <view class="koa-pop-content" v-html="hotelInfo.propertyTermsAndConditions"></view>
-        <button type="primary" @tap="setTerms">I Agree</button>
+        <button type="primary" @tap="setTerms">{{$t("global.Agree")}}</button>
       </view>
     </uni-popup>
   </view>
@@ -410,7 +418,6 @@ export default {
   },
   onShow() {
     if (this.isOrder) {
-      console.log("获取订单");
       this.getOrder();
     }
   },
@@ -445,7 +452,7 @@ export default {
       if (!res.data) {
         uni.showToast({
           icon: "none",
-          title: "error",
+          title: this.$t("global.systemerrTip"),
           duration: 2000
         });
         setTimeout(() => {
@@ -548,7 +555,9 @@ export default {
           return {
             ...item,
             status,
-            validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
+            validateDateStr: this.$t("global.validDateStr", {
+              dateStr: date.format("yyyy/MM/dd")
+            })
           };
         });
         this.coupons = list.filter(
@@ -567,7 +576,7 @@ export default {
     },
     chooseCoupon() {
       if (!this.coupons[this.selectCouponIndex]) {
-        this.errorTips("no choose coupon");
+        this.errorTips(this.$t("global.noSelectCouponTip"));
         return;
       }
       this.selectCoupon = this.coupons[this.selectCouponIndex];
@@ -607,18 +616,17 @@ export default {
     },
     cancelBook() {
       uni.showModal({
-        content: "You wanna cancel the order?",
+        content: this.$t("global.cancelOrderTip"),
         success: res => {
           if (res.confirm) {
+            uni.showLoading();
             this.$fetch({
               url: this.$store.state.domain + "api/post?actionxm=cancelOrder",
               method: "post",
               data: {
                 id: this.orderId
-              },
-              showLoading: true
+              }
             }).then(res => {
-              uni.showLoading();
               uni.navigateTo({
                 url: `/pages/common/result/result?type=hotel&id=${this.orderId}&status=-1`
               });
@@ -683,19 +691,18 @@ export default {
       });
     },
     wxPay({ id, payInfo }) {
+      uni.showLoading();
       // 仅作为示例，非真实参数信息。
       uni.requestPayment({
         provider: "wxpay",
         ...payInfo,
         success: res => {
-          uni.showLoading();
           uni.navigateTo({
             url: `/pages/common/result/result?type=hotel&id=${id}&status=1`
           });
           setTimeout(() => {
             uni.hideLoading();
           }, 2000);
-          // this.commitHotel(id);
         },
         fail: err => {
           uni.showLoading();
@@ -724,33 +731,31 @@ export default {
         } else {
           uni.showToast({
             icon: "none",
-            title: res.msg || "system error"
+            title: res.msg || this.$t("global.systemerr")
           });
         }
       });
     },
     bookHotel() {
-      console.log(this.roomInfo);
       if (this.userInfo.name === "") {
-        this.errorTips("input your name");
-        return;
-      }
-      if (this.userInfo.email === "") {
-        this.errorTips("input your email");
+        this.errorTips(this.$t("pages.hotelBook.nameInputTip"));
         return;
       }
       if (this.userInfo.phone === "") {
-        this.errorTips("input your phone");
+        this.errorTips(this.$t("pages.hotelBook.phoneInputTip"));
+        return;
+      }
+      if (this.userInfo.email === "") {
+        this.errorTips(this.$t("pages.hotelBook.mailInputTip"));
         return;
       }
       if (!this.isTerms) {
         uni.showModal({
           title: "Koalabeds",
-          content: "Please read booking terms!"
+          content: this.$t("global.termsAgreeTip")
         });
         return;
       }
-      // this.commitHotel();
       this.testPay();
     },
     errorTips(msg) {

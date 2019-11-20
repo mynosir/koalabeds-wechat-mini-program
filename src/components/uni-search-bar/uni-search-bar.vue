@@ -6,8 +6,8 @@
 				<input ref="input" :placeholder="placeholder" :disabled="disabled" :focus="focus" v-model="searchVal" class="search-input" type="text" placeholder-style="color:#cccccc" confirm-type="search" @confirm="confirm" @blur="onblur">
 				<uni-icons :color="'#999999'" v-if="clearButton==='always'||clearButton==='auto'&&searchVal!==''" class="icon-clear" type="clear" size="24" @click="clear" />
 			</view>
-			<text v-if="!hideCancel" class="uni-searchbar-form__cancel" @click="cancel">Cancel</text>
-			<text v-if="showSearch" class="uni-searchbar-form__cancel active" @click="search">Search</text>
+			<text v-if="!hideCancel" class="uni-searchbar-form__cancel" @click="cancel">{{$t("components.searchbar.cancel")}}</text>
+			<text v-if="showSearch" class="uni-searchbar-form__cancel active" @click="search">{{$t("components.searchbar.search")}}</text>
 		</view>
 	</view>
 </template>

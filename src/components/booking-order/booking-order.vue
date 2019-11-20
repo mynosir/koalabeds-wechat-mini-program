@@ -35,6 +35,11 @@
                 @click="goBook($event,value)"
               >PAY</button>
             </template>
+              <button v-else-if="value.status=='2'"
+                id="product-list-btn2"
+                type="primary"
+                size="mini"
+              >Reviews</button>
             <view
               v-else
               :style="{'color': value.status==='03'?'green':(value.status==='02'?'#0bb9ee':'black')}"

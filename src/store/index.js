@@ -24,8 +24,6 @@ const startDate = new Date(now);
 now.setDate(now.getDate() + dayCount);
 const endDate = new Date(now);
 
-
-
 Vue.use(Vuex)
 const mobile = wx.getSystemInfoSync();
 
@@ -93,6 +91,7 @@ const store = new Vuex.Store({
 			state.citys = citys
 		},
 		setHotelDate(state, date) {
+			console.log(date)
 			state.hotel.startDate = date.startDate;
 			state.hotel.endDate = date.endDate;
 			state.hotel.dayCount = date.dayCount;

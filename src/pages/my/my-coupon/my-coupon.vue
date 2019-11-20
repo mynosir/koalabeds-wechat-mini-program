@@ -42,7 +42,7 @@
               ></ticket>
             </view>
           </template>
-          <view class="no-data" v-else>no more data~</view>
+          <view class="no-data" v-else>{{$t("pages.mycoupon.nodata")}}</view>
         </scroll-view>
       </swiper-item>
     </swiper>
@@ -56,22 +56,23 @@ export default {
     Ticket
   },
   data() {
+    const tabBars = this.$t("pages.mycoupon.tarBars");
     return {
       tabIndex: 0,
       list: [], //原始数据
       tabBars: [
         {
-          name: "Valid",
+          name: tabBars[0],
           id: "0",
           data: []
         },
         {
-          name: "Used",
+          name: tabBars[1],
           id: "1",
           data: []
         },
         {
-          name: "Expired",
+          name: tabBars[2],
           id: "2",
           data: []
         }
@@ -89,16 +90,18 @@ export default {
         showLoading: true
       }).then(res => {
         this.list = res.data.map(item => {
-          let status = item.status
-          let date = new Date(Number(item.create_time + '000'))
+          let status = item.status;
+          let date = new Date(Number(item.create_time + "000"));
           date.setDate(date.getDate() + Number(item.validateDate));
-          if(new Date() >= date){
-            status = 2
+          if (new Date() >= date) {
+            status = 2;
           }
           return {
             ...item,
             status,
-            validateDateStr: "Valid date: " + date.format("yyyy/MM/dd")
+            validateDateStr: this.$t("global.validDateStr", {
+              dateStr: date.format("yyyy/MM/dd")
+            })
           };
         });
         this.initTabs();

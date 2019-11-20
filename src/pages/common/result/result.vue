@@ -4,25 +4,25 @@
       <view class="uni-panel">
         <icon type="warn" size="80"></icon>
       </view>
-      <view class="uni-panel" style="font-size:50upx">Payment Fail!</view>
+      <view class="uni-panel" style="font-size:50upx">{{$t("pages.result.payfail")}}</view>
     </template>
     <template v-else-if="status == -1">
       <view class="uni-panel">
         <icon type="cancel" size="80"></icon>
       </view>
-      <view class="uni-panel" style="font-size:50upx">Order Cancel!</view>
+      <view class="uni-panel" style="font-size:50upx">{{$t("pages.result.ordercancel")}}</view>
     </template>
     <template v-else>
       <view class="uni-panel">
         <icon type="success" size="80"></icon>
       </view>
-      <view class="uni-panel" style="font-size:50upx">Payment Success!</view>
+      <view class="uni-panel" style="font-size:50upx">{{$t("pages.result.paysuccess")}}</view>
     </template>
     <view class="uni-panel" style="margin-top:120upx">
-      <button type="primary" @tap="goOrderDetail" v-if="status != -1">Booking Detail</button>
+      <button type="primary" @tap="goOrderDetail" v-if="status != -1">{{$t("pages.result.details")}}</button>
     </view>
     <view class="uni-panel" style="margin-bottom:220upx">
-      <navigator class="uni-btn-info" target="miniProgram" open-type="exit">Back To Homepage</navigator>
+      <navigator class="uni-btn-info" target="miniProgram" open-type="exit">{{$t("pages.result.homepage")}}</navigator>
       <!-- <button type="info" @tap="backHome">Back To Homepage</button> -->
     </view>
   </view>

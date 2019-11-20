@@ -18,9 +18,17 @@
         <view class="uni-media-list-extra">
           <view class="uni-product-price">
             <view class="uni-product-price-favour" v-if="value.money1">￥{{value.money1}}</view>
-            <view class="uni-product-price-original">￥{{value.money2}}<text style="font-size:24upx;margin-left:6upx;">up</text></view>
+            <view class="uni-product-price-original">
+              ￥{{value.money2}}
+              <text style="font-size:24upx;margin-left:6upx;">{{$t('global.up')}}</text>
+            </view>
             <view>
-              <button id="product-list-btn" type="primary" size="mini" @click="goBook($event,value)">BOOK</button>
+              <button
+                id="product-list-btn"
+                type="primary"
+                size="mini"
+                @click="goBook($event,value)"
+              >{{$t('global.BOOK')}}</button>
             </view>
           </view>
         </view>
@@ -30,48 +38,35 @@
 </template>
 <script>
 export default {
-  name:'productList',
+  name: "productList",
   props: {
     list: {
       type: Array,
-      default:  [{
-						title: "ROOM A",
-						content: "Two Bed",
-            img: "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-            money1: '200.00',
-            money2: '300.00'
-					},
-					{
-						title: "ROOM A",
-						content: "",
-						img: "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-            money1: '200.00',
-            money2: '300.00'
-					},
-					{
-						title: "ROOM A",
-						content: "Two Bed",
-						img: "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
-            money1: '200.00',
-            money2: '300.00'
-					}
-				]
+      default: [
+        {
+          title: "ROOM A",
+          content: "Two Bed",
+          img:
+            "http://ww1.sinaimg.cn/large/68c990d9gy1g7wwziuxrhj20bq0bsn1t.jpg",
+          money1: "200.00",
+          money2: "300.00"
+        }
+      ]
     } // 列表
   },
   data() {
-    return {
-    };
+    return {};
   },
   onLoad() {},
-  methods:{
-    onClick(event,value){
-      if(event.target.id === 'product-list-btn'){
-        return
+  methods: {
+    onClick(event, value) {
+      if (event.target.id === "product-list-btn") {
+        return;
       }
-      this.$emit('click', value)
+      this.$emit("click", value);
     },
-    goBook(event,value){
-      this.$emit('book', value)
+    goBook(event, value) {
+      this.$emit("book", value);
     }
   }
 };

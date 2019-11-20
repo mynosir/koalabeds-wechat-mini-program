@@ -1,14 +1,14 @@
 <template>
   <view>
     <view class="uni-flex">
-      <view class="uni-flex-item" style="font-size:32upx">Reviews</view>
+      <view class="uni-flex-item" style="font-size:32upx">{{$t("components.comments.Reviews")}}</view>
       <view
         class="uni-flex-item uni-right"
         style="font-size:32upx;color:#707070"
         v-if="showMore"
         @tap="goReviews"
       >
-        <text>More</text>
+        <text>{{$t("components.comments.More")}}</text>
         <uni-icons type="arrowright" size="32upx" style="vertical-align: middle;" />
       </view>
     </view>

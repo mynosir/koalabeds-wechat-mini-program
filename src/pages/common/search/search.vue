@@ -2,7 +2,7 @@
   <view class="uni-panel uni-panel-h">
     <view class="uni-panel">
       <uni-search-bar
-        placeholder="Search location or hotel name"
+        :placeholder="$t('pages.home.searchPlaceHolod')"
         @input="input"
         @search="search"
         :radius="100"

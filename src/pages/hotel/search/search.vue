@@ -4,18 +4,18 @@
       <view class="uni-flex" style="align-items:center;">
         <view class="uni-flex-item">
           <view class="uni-flex" style="align-items:center;" @tap="toggleCalendar">
-            <view class="koa-date--desc">Check In</view>
+            <view class="koa-date--desc">{{$t('global.checkIn')}}</view>
             <view class="uni-flex-item koa-date--text">{{startDate}}</view>
-            <view class="koa-date--desc">Check Out</view>
+            <view class="koa-date--desc">{{$t('global.checkOut')}}</view>
             <view class="uni-flex-item koa-date--text">{{endDate}}</view>
-            <view class="koa-date--desc">{{dayCount}}N</view>
+            <view class="koa-date--desc">{{dayCount}}{{$t('global.N')}}</view>
           </view>
         </view>
         <view style="width:200upx" @tap="goSearch">
           <uni-search-bar
             :value="hotelName"
             radius="100"
-            placeholder="Search"
+            :placeholder="$t('global.search')"
             :hideCancel="true"
             :disabled="true"
           />
@@ -35,7 +35,7 @@
           @tap="showPop('filter')"
           :class="{'filter-select__light':selectKey == 'filter'}"
         >
-          <text class="koa-date--desc">Filter</text>
+          <text class="koa-date--desc">{{$t("pages.search.filter")}}</text>
           <uni-icons type="arrowdown" :color="selectKey == 'filter'? '#0bb9ee': '#333'"></uni-icons>
         </view>
         <view
@@ -43,7 +43,7 @@
           @tap="showPop('sorting')"
           :class="{'filter-select__light':selectKey == 'sorting'}"
         >
-          <text class="koa-date--desc">Sorting</text>
+          <text class="koa-date--desc">{{$t("pages.search.sort")}}</text>
           <uni-icons type="arrowdown" :color="selectKey == 'sorting'? '#0bb9ee': '#333'"></uni-icons>
         </view>
       </view>
@@ -68,24 +68,33 @@
             <view class="panel">
               <uni-icons type="star-filled" color="#ffdc64" size="26" />
               <text class="search-star--value">{{item.rate}}</text>
-              <text class="search-star--num">{{item.rateNum}} rating</text>
+              <text class="search-star--num">{{item.rateNum}} {{$t("pages.search.rating")}}</text>
             </view>
             <view class="uni-product-price" style="text-align:right">
               <view class="uni-product-price-original">
                 ￥{{item.minMoney}}
-                <text style="font-size:24upx;margin-left:6upx;">up</text>
+                <text style="font-size:24upx;margin-left:6upx;">{{$t("global.up")}}</text>
               </view>
             </view>
           </view>
         </view>
       </view>
     </view>
-    <view class="no-data" v-else-if="!loading">can't not find hotels</view>
-    <view class="no-data" v-else>loading...</view>
+    <view class="no-data" v-else-if="!loading">{{$t("pages.search.notdata")}}</view>
+    <view class="no-data" v-else>{{$t("global.loading")}}</view>
     <!-- location -->
     <uni-popup ref="location" type="top" class="filter-pop" @change="changePop">
       <view class="uni-list" style="margin:-30upx">
         <radio-group @change="changeCity">
+          <label class="uni-list-cell uni-list-cell-pd">
+            <view
+              class="uni-flex-item"
+              :class="{'text-light': cityName == ''}"
+            >{{$t("pages.search.All")}}</view>
+            <view>
+              <radio value :checked="cityName == ''" />
+            </view>
+          </label>
           <label
             class="uni-list-cell uni-list-cell-pd"
             v-for="(item, index) in obtainCitys"
@@ -104,7 +113,7 @@
     </uni-popup>
     <!-- filter -->
     <uni-popup ref="filter" type="top" class="filter-pop" @change="changePop">
-      <view class="panel">Price</view>
+      <view class="panel">{{$t("pages.search.Price")}}</view>
       <view class="panel">
         <slider-range
           :value="filter.maxMoney"
@@ -114,14 +123,14 @@
           activeColor="#0bb9ee"
         ></slider-range>
       </view>
-      <view class="panel">Rating</view>
+      <view class="panel">{{$t("pages.search.Rating")}}</view>
       <view class="panel uni-flex" style="flex-wrap: wrap;">
         <view
           class="filter-star"
           :class="{'active':rank == '0' }"
           :data-value="0"
           @tap="changeRating($event)"
-        >Any</view>
+        >{{$t("pages.search.Any")}}</view>
         <view
           class="filter-star"
           v-for="i in 5"
@@ -140,8 +149,8 @@
         <radio-group @change="changeSort">
           <label class="uni-list-cell uni-list-cell-pd">
             <view class="uni-flex-item" :class="{'text-light': selectSort == 'price1'}">
-              Price
-              <text style="font-size:24rpx">(from low to hight)</text>
+              {{$t("pages.search.Price")}}
+              <text style="font-size:24rpx">({{$t("pages.search.low2hight")}})</text>
             </view>
             <view>
               <radio value="price1" :checked="selectSort == 'price1'" />
@@ -149,8 +158,8 @@
           </label>
           <label class="uni-list-cell uni-list-cell-pd">
             <view class="uni-flex-item" :class="{'text-light': selectSort == 'price2'}">
-              Price
-              <text style="font-size:24rpx">(from hight to low)</text>
+              {{$t("pages.search.Price")}}
+              <text style="font-size:24rpx">({{$t("pages.search.hight2low")}})</text>
             </view>
             <view>
               <radio value="price2" :checked="selectSort == 'price2'" />
@@ -158,8 +167,8 @@
           </label>
           <label class="uni-list-cell uni-list-cell-pd">
             <view class="uni-flex-item" :class="{'text-light': selectSort == 'rank1'}">
-              Ranking
-              <text style="font-size:24rpx">(from low to hight)</text>
+              {{$t("pages.search.Ranking")}}
+              <text style="font-size:24rpx">({{$t("pages.search.low2hight")}})</text>
             </view>
             <view>
               <radio value="rank1" :checked="selectSort == 'rank1'" />
@@ -167,8 +176,8 @@
           </label>
           <label class="uni-list-cell uni-list-cell-pd">
             <view class="uni-flex-item" :class="{'text-light': selectSort == 'rank2'}">
-              Ranking
-              <text style="font-size:24rpx">(from hight to low)</text>
+              {{$t("pages.search.Ranking")}}
+              <text style="font-size:24rpx">({{$t("pages.search.hight2low")}})</text>
             </view>
             <view>
               <radio value="rank2" :checked="selectSort == 'rank2'" />
@@ -178,7 +187,13 @@
       </view>
     </uni-popup>
     <!-- 日期选择 -->
-    <calendar @change="dateChange" :modal="true" :show="showCaledar" />
+    <calendar
+      @change="dateChange"
+      :modal="true"
+      :show="showCaledar"
+      :startDate="calendarStart"
+      :endDate="calendarEnd"
+    />
   </scroll-view>
 </template>
 
@@ -198,19 +213,36 @@ export default {
     calendar
   },
   computed: {
-    ...mapState({
-      cityName: state => {
-        return state.cityName == "Choose City" ? "Location" : state.cityName;
+    cityName(state) {
+      if (this.$store.state.cityName === "") {
+        return this.$t("pages.search.location");
       }
-    }),
+      return this.$store.state.cityName;
+    },
     i18n() {
       return this.$t("pages.search");
     },
     startDate() {
-      return this.$store.state.hotel.startDate.toString().substr(4, 6);
+      const month = this.$store.state.hotel.startDate.getMonth();
+      const date = this.$store.state.hotel.startDate.getDate();
+      return (
+        this.$t("components.calendar.month")[month] +
+        this.$t("components.calendar.date", { date })
+      );
     },
     endDate() {
-      return this.$store.state.hotel.endDate.toString().substr(4, 6);
+      const month = this.$store.state.hotel.endDate.getMonth();
+      const date = this.$store.state.hotel.endDate.getDate();
+      return (
+        this.$t("components.calendar.month")[month] +
+        this.$t("components.calendar.date", { date })
+      );
+    },
+    calendarStart() {
+      return this.$store.state.hotel.startDate.format("yyyy-MM-dd");
+    },
+    calendarEnd() {
+      return this.$store.state.hotel.endDate.format("yyyy-MM-dd");
     },
     dayCount() {
       return this.$store.state.hotel.dayCount;
@@ -244,7 +276,7 @@ export default {
   },
   onLoad(options) {},
   onShow() {
-    console.log("show");
+    this.getHotels();
   },
   methods: {
     getHotels() {
@@ -253,7 +285,10 @@ export default {
       this.$fetch({
         url: this.$store.state.domain + "api/get?actionxm=searchHotels",
         data: {
-          city: this.cityName == "Location" ? "" : this.cityName,
+          city:
+            this.cityName == this.$t("pages.search.location")
+              ? ""
+              : this.cityName,
           checkInDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
           checkOutDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
           hotelName: this.hotelName,
@@ -293,6 +328,7 @@ export default {
         cityName: e.target.value
       });
       this.getHotels();
+      this.closePopup("location");
     },
     changeSort(e) {
       this.selectSort = e.target.value;

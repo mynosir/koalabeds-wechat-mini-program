@@ -40,14 +40,14 @@
               @cancel="cancelBook"
             ></booking-order>
           </template>
-          <view class="no-data" v-else>no data show</view>
+          <view class="no-data" v-else>{{$t("pages.mybooking.nodata")}}</view>
         </scroll-view>
         <!-- #endif -->
       </swiper-item>
     </swiper>
     <!-- 房间详情 -->
     <uni-popup ref="popup" type="bottom">
-      <view class="popup-title">Share you review</view>
+      <view class="popup-title">{{$t("pages.mybooking.reviewsTitle")}}</view>
       <view class="popup-close" @tap="closePopup('popup')">
         <uni-icons type="close" color="#ccc" size="30" />
       </view>
@@ -61,13 +61,13 @@
           <view
             class="uni-media-list-text-top"
             style="font-size: 23rpx"
-          >IN:{{popHotel.startDate}} END:{{popHotel.endDate}} {{popHotel.dayCount}}N</view>
+          >{{$t("global.IN")}}:{{popHotel.startDate}} {{$t("global.OUT")}}:{{popHotel.endDate}} {{popHotel.dayCount}}{{$t("global.N")}}</view>
           <view class="uni-media-list-text-bottom uni-ellipsis">{{popHotel.type}}</view>
         </view>
       </view>
       <view class="uni-panel" style="margin:60upx 0 80upx">
         <view class="example-body">
-          Rating:
+          {{$t("pages.mybooking.rating")}}:
           <uni-rate
             style="margin-left:20px"
             :value="rateNum"
@@ -79,8 +79,7 @@
           <textarea
             v-model="rateContent"
             style="border: 1px solid gray"
-            placeholder-style="color:black"
-            placeholder="Share your experience.."
+            :placeholder='$t("pages.mybooking.ratePlaceholder")'
             :disabled="!!popHotel.isReview"
           />
         </view>
@@ -113,32 +112,33 @@ export default {
     uniRate
   },
   data() {
+    const tabBars = this.$t("pages.mybooking.tabBars");
     return {
       tabIndex: 0,
       tabBars: [
         {
           data: [],
-          name: "All",
+          name: tabBars[0],
           id: "all"
         },
         {
           data: [],
-          name: "To be paid",
+          name: tabBars[1],
           id: "0"
         },
         {
           data: [],
-          name: "Confirm",
+          name: tabBars[2],
           id: "1"
         },
         {
           data: [],
-          name: "Complete",
+          name: tabBars[3],
           id: "2"
         },
         {
           data: [],
-          name: "Cancel",
+          name: tabBars[4],
           id: "-1"
         }
       ],
@@ -150,10 +150,10 @@ export default {
       popHotel: {},
       textAreaValue: "",
       statusNames: {
-        0: "To be paid",
-        1: "Confirm",
-        2: "Complete",
-        "-1": "Cancel"
+        0: tabBars[1],
+        1: tabBars[2],
+        2: tabBars[3],
+        "-1": tabBars[4]
       },
       rateNum: 5,
       rateContent: ""
@@ -288,7 +288,7 @@ export default {
       if (this.rateContent == "") {
         uni.showToast({
           icon: "none",
-          title: "please input review!",
+          title: this.$t("pages.mybooking.rateTips"),
           duration: 2000
         });
         return;
@@ -307,7 +307,7 @@ export default {
         if (res.status == 0) {
           uni.showToast({
             icon: "success",
-            title: "Thank you!",
+            title: this.$t("pages.mybooking.rateSuccessTip"),
             duration: 2000
           });
           this.closePopup("popup");

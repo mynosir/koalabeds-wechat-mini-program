@@ -15,7 +15,7 @@
       </radio-group>
     </view>
     <view class="goods-carts" :style="'padding-bottom: '+(isIphoneX ? 68 : 0)+'rpx;'">
-      <button type="primary" style="border-radius:0;" @tap="confirm">Select</button>
+      <button type="primary" style="border-radius:0;" @tap="confirm">{{$t("pages.mylanguage.select")}}</button>
     </view>
   </view>
 </template>

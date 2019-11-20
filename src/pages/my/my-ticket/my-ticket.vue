@@ -7,7 +7,7 @@
       <uni-list @click="goOrderDetail(item)">
         <uni-list-item :show-arrow="false" :showExtra="false">
           <view class="uni-flex">
-            <view>{{'Order date: '+ item.date.format('yyyy/MM/dd')}}</view>
+            <view>{{$t("pages.myticket.orderDate")}}{{ item.date.format('yyyy/MM/dd')}}</view>
           </view>
         </uni-list-item>
         <uni-list-item
@@ -35,15 +35,15 @@
         </uni-list-item>
         <uni-list-item :show-arrow="false" :showExtra="true">
           <view>
-            <view class="panel" style="font-size:32upx">UserInfo</view>
+            <view class="panel" style="font-size:32upx">{{$t("pages.myticket.UserInfo")}}</view>
             <view>
-              <view>Name: {{item.firstName}}</view>
-              <view>Email: {{item.guestEmail}}</view>
+              <view>{{$t("pages.ticketBook.Name")}}: {{item.firstName}}</view>
+              <view>{{$t("pages.ticketBook.Email")}}: {{item.guestEmail}}</view>
             </view>
           </view>
         </uni-list-item>
         <uni-list-item :showArrow="false" :showExtra="true">
-          <view>Total</view>
+          <view>{{$t("global.Total")}}</view>
           <view
             slot="extra"
             class="uni-product-price-original"
@@ -51,7 +51,7 @@
         </uni-list-item>
       </uni-list>
     </view>
-    <view class="no-data" v-if="orderList.length <= 0">no order data~</view>
+    <view class="no-data" v-if="orderList.length <= 0">{{$t("pages.myticket.nodata")}}</view>
   </view>
 </template>
 <script>
@@ -66,12 +66,7 @@ export default {
   data() {
     return {
       orderList: [],
-      statusText: {
-        0: "Wait",
-        "-1": "Cancel",
-        1: "Confirm",
-        2: "Complete"
-      }
+      statusText: this.$t("pages.myticket.statusText")
     };
   },
   onLoad() {
@@ -103,7 +98,7 @@ export default {
     },
     goOrderDetail(item) {
       uni.navigateTo({
-        url: "/pages/my/my-ticket/detail?data=" + JSON.stringify(item)
+        url: "/pages/my/my-ticket/detail?id=" + item.id
       });
     }
   }
