@@ -33,10 +33,10 @@ export default {
           key: "zh-cn",
           value: "简体中文"
         },
-        {
-          key: "zh-hk",
-          value: "繁體中文"
-        }
+        // {
+        //   key: "zh-hk",
+        //   value: "繁體中文"
+        // }
       ],
       selected: this.$i18n.locale
     };
