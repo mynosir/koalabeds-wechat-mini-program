@@ -4,17 +4,12 @@
       <view class="uni-panel">
         <view class="page-section swiper">
           <view class="page-section-spacing">
-            <swiper
-              class="swiper"
-              :indicator-dots="swiperSetting.indicatordots"
-              :autoplay="swiperSetting.autoplay"
-              :interval="swiperSetting.interval"
-              :duration="swiperSetting.duration"
-            >
-              <swiper-item v-for="(item, index) in hotelInfo.propertyImage" :key="index">
-                <image style="width: 100%; " :src="item" class="koa-hotel-img" mode="widthFix" />
-              </swiper-item>
-            </swiper>
+            <image
+              style="width: 100%; "
+              :src="hotelInfo.propertyImage"
+              class="koa-hotel-img"
+              mode="widthFix"
+            />
           </view>
         </view>
       </view>
@@ -94,9 +89,9 @@
           <view style="margin:10upx 0;font-size:32upx">{{selectRoom.roomTypeName}}</view>
           <view class="page-section swiper">
             <view class="page-section-spacing">
-              <swiper class="swiper" :indicator-dots="true">
+              <swiper class="swiper" :indicator-dots="true" :style="'height:'+swiperHeight+'px'">
                 <swiper-item v-for="(item, index) in selectRoom.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image" mode="widthFix" />
+                  <image style="width: 100%; " :src="item.image" mode="widthFix" @load="imgLoad" />
                 </swiper-item>
               </swiper>
             </view>
@@ -165,9 +160,6 @@ export default {
     uniNumberBox
   },
   computed: {
-    i18n() {
-      return this.$t("pages.detail");
-    },
     orderInfo() {
       return {
         startDate: this.$store.state.hotel.startDate.format("yyyy/MM/dd"),
@@ -205,7 +197,8 @@ export default {
       selectRoom: null,
       comments: [],
       hotelId: "173267",
-      existPop: ["popup", "guest"]
+      existPop: ["popup", "guest"],
+      swiperHeight: 150
     };
   },
   onShareAppMessage() {
@@ -223,6 +216,12 @@ export default {
   onShow() {},
   onHide() {},
   methods: {
+    imgLoad(event) {
+      const winWid = wx.getSystemInfoSync().windowWidth; //获取当前屏幕的宽度
+      const { height, width } = event.detail; //图片高度
+      //等比设置swiper的高度。  即 屏幕宽度 / swiper高度 = 图片宽度 / 图片高度    ==》swiper高度 = 屏幕宽度 * 图片高度 / 图片宽度
+      this.swiperHeight = (winWid * height) / width;
+    },
     getReviews() {
       this.$fetch({
         url: this.$store.state.domain + "api/get?actionxm=getReviews",
@@ -280,11 +279,7 @@ export default {
         },
         showLoading: true
       }).then(res => {
-        const { data } = res;
-        this.hotelInfo = {
-          ...data,
-          propertyImage: data.propertyImage.split(",")
-        };
+        this.hotelInfo = res.data;
         this.$store.commit("setHotel", this.hotelInfo);
         this.getRoomsByHotelId();
         this.getReviews();

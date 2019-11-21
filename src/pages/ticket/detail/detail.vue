@@ -4,16 +4,7 @@
       <view class="uni-panel">
         <view class="page-section swiper">
           <view class="page-section-spacing">
-            <swiper
-              class="swiper"
-              :autoplay="swiperSetting.autoplay"
-              :interval="swiperSetting.interval"
-              :duration="swiperSetting.duration"
-            >
-              <swiper-item>
-                <image style="width: 100%; " :src="ticketImg"  mode="widthFix"/>
-              </swiper-item>
-            </swiper>
+            <image style="width: 100%; " :src="ticketImg" mode="widthFix" @load="imgLoad" />
           </view>
         </view>
       </view>
@@ -155,11 +146,19 @@ export default {
     this.$store.commit("setTicket", null);
   },
   methods: {
+    imgLoad(event) {
+      const winWid = wx.getSystemInfoSync().windowWidth; //获取当前屏幕的宽度
+      const { height, width } = event.detail; //图片高度
+      //等比设置swiper的高度。  即 屏幕宽度 / swiper高度 = 图片宽度 / 图片高度    ==》swiper高度 = 屏幕宽度 * 图片高度 / 图片宽度
+      this.swiperHeight = (winWid * height) / width;
+    },
     mpGetUserInfo(result) {
       if (result.detail.errMsg !== "getUserInfo:ok") {
         uni.showModal({
           title: this.$t("global.getUserError"),
-          content: this.$t("global.getUserErrMsg", {errMsg: result.detail.errMsg}),
+          content: this.$t("global.getUserErrMsg", {
+            errMsg: result.detail.errMsg
+          }),
           showCancel: false
         });
         return;

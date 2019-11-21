@@ -20,12 +20,13 @@ export default {
         Booking: 'Booking Now',
         CancelBooking: 'Cancel Booking',
         PayNow: 'PAY NOW',
+        PAY: 'PAY',
         bookLoading: 'Booking loading',
         Cancel: 'Cancel',
         Confirm: 'Confirm',
         Completed: 'Completed',
         Coupon: "Coupon",
-        hotelGuest: '{adult} adults {child} child', 
+        hotelGuest: '{adult} adults {child} child',
         selectCoupon: 'Select Coupon',
         noValidCoupon: 'no valid coupons',
         selectCouponIt: 'Select It',
@@ -75,11 +76,11 @@ export default {
         hotelDetail: {
             Guest: 'Guest',
             nohotel: "Something Wrong,cann't find Hotel!",
-            nodata: 'No Found Rooms, Please modify date',
+            nodata: 'No room is available yet.',
             guestSetting: 'Guest Setting',
             Adult: 'Adult',
             Child: 'Child',
-            Done: 'Done It'
+            Done: 'Done'
         },
         hotelBook: {
             roomInfo: 'Room Info',
@@ -159,7 +160,7 @@ export default {
             }
         },
         cityselect: {
-            placeholder: 'nter Search City Name',
+            placeholder: 'Enter Search City Name',
             selectedCity: 'Selected City',
             hotCity: 'HOT CITY'
         },
@@ -193,8 +194,8 @@ export default {
             Reviews: "Reviews",
             More: 'More'
         },
-        unicalendar:{
-            backtoday:'Back Today'
+        unicalendar: {
+            backtoday: 'Back Today'
         }
     }
 

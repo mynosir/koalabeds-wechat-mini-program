@@ -19,6 +19,7 @@ export default {
         Booking: '立即購買',
         CancelBooking: '取消預定',
         PayNow: '立即支付',
+        PAY: '支付',
         bookLoading: '預定中',
         Cancel: '取消',
         Confirm: '確認',
@@ -72,13 +73,13 @@ export default {
             rating: '条評论'
         },
         hotelDetail: {
-            Guest: '入住人數',
+            Guest: '入住人',
             nohotel: "系統錯誤，暫時找不到酒店！",
-            nodata: '沒有符合條件的房間，請修改入住時間或人數',
-            guestSetting: '人數設置',
+            nodata: '目前沒有可用的房間',
+            guestSetting: '入住人數',
             Adult: '成人',
             Child: '儿童',
-            Done: '確定'
+            Done: '完成'
         },
         hotelBook: {
             roomInfo: '房間信息',
@@ -118,7 +119,7 @@ export default {
             payCancel: '支付取消'
         },
         mybooking: {
-            tabBars: ['全部', '待支付', '預定中', '完成', '取消'],
+            tabBars: ['全部', '待支付', '預定中', '已完成', '已取消'],
             rateTips: "請輸入想要的評論的內容",
             rateSuccessTip: "謝謝您的支持",
             nodata: "沒有符合條件的訂單",

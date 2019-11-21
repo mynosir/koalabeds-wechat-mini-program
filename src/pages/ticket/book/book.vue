@@ -24,7 +24,7 @@
       <uni-list>
         <uni-list-item
           :title="$t('pages.ticketDetail.validDate')"
-          :desc="validDate == ''?$t('pages.ticketDetail.chooseDate'): validDate"
+          :desc="validDate == ''? $t('pages.ticketDetail.chooseDate'): validDate"
           :showDesc="true"
           @click="goDate"
         />
@@ -289,7 +289,11 @@ export default {
   },
   watch: {
     selectCoupon(newVal) {
-      this.discount = newVal.discountAmount;
+      if (!selectCoupon) {
+        this.discount = 0;
+      } else {
+        this.discount = newVal.discountAmount;
+      }
       return newVal;
     }
   },
@@ -496,10 +500,10 @@ export default {
 <style>
 @import "../../../common/uni-nvue.css";
 .koa-ticket-book .uni-list-item__extra {
-  width: 40%;
+  max-width: 40%;
 }
 .koa-ticket-book .normal-list .uni-list-item__extra {
-  width: 25%;
+  max-width: 25%;
 }
 .koa-ticket-book .uni-list-item__icon-img {
   width: 120upx;

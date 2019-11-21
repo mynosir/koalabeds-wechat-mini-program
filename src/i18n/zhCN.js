@@ -19,6 +19,7 @@ export default {
         Booking: '立即购买',
         CancelBooking: '取消预定',
         PayNow: '立即支付',
+        PAY: '支付',
         bookLoading: '预定中',
         Cancel: '取消',
         Confirm: '确认',
@@ -74,11 +75,11 @@ export default {
         hotelDetail: {
             Guest: '入住人数',
             nohotel: "系统错误，暂时找不到酒店！",
-            nodata: '没有符合条件的房间，请修改入住时间或人数',
-            guestSetting: '人数设置',
+            nodata: '目前没有可用的房间',
+            guestSetting: '入住人数',
             Adult: '成人',
             Child: '儿童',
-            Done: '确定'
+            Done: '完成'
         },
         hotelBook: {
             roomInfo: '房间信息',
@@ -118,7 +119,7 @@ export default {
             payCancel: '支付取消'
         },
         mybooking: {
-            tabBars: ['全部', '待支付', '预定中', '完成', '取消'],
+            tabBars: ['全部', '待支付', '预定中', '已预订', '已取消'],
             rateTips: "请输入想要的评论的内容",
             rateSuccessTip: "谢谢您的支持",
             nodata: "没有符合条件的订单",

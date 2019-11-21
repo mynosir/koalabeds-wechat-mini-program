@@ -251,9 +251,10 @@
           <view style="margin:10upx 0;font-size:32upx">{{roomInfo.roomTypeName}}</view>
           <view class="page-section swiper">
             <view class="page-section-spacing">
-              <swiper class="swiper" :indicator-dots="true">
+              <swiper class="swiper" :indicator-dots="true" 
+            :style="'height:'+swiperHeight+'px'">
                 <swiper-item v-for="(item, index) in roomInfo.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image" mode="widthFix" />
+                  <image style="width: 100%; " :src="item.image" mode="widthFix"  @load="imgLoad"/>
                 </swiper-item>
               </swiper>
             </view>
@@ -409,7 +410,8 @@ export default {
       coupons: [],
       isOrder: false,
       orderId: 1,
-      grandTotal: this.$store.state.hotel.roomInfo.roomRate
+      grandTotal: this.$store.state.hotel.roomInfo.roomRate,
+      swiperHeight: 150
     };
   },
   onLoad(options) {
@@ -428,6 +430,12 @@ export default {
     }
   },
   methods: {
+    imgLoad(event) {
+      const winWid = wx.getSystemInfoSync().windowWidth; //获取当前屏幕的宽度
+      const {height, width} = event.detail; //图片高度
+      //等比设置swiper的高度。  即 屏幕宽度 / swiper高度 = 图片宽度 / 图片高度    ==》swiper高度 = 屏幕宽度 * 图片高度 / 图片宽度
+      this.swiperHeight = (winWid * height) / width;
+    },
     getRoomsFeesAndTaxes() {
       this.$fetch({
         url:

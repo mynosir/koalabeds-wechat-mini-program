@@ -14,9 +14,10 @@
             :autoplay="swiperSetting.autoplay"
             :interval="swiperSetting.interval"
             :duration="swiperSetting.duration"
+            :style="'height:'+swiperHeight+'px'"
           >
             <swiper-item v-for="(item, index) in imglist" :key="index" @tap="goUrl(item)">
-              <image style="width: 100%; " :src="item.img" mode="widthFix" />
+              <image style="width: 100%; " :src="item.img" mode="widthFix" @load="imgLoad" />
             </swiper-item>
           </swiper>
         </view>
@@ -49,7 +50,7 @@
     </view>
     <view class="uni-panel uni-panel-h">
       <uni-card :title="$t('pages.home.couponTitle')" :isFull="true" :isShadow="false">
-        <view class="panel-scroll" :scroll-x="true">
+        <view class="panel-scroll" :scroll-x="true" style="margin-top:20upx">
           <view class="ticke-box" v-for="item in coupons" :key="item.id">
             <ticket
               :status="item.status"
@@ -66,7 +67,7 @@
     </view>
     <view class="uni-panel uni-panel-h">
       <uni-card :title="$t('pages.home.recommendTitle')" :isFull="true" :isShadow="false">
-        <view class="panel-scroll" :scroll-x="true">
+        <view class="panel-scroll" :scroll-x="true" style="margin-top:20upx">
           <view
             class="recommend-box"
             v-for="item in recommendList"
@@ -167,7 +168,7 @@ export default {
       const month = this.$store.state.hotel.startDate.getMonth();
       const date = this.$store.state.hotel.startDate.getDate();
       return (
-        this.$t("components.calendar.month")[month] +
+        this.$t("components.calendar.month")[month] + ' ' +
         this.$t("components.calendar.date", { date })
       );
     },
@@ -175,7 +176,7 @@ export default {
       const month = this.$store.state.hotel.endDate.getMonth();
       const date = this.$store.state.hotel.endDate.getDate();
       return (
-        this.$t("components.calendar.month")[month] +
+        this.$t("components.calendar.month")[month] + ' '+ 
         this.$t("components.calendar.date", { date })
       );
     },
@@ -205,7 +206,8 @@ export default {
       hotelList: [],
       page: 1,
       num: 10,
-      coupons: []
+      coupons: [],
+      swiperHeight: 150
     };
   },
   onShareAppMessage() {
@@ -231,6 +233,12 @@ export default {
     }
   },
   methods: {
+    imgLoad(event) {
+      const winWid = wx.getSystemInfoSync().windowWidth; //获取当前屏幕的宽度
+      const {height, width} = event.detail; //图片高度
+      //等比设置swiper的高度。  即 屏幕宽度 / swiper高度 = 图片宽度 / 图片高度    ==》swiper高度 = 屏幕宽度 * 图片高度 / 图片宽度
+      this.swiperHeight = (winWid * height) / width;
+    },
     mpGetUserInfo(result) {
       if (result.detail.errMsg !== "getUserInfo:ok") {
         uni.showModal({
@@ -316,7 +324,7 @@ export default {
       this.getRecommendFlow();
     },
     dateChange({ choiceDate, dayCount }) {
-      console.log(dayCount)
+      console.log(dayCount);
       this.$store.commit("setHotelDate", {
         startDate: new Date(choiceDate[0].dateTime),
         endDate: new Date(choiceDate[1].dateTime),
@@ -432,6 +440,9 @@ export default {
 .recommend-text {
   font-size: 20upx;
   text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .popup-content,
 .popup-content .ticke-box {

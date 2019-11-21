@@ -17,8 +17,12 @@
           <view
             class="uni-media-list-text-top"
             style="font-size: 23rpx"
-          >IN:{{value.startDate}} END:{{value.endDate}} {{value.dayCount}}N</view>
-          <view class="uni-media-list-text-bottom uni-ellipsis" style="height:30upx;" v-html="value.type"></view>
+          >{{$t("global.IN")}}:{{value.startDate}} {{$t("global.OUT")}}:{{value.endDate}} {{value.dayCount}}{{$t("global.N")}}</view>
+          <view
+            class="uni-media-list-text-bottom uni-ellipsis"
+            style="height:30upx;"
+            v-html="value.type"
+          ></view>
           <view class="uni-media-list-extra2" style="display: block;float:right;margin-top:20upx;">
             <template v-if="value.status=='0'">
               <button
@@ -27,19 +31,20 @@
                 type="default"
                 size="mini"
                 @click="cancel($event,value)"
-              >Cancel</button>
+              >{{$t("global.Cancel")}}</button>
               <button
                 id="product-list-btn2"
                 type="warn"
                 size="mini"
                 @click="goBook($event,value)"
-              >PAY</button>
+              >{{$t("global.PAY")}}</button>
             </template>
-              <button v-else-if="value.status=='2'"
-                id="product-list-btn2"
-                type="primary"
-                size="mini"
-              >Reviews</button>
+            <button
+              v-else-if="value.status=='2'"
+              id="product-list-btn2"
+              type="primary"
+              size="mini"
+            >{{$t("components.comments.Reviews")}}</button>
             <view
               v-else
               :style="{'color': value.status==='03'?'green':(value.status==='02'?'#0bb9ee':'black')}"
