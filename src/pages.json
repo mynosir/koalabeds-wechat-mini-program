@@ -2,14 +2,14 @@
     "pages": [{
             "path": "pages/index/home/home"
         }, {
+            "path": "pages/ticket/detail/detail"
+        }, {
             "path": "pages/my/my-ticket/my-ticket"
         }, {
             "path": "pages/my/my-coupon/my-coupon"
         },
         {
             "path": "pages/my/my-booking/my-booking"
-        }, {
-            "path": "pages/ticket/detail/detail"
         }, {
             "path": "pages/common/result/result"
         }, {

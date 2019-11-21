@@ -12,7 +12,7 @@
               :duration="swiperSetting.duration"
             >
               <swiper-item v-for="(item, index) in hotelInfo.propertyImage" :key="index">
-                <image style="width: 100%; " :src="item" class="koa-hotel-img"  mode="widthFix"/>
+                <image style="width: 100%; " :src="item" class="koa-hotel-img" mode="widthFix" />
               </swiper-item>
             </swiper>
           </view>
@@ -64,7 +64,7 @@
               <view
                 class="koa-desc uni-flex-item"
                 style="text-align:right"
-              >{{guestInfo.adult+ ' adults '+ guestInfo.child+' child'}}</view>
+              >{{$t('global.hotelGuest', {adult:guestInfo.adult, child:guestInfo.child})}}</view>
             </view>
           </uni-list-item>
         </uni-list>
@@ -96,7 +96,7 @@
             <view class="page-section-spacing">
               <swiper class="swiper" :indicator-dots="true">
                 <swiper-item v-for="(item, index) in selectRoom.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image"  mode="widthFix"/>
+                  <image style="width: 100%; " :src="item.image" mode="widthFix" />
                 </swiper-item>
               </swiper>
             </view>
@@ -132,7 +132,13 @@
       </view>
     </uni-popup>
     <!-- 日期选择 -->
-    <calendar @change="dateChange" :modal="true" :show="showCaledar"></calendar>
+    <calendar
+      @change="dateChange"
+      :modal="true"
+      :show="showCaledar"
+      :startDate="calendarStart"
+      :endDate="calendarEnd"
+    ></calendar>
   </view>
 </template>
 <script>
@@ -169,6 +175,12 @@ export default {
         dayCount: this.$store.state.hotel.dayCount,
         thumb: "/static/date.png"
       };
+    },
+    calendarStart() {
+      return this.$store.state.hotel.startDate.format("yyyy-MM-dd");
+    },
+    calendarEnd() {
+      return this.$store.state.hotel.endDate.format("yyyy-MM-dd");
     },
     guestInfo() {
       return this.$store.state.hotel.guestInfo;
@@ -245,7 +257,7 @@ export default {
         },
         showLoading: true
       }).then(res => {
-        if(!res.data || res.data.length <=0){
+        if (!res.data || res.data.length <= 0) {
           return;
         }
         this.list = res.data[0].propertyRooms.map(item => {

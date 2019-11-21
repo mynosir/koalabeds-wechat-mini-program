@@ -2,7 +2,7 @@
 	<view class="rating-box" @tap="onClick">
         <uni-icons type="star-filled" color="#ffdc64" size="26" />
         <text class="rating-text">{{value}}</text>
-        <text class="rating-numbers">{{numbers}} ratings</text>
+        <text class="rating-numbers">{{numbers}} {{$t("pages.search.rating")}}</text>
     </view>
 </template>
 

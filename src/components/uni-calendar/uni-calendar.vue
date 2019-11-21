@@ -3,8 +3,8 @@
 		<view v-if="maskShow && !insert" :class="{ 'ani-mask-show': aniMaskShow }" class="uni-calendar__mask" />
 		<view v-if="maskShow || insert" :class="{ 'ani-calendar-show': aniMaskShow, 'uni-calendar__static': insert }" class="uni-calendar__box">
 			<view v-if="!insert" class="uni-calendar__nav">
-				<view class="uni-calendar__nav-item" @click="close">cancel</view>
-				<view class="uni-calendar__nav-item" @click="confirm">confirm</view>
+				<view class="uni-calendar__nav-item" @click="close">{{$t('global.Cancel')}}</view>
+				<view class="uni-calendar__nav-item" @click="confirm">{{$t('global.Confirm')}}</view>
 			</view>
 			<view class="uni-calendar__wrapper">
 				<view class="uni-calenda__content">
@@ -15,7 +15,7 @@
 							<view style="margin-left:20upx">{{ canlender.year }}</view>
 						</view>
 						<view class="uni-calendar__date-after uni-calendar__rollback" @tap="dataBefor(1, 'month')"><text class="iconfont icon-jiantou " /></view>
-						<view class="uni-calendar__backtoday" @tap="backtoday">Back Today</view>
+						<view class="uni-calendar__backtoday" @tap="backtoday">{{$t('components.unicalendar.backtoday')}}</view>
 					</view>
 					<view v-if="isLunar" class="uni-calendar__day-detail">
 						<view>{{ canlender.year + '-' + canlender.month + '-' + canlender.date + ' （' + canlender.lunar.astro + ')' }}</view>
@@ -109,8 +109,8 @@
 			 * 随机数值是在旧编译器下使用的，旧编译器模式已经不推荐使用，后续直接废掉随机数值的写法。
 			 */
 			return {
-				weekNameArr: ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'],
-				monthNameArr: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+				weekNameArr: this.$t('components.calendar.weekNameArr'),
+				monthNameArr: this.$t('components.calendar.monthNameArr'),
 				maskShow: false, // 显示日历
 				aniMaskShow: false,
 				dateShow: false, // 日期是否选择

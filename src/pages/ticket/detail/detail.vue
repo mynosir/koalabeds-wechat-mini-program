@@ -25,7 +25,7 @@
         <uni-list>
           <!-- <uni-list-item title="Booking Instruction" /> -->
           <uni-list-item
-            title="Valid Date"
+            :title="$t('pages.ticketDetail.validDate')"
             :desc="validDate == ''? $t('pages.ticketDetail.chooseDate'): validDate"
             :showDesc="true"
             @click="goDate"

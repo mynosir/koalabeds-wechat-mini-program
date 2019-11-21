@@ -22,10 +22,13 @@ export default {
         PayNow: 'PAY NOW',
         bookLoading: 'Booking loading',
         Cancel: 'Cancel',
+        Confirm: 'Confirm',
         Completed: 'Completed',
+        Coupon: "Coupon",
+        hotelGuest: '{adult} adults {child} child', 
         selectCoupon: 'Select Coupon',
         noValidCoupon: 'no valid coupons',
-        selectCoupon: 'Select It',
+        selectCouponIt: 'Select It',
         Agree: 'I Agree',
         systemerr: 'error',
         validDateStr: "Valid date: {dateStr}",
@@ -98,7 +101,8 @@ export default {
         },
         ticketDetail: {
             chooseDate: 'Choose A Date',
-            numTip: 'Please select num~'
+            numTip: 'Please select num~',
+            validDate: 'Valid Date'
         },
         ticketBook: {
             Hotel: 'Hotel',
@@ -188,6 +192,9 @@ export default {
         comments: {
             Reviews: "Reviews",
             More: 'More'
+        },
+        unicalendar:{
+            backtoday:'Back Today'
         }
     }
 

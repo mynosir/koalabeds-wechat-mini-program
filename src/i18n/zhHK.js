@@ -21,10 +21,13 @@ export default {
         PayNow: '立即支付',
         bookLoading: '預定中',
         Cancel: '取消',
+        Confirm: '確認',
         Completed: '完成',
+        hotelGuest: '{adult}成人 {child}儿童', 
+        Coupon: '優惠券',
         selectCoupon: '選擇優惠券',
+        selectCouponIt: '確認選擇',
         noValidCoupon: '沒有有效的優惠券',
-        selectCoupon: '選擇它',
         Agree: '我同意',
         systemerr: '系統錯誤',
         validDateStr: "有效時間: {dateStr}",
@@ -74,7 +77,7 @@ export default {
             nodata: '沒有符合條件的房間，請修改入住時間或人數',
             guestSetting: '人數設置',
             Adult: '成人',
-            Child: '小孩',
+            Child: '儿童',
             Done: '確定'
         },
         hotelBook: {
@@ -97,7 +100,8 @@ export default {
         },
         ticketDetail: {
             chooseDate: '選擇時間',
-            numTip: '請選擇門票的個數'
+            numTip: '請選擇門票的個數',
+            validDate: '選擇時間'
         },
         ticketBook: {
             Hotel: '自取酒店',
@@ -187,6 +191,9 @@ export default {
         comments: {
             Reviews: "評論",
             More: '更多'
+        },
+        unicalendar:{
+            backtoday:'回到今天'
         }
     }
 

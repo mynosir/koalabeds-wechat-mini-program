@@ -75,7 +75,7 @@
         <uni-list>
           <uni-list-item
             :title="`${hotelInfo.propertyAddress1} ${hotelInfo.propertyAddress2}`"
-            desc="$t('global.Map')"
+            :desc="$t('global.Map')"
             :showDesc="true"
             @click="goMap"
           />
@@ -110,7 +110,7 @@
         <uni-list>
           <uni-list-item
             :title="`${hotelInfo.propertyAddress1} ${hotelInfo.propertyAddress2}`"
-            desc="Map"
+            :desc="$t('global.Map')"
             :showDesc="true"
             @click="goMap"
           />
@@ -118,13 +118,13 @@
             :showDesc="true"
             :desc="hotelInfo.propertyName"
             @click="showPop('hotelDetail')"
-          >{{$t('pages.hotelBook.lookDetail')}}</uni-list-item>
+          >{{$t('global.lookDetail')}}</uni-list-item>
         </uni-list>
       </view>
       <view class="uni-panel book-coupon-list">
         <uni-list>
           <uni-list-item
-            title="Coupon"
+            :title="$t('global.Coupon')"
             :showArrow="false"
             :showDesc="true"
             :showExtra="true"
@@ -323,11 +323,17 @@
         </view>
         <view class="no-data" v-else>{{$t("global.noValidCoupon")}}</view>
       </view>
-      <button
-        type="primary"
-        @tap="chooseCoupon"
-        v-if="coupons.length > 0"
-      >{{$t("global.selectCoupon")}}</button>
+      <view class="uni-flex" v-if="coupons.length > 0">
+        <view class="uni-flex-item" style="margin-right:20upx;">
+          <button
+            type="info"
+            @tap="()=>{selectCouponIndex =-1;selectCoupon=null;closePopup('coupon');}"
+          >{{$t("global.Cancel")}}</button>
+        </view>
+        <view class="uni-flex-item">
+          <button type="primary" @tap="chooseCoupon">{{$t("global.selectCouponIt")}}</button>
+        </view>
+      </view>
     </uni-popup>
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
