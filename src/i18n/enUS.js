@@ -92,6 +92,7 @@ export default {
             nameInputTip: "Please enter your name",
             phoneInputTip: "Please enter your phone",
             mailInputTip: "Please enter your email",
+            mailErrorTip: "Please enter the correct email"
         },
         result: {
             payfail: 'Payment Fail',

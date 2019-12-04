@@ -91,6 +91,9 @@
 				this.$emit('confirm', {
 					value: this.searchVal
 				})
+			},
+			changeValue(value){
+				this.searchVal = value
 			}
 		}
 	}

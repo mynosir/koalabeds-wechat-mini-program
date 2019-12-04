@@ -212,6 +212,9 @@ export default {
     this.hotelId = options.id || "173267";
     this.getHotel();
   },
+  onUnload() {
+    this.$store.commit("setRefresh", "N");
+  },
   onReady() {},
   onShow() {},
   onHide() {},

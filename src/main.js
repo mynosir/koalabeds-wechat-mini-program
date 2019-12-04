@@ -25,8 +25,8 @@ App.mpType = 'app'
 //国际化
 Vue.mixin({
 	onLoad() {
-		let title = this.$t('global.title')
-		console.log(this)
+		// let title = this.$t('global.title')
+		// this._i18n.locale = this.$store.state.language
 	}
 })
 

@@ -15,7 +15,11 @@
       </radio-group>
     </view>
     <view class="goods-carts" :style="'padding-bottom: '+(isIphoneX ? 68 : 0)+'rpx;'">
-      <button type="primary" style="border-radius:0;" @tap="confirm">{{$t("pages.mylanguage.select")}}</button>
+      <button
+        type="primary"
+        style="border-radius:0;"
+        @tap="confirm"
+      >{{$t("pages.mylanguage.select")}}</button>
     </view>
   </view>
 </template>
@@ -32,7 +36,7 @@ export default {
         {
           key: "zh-cn",
           value: "简体中文"
-        },
+        }
         // {
         //   key: "zh-hk",
         //   value: "繁體中文"
@@ -60,8 +64,8 @@ export default {
       }).then(res => {
         this.$i18n.locale = this.selected;
         this.$store.commit("setLanguage", this.selected);
-        uni.navigateBack({
-          delta: 1
+        uni.reLaunch({
+          url: "/pages/index/home/home"
         });
       });
     }

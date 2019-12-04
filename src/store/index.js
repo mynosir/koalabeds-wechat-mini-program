@@ -29,6 +29,7 @@ const mobile = wx.getSystemInfoSync();
 
 const store = new Vuex.Store({
 	state: {
+		refreshSearch: 'Y', //在搜索界面是否重新刷新
 		language: uni.getStorageSync('language') || 'en',
 		domain,
 		hasLogin: false,
@@ -126,6 +127,17 @@ const store = new Vuex.Store({
 		setLanguage(state, language) {
 			state.language = language
 			uni.setStorageSync('language', language)
+			fetch({
+				url: domain + "api/post?actionxm=updateLang",
+				method: "post",
+				data: {
+					lang: language
+				},
+				showLoading: true
+			});
+		},
+		setRefresh(state, refreshSearch) {
+			state.refreshSearch = refreshSearch;
 		}
 	},
 	actions: {
@@ -157,7 +169,8 @@ const store = new Vuex.Store({
 		// lazy loading openid
 		[GETOPENID]: async function ({
 			commit,
-			state
+			state,
+			dispatch
 		}) {
 			return await new Promise((resolve, reject) => {
 				if (state.openid) {
@@ -180,28 +193,33 @@ const store = new Vuex.Store({
 								commit('setOpenid', data)
 								return uni.getUserInfo()
 							}).then((res) => {
-								console.log(res)
 								if (res[1]) {
-									store.commit(LOGIN, res[1].userInfo)
+									const userInfo = res[1].userInfo
+									store.commit(LOGIN, userInfo)
 								}
+								dispatch('getLang')
 							})
 						}
 					})
 				}
 			})
 		},
-		'getLang': async function ({
+		'getLang': function ({
 			state,
 			commit
 		}) {
-			if (!!uni.getStorageSync('language')) {
-				return;
-			}
 			fetch({
 				url: domain + "/api/get?actionxm=getLang",
 				data: {}
 			}).then(res => {
-				commit('setLanguage', res.data || 'en')
+				const {
+					userInfo
+				} = state
+				let lang = (userInfo && userInfo.language === 'zh_CN' ? 'zh-cn' : 'en') || 'en'
+				if (res.data) {
+					lang = res.data.lang
+				}
+				commit('setLanguage', lang)
 			})
 		}
 	}
@@ -211,6 +229,5 @@ const store = new Vuex.Store({
 //获取城市
 store.dispatch(GETCITYS)
 store.dispatch(GETOPENID)
-store.dispatch('getLang')
 
 export default store

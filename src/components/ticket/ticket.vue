@@ -46,6 +46,11 @@ export default {
       default: ""
     }
   },
+  computed: {
+    footerText() {
+      return this.$t("components.ticket.footerText");
+    }
+  },
   data() {
     const classes = {
       "0": "koa-ticket--get",
@@ -53,8 +58,7 @@ export default {
       "2": "koa-ticket--expired"
     };
     return {
-      classes,
-      footerText: this.$t('components.ticket.footerText')
+      classes
     };
   },
   methods: {

@@ -453,12 +453,17 @@ export default {
         this.errorTips(this.$t("pages.ticketBook.hotelSelectTip"));
         return;
       }
+      if (this.userInfo.email === "") {
+        this.errorTips(this.$t("pages.ticketBook.mailInputTip"));
+        return;
+      }
       if (this.userInfo.name === "") {
         this.errorTips(this.$t("pages.ticketBook.nameInputTip"));
         return;
       }
-      if (this.userInfo.email === "") {
-        this.errorTips(this.$t("pages.ticketBook.mailInputTip"));
+      const mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+      if (!mailReg.test(this.userInfo.email)) {
+        this.errorTips(this.$t("pages.hotelBook.mailErrorTip"));
         return;
       }
       if (this.userInfo.passport === "") {

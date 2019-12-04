@@ -158,6 +158,17 @@ export default {
     ...mapState({
       hasLogin: state => state.hasLogin
     }),
+    language() {
+      this.$i18n.locale = this.$store.state.language;
+      const { tabBars } = this.$t("global");
+      tabBars.map((item, index) => {
+        uni.setTabBarItem({
+          index,
+          text: item
+        });
+      });
+      return this.$store.state.language;
+    },
     cityName(state) {
       if (this.$store.state.cityName === "") {
         return this.$t("pages.home.cityName");
@@ -168,7 +179,8 @@ export default {
       const month = this.$store.state.hotel.startDate.getMonth();
       const date = this.$store.state.hotel.startDate.getDate();
       return (
-        this.$t("components.calendar.month")[month] + ' ' +
+        this.$t("components.calendar.month")[month] +
+        " " +
         this.$t("components.calendar.date", { date })
       );
     },
@@ -176,7 +188,8 @@ export default {
       const month = this.$store.state.hotel.endDate.getMonth();
       const date = this.$store.state.hotel.endDate.getDate();
       return (
-        this.$t("components.calendar.month")[month] + ' '+ 
+        this.$t("components.calendar.month")[month] +
+        " " +
         this.$t("components.calendar.date", { date })
       );
     },
@@ -235,7 +248,7 @@ export default {
   methods: {
     imgLoad(event) {
       const winWid = wx.getSystemInfoSync().windowWidth; //获取当前屏幕的宽度
-      const {height, width} = event.detail; //图片高度
+      const { height, width } = event.detail; //图片高度
       //等比设置swiper的高度。  即 屏幕宽度 / swiper高度 = 图片宽度 / 图片高度    ==》swiper高度 = 屏幕宽度 * 图片高度 / 图片宽度
       this.swiperHeight = (winWid * height) / width;
     },
@@ -299,24 +312,20 @@ export default {
         return;
       }
       this.loadmoreStatus = "loading";
-      uni.request({
+      this.$fetch({
         url: this.$store.state.domain + "/api/get?actionxm=getRecommendFlow", //仅为示例，并非真实接口地址。
         data: {
           page: this.page,
           num: this.num
         },
-        success: res => {
-          uni.hideToast();
-          console.log("getRecommendFlow:", res);
-          if (res.statusCode == 200) {
-            if (!res.data.data || res.data.data.length == 0) {
-              this.loadmoreStatus = "nomore";
-              return;
-            }
-            this.hotelList = res.data.data;
-          }
-          this.loadmoreStatus = "more";
+        showLoading: true
+      }).then(res => {
+        if (!res.data || res.data.length == 0) {
+          this.loadmoreStatus = "nomore";
+          return;
         }
+        this.hotelList = res.data;
+        this.loadmoreStatus = "more";
       });
     },
     loadMore() {
@@ -345,9 +354,13 @@ export default {
     },
     goSearch() {
       this.$store.commit("setSearch", this.searchContent);
+      this.$store.commit("setRefresh", "Y");
       uni.navigateTo({
         url: `/pages/hotel/search/search`
       });
+      // uni.navigateTo({
+      //   url: `/pages/common/search/search`
+      // });
     },
     postCoupon(ids) {
       if (ids === "all") {

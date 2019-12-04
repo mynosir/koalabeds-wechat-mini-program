@@ -1,20 +1,6 @@
 <script>
 export default {
-  computed: {
-    i18n() {
-      return this.$t("global");
-    }
-  },
-  onLaunch: function() {
-    const { tabBars } = this.i18n;
-    tabBars.map((item, index) => {
-      console.log(item);
-      uni.setTabBarItem({
-        index,
-        text: item
-      });
-    });
-  },
+  onLaunch: function() {},
   onShow: function() {},
   onHide: function() {},
   globalData: {}

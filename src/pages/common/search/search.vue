@@ -8,15 +8,12 @@
         :radius="100"
         :hideCancel="true"
         :showSearch="true"
+        :value="searchContent"
       />
     </view>
     <view v-if="showList">
       <uni-list>
-        <uni-list-item
-          :show-arrow="false"
-          :title="searchContent"
-          @tap="search"
-        />
+        <uni-list-item :show-arrow="false" :title="searchContent" @tap="search" />
         <uni-list-item
           :show-arrow="false"
           :title="item.propertyName"
@@ -42,39 +39,60 @@ export default {
   },
   data() {
     return {
-      searchContent: '',
+      searchContent: this.$store.state.hotel.search,
       showList: false,
-      list: []
+      list: [],
+      hotelList: []
     };
   },
-  watch:{
-    searchContent(newVal){
-      if(newVal !== ''){
-        this.list = this.$store.state.hotelTemps.filter(item=>item.propertyName.indexOf(newVal)>=0)
-      }else{
-        this.list = []
-      }
+  onLoad() {
+    this.getHotels();
+  },
+  watch: {
+    searchContent(newVal) {
+      this.searchHotel(newVal);
       return newVal;
     }
   },
   methods: {
+    searchHotel(newVal) {
+      if (newVal !== "") {
+        this.showList = true;
+        this.list = this.hotelList.filter(
+          item => item.propertyName.indexOf(newVal) >= 0
+        );
+      } else {
+        this.list = [];
+        this.showList = false;
+      }
+    },
+    getHotels() {
+      this.$fetch({
+        url: this.$store.state.domain + "/api/get?actionxm=getHotelListInDB" //仅为示例，并非真实接口地址。
+      }).then(res => {
+        if (!res.data || res.data.length <= 0) {
+          return;
+        }
+        this.hotelList = res.data;
+        this.$nextTick(() => {
+          this.searchHotel(this.$store.state.hotel.search);
+        });
+      });
+    },
     search() {
+      console.log(this.searchContent);
       this.$store.commit("setSearch", this.searchContent);
+      this.$store.commit("setRefresh", 'Y');
       uni.navigateBack({
         url: "/pages/hotel/search/search"
       });
     },
     input({ value }) {
-      if (value.length > 0) {
-        this.showList = true;
-        this.searchContent = value;
-      } else {
-        this.showList = false;
-      }
+      this.searchContent = value;
     },
     goHotel(id) {
       uni.navigateTo({
-        url: "/pages/hotel/detail/detail?id="+id
+        url: "/pages/hotel/detail/detail?id=" + id
       });
     }
   }

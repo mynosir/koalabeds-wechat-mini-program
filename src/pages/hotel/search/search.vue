@@ -13,6 +13,7 @@
         </view>
         <view style="width:200upx" @tap="goSearch">
           <uni-search-bar
+            ref="searchBar"
             :value="hotelName"
             radius="100"
             :placeholder="$t('global.search')"
@@ -250,13 +251,11 @@ export default {
     //显示的城市数据
     obtainCitys() {
       return this.$store.state.citys;
-    },
-    hotelName() {
-      return this.$store.state.hotel.search;
     }
   },
   data() {
     return {
+      hotelName: "",
       showCaledar: false,
       existPop: ["location", "filter", "sorting"],
       selectKey: "",
@@ -276,7 +275,17 @@ export default {
   },
   onLoad(options) {},
   onShow() {
-    this.getHotels();
+    if (this.$store.state.refreshSearch === "Y") {
+      console.log("list search:", this.$store.state.hotel.search);
+      this.hotelName = this.$store.state.hotel.search;
+      this.getHotels();
+    }
+  },
+  watch: {
+    hotelName(newVal) {
+      this.$refs.searchBar.changeValue(newVal);
+      return newVal;
+    }
   },
   methods: {
     getHotels() {
@@ -316,9 +325,6 @@ export default {
             };
           })
           .filter(item => !!item.minMoney);
-        if (this.$store.state.hotelTemps.length <= 0) {
-          this.$store.commit("setHotelTemps", this.list);
-        }
         this.$forceUpdate();
       });
     },

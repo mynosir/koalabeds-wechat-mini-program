@@ -91,6 +91,7 @@ export default {
             nameInputTip: "请输入姓名",
             phoneInputTip: "请输入电话",
             mailInputTip: "请输入邮箱",
+            mailErrorTip: "请输入正确的邮箱地址"
         },
         result: {
             payfail: '支付失败',

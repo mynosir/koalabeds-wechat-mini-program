@@ -251,10 +251,9 @@
           <view style="margin:10upx 0;font-size:32upx">{{roomInfo.roomTypeName}}</view>
           <view class="page-section swiper">
             <view class="page-section-spacing">
-              <swiper class="swiper" :indicator-dots="true" 
-            :style="'height:'+swiperHeight+'px'">
+              <swiper class="swiper" :indicator-dots="true" :style="'height:'+swiperHeight+'px'">
                 <swiper-item v-for="(item, index) in roomInfo.roomTypePhotos" :key="index">
-                  <image style="width: 100%; " :src="item.image" mode="widthFix"  @load="imgLoad"/>
+                  <image style="width: 100%; " :src="item.image" mode="widthFix" @load="imgLoad" />
                 </swiper-item>
               </swiper>
             </view>
@@ -308,7 +307,7 @@
               :key="item.id"
             >
               <view>
-                <radio :value="index" />
+                <radio :value="index" :checked="selectCouponIndex == index"/>
               </view>
               <view class="uni-flex-item">
                 <ticket
@@ -326,10 +325,7 @@
       </view>
       <view class="uni-flex" v-if="coupons.length > 0">
         <view class="uni-flex-item" style="margin-right:20upx;">
-          <button
-            type="info"
-            @tap="()=>{selectCouponIndex =-1;selectCoupon=null;closePopup('coupon');}"
-          >{{$t("global.Cancel")}}</button>
+          <button type="info" @tap="cancelSelectCoupon">{{$t("global.Cancel")}}</button>
         </view>
         <view class="uni-flex-item">
           <button type="primary" @tap="chooseCoupon">{{$t("global.selectCouponIt")}}</button>
@@ -432,7 +428,7 @@ export default {
   methods: {
     imgLoad(event) {
       const winWid = wx.getSystemInfoSync().windowWidth; //获取当前屏幕的宽度
-      const {height, width} = event.detail; //图片高度
+      const { height, width } = event.detail; //图片高度
       //等比设置swiper的高度。  即 屏幕宽度 / swiper高度 = 图片宽度 / 图片高度    ==》swiper高度 = 屏幕宽度 * 图片高度 / 图片宽度
       this.swiperHeight = (winWid * height) / width;
     },
@@ -584,6 +580,11 @@ export default {
         );
         console.log("优惠券：", this.coupons);
       });
+    },
+    cancelSelectCoupon() {
+      this.selectCouponIndex = -1;
+      this.selectCoupon = null;
+      this.closePopup("coupon");
     },
     changeCoupon(e) {
       this.selectCouponIndex = e.detail.value;
@@ -761,6 +762,11 @@ export default {
       }
       if (this.userInfo.email === "") {
         this.errorTips(this.$t("pages.hotelBook.mailInputTip"));
+        return;
+      }
+      const mailReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
+      if (!mailReg.test(this.userInfo.email)) {
+        this.errorTips(this.$t("pages.hotelBook.mailErrorTip"));
         return;
       }
       if (!this.isTerms) {
