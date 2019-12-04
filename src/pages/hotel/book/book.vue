@@ -357,6 +357,7 @@ import Ticket from "@/components/ticket/ticket.vue";
 import country from "./country";
 
 const Utils = require("../../../common/util.js");
+const WSCoordinate = require("../../../common/WSCoordinate.js");
 
 export default {
   components: {
@@ -538,9 +539,13 @@ export default {
       this.$store.commit("setHotelInfo", hotelInfo);
     },
     goMap() {
+      const { latitude, longitude } = WSCoordinate.transformFromWGSToGCJ(
+        Number(this.hotelInfo.propertyLatitude),
+        Number(this.hotelInfo.propertyLongitude)
+      );
       wx.openLocation({
-        latitude: Number(this.hotelInfo.propertyLatitude),
-        longitude: Number(this.hotelInfo.propertyLongitude),
+        latitude: Number(latitude),
+        longitude: Number(longitude),
         name: this.hotelInfo.propertyName,
         address: `${this.hotelInfo.propertyAddress1} ${this.hotelInfo.propertyAddress2} ${this.hotelInfo.propertyCity} ${this.hotelInfo.propertyState}`,
         scale: 18

@@ -48,6 +48,9 @@
         <button type="primary" @tap="goSearch">{{$t('global.search')}}</button>
       </view>
     </view>
+    <view class="uni-panel">
+      <official-account></official-account>
+    </view>
     <view class="uni-panel uni-panel-h">
       <uni-card :title="$t('pages.home.couponTitle')" :isFull="true" :isShadow="false">
         <view class="panel-scroll" :scroll-x="true" style="margin-top:20upx">

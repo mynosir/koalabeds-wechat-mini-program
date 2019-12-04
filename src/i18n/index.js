@@ -9,7 +9,7 @@ import zhHK from './zhHK'
 Vue.use(VueI18n) 
 
 export default new VueI18n({
-    locale: uni.getStorageSync('language') || 'en', 
+    locale: uni.getStorageSync('language') || 'zh-cn', 
     messages:{
         'en': enUS,
         'zh-cn': zhCN,

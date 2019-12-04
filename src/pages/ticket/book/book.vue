@@ -10,7 +10,7 @@
           :key="item.id"
         >
           <view>
-            <view class="panel" style="font-size:32upx">{{ticketInfo.title}}</view>
+            <view class="panel" style="font-size:32upx">{{ticketInfo.title.replace(ticketInfo.ticketCode, '').replace(ticketInfo.tourCode, '')}}</view>
             <view>{{item.title}}</view>
           </view>
           <view slot="extra">
@@ -108,17 +108,17 @@
             <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
           </view>
         </uni-list-item>
-        <!-- <uni-list-item :showArrow="false" :showExtra="true" @click="showPop('termInfo')">
+        <uni-list-item :showArrow="true" :showExtra="true" @click="showPop('termInfo')" v-if="ticketInfo.clause">
           <view>
-            I have read and agree
-            <text style="color:#02b90b">"booking terms"</text>
+            {{$t("pages.hotelBook.termsText")}}
+            <text style="color:#02b90b">" {{$t("pages.hotelBook.bookingTerms")}}"</text>
           </view>
           <view slot="extra">
             <label class="radio">
               <radio value="r1" :disabled="!isTerms" :checked="isTerms" />
             </label>
           </view>
-        </uni-list-item>-->
+        </uni-list-item>
       </uni-list>
     </view>
     <view class="uni-panel">
@@ -126,7 +126,6 @@
         <uni-list-item
           :showArrow="false"
           :showExtra="true"
-          @click="showPop('termInfo')"
           style="font-size:24upx"
         >
           <view>{{$t("pages.ticketBook.Merchandise")}}</view>
@@ -212,14 +211,13 @@
     <!-- 阅读须知 -->
     <uni-popup ref="termInfo" type="bottom">
       <view>
-        <view class="popup-title">Booking Terms</view>
+        <view class="popup-title">{{$t("pages.hotelBook.bookingTerms")}}</view>
         <view class="popup-close" @tap="closePopup('termInfo')">
           <uni-icons type="close" color="#ccc" size="30" />
         </view>
-        <view class="koa-pop-content">
-          <view>Our mission is to empower people to experience the world, by offering the world's best places to stay and greatest places and attractions to visit in the most convenient way. In order to achieve this goal, we will live up to the following good practices:</view>
+        <view class="koa-pop-content" v-html="ticketInfo.clause">
         </view>
-        <button type="primary" @tap="setTerms">I Agree</button>
+        <button type="primary" @tap="setTerms">{{$t("global.Agree")}}</button>
       </view>
     </uni-popup>
   </view>
@@ -271,6 +269,7 @@ export default {
     ticketInfo() {
       let ticket = this.$store.state.ticket.ticketInfo;
       ticket.productPrice = ticket.productPrice.filter(item => item.num > 0);
+      this.isTerms = !ticket.clause;
       return ticket;
     },
     ticketSum() {
@@ -289,7 +288,7 @@ export default {
   },
   watch: {
     selectCoupon(newVal) {
-      if (!selectCoupon) {
+      if (!newVal) {
         this.discount = 0;
       } else {
         this.discount = newVal.discountAmount;
@@ -468,6 +467,13 @@ export default {
       }
       if (this.userInfo.passport === "") {
         this.errorTips(this.$t("pages.ticketBook.passportInputTip"));
+        return;
+      }
+      if (!this.isTerms) {
+        uni.showModal({
+          title: "Koalabeds",
+          content: this.$t("global.termsAgreeTip")
+        });
         return;
       }
       this.testPay();

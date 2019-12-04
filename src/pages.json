@@ -72,18 +72,18 @@
                 "pagePath": "pages/index/home/home",
                 "iconPath": "static/home.png",
                 "selectedIconPath": "static/homeHL.png",
-                "text": "Home"
+                "text": "酒店"
             },
             {
                 "pagePath": "pages/index/tickets/tickets",
                 "iconPath": "static/tickets.png",
                 "selectedIconPath": "static/ticketsHL.png",
-                "text": "Tickets"
+                "text": "门票"
             }, {
                 "pagePath": "pages/index/my/my",
                 "iconPath": "static/my.png",
                 "selectedIconPath": "static/myHL.png",
-                "text": "My Booking"
+                "text": "我的"
             }
         ]
     }

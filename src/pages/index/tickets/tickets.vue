@@ -3,7 +3,7 @@
     <panel-image
       v-for="item in list"
       :key="item.id"
-      :title="item.title"
+      :title="item.title.replace(item.ticketCode, '').replace(item.tourCode, '')"
       :imgUrl="item.image"
       @beforeGo="beforeGo"
       :goUrl="`/pages/ticket/detail/detail?id=${item.productId}&type=${item.type}`"

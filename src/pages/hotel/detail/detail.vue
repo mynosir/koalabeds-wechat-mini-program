@@ -147,6 +147,8 @@ import comments from "@/components/comments/comments.vue";
 import uniPopup from "@/components/uni-popup/uni-popup.vue";
 import uniNumberBox from "@/components/uni-number-box/uni-number-box.vue";
 
+const WSCoordinate = require("../../../common/WSCoordinate.js");
+
 export default {
   components: {
     uniList,
@@ -289,9 +291,13 @@ export default {
       });
     },
     goMap() {
+      const { latitude, longitude } = WSCoordinate.transformFromWGSToGCJ(
+        Number(this.hotelInfo.propertyLatitude),
+        Number(this.hotelInfo.propertyLongitude)
+      );
       wx.openLocation({
-        latitude: Number(this.hotelInfo.propertyLatitude),
-        longitude: Number(this.hotelInfo.propertyLongitude),
+        latitude: Number(latitude),
+        longitude: Number(longitude),
         name: this.hotelInfo.propertyName,
         address: `${this.hotelInfo.propertyAddress1} ${this.hotelInfo.propertyAddress2} ${this.hotelInfo.propertyCity} ${this.hotelInfo.propertyState}`,
         scale: 18

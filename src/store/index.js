@@ -30,7 +30,7 @@ const mobile = wx.getSystemInfoSync();
 const store = new Vuex.Store({
 	state: {
 		refreshSearch: 'Y', //在搜索界面是否重新刷新
-		language: uni.getStorageSync('language') || 'en',
+		language: uni.getStorageSync('language') || 'zh-cn',
 		domain,
 		hasLogin: false,
 		userInfo: null,
@@ -197,7 +197,7 @@ const store = new Vuex.Store({
 									const userInfo = res[1].userInfo
 									store.commit(LOGIN, userInfo)
 								}
-								dispatch('getLang')
+								this.dispatch('getLang')
 							})
 						}
 					})

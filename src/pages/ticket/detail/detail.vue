@@ -9,8 +9,11 @@
         </view>
       </view>
       <view class="uni-panel uni-panel-h">
-        <view class="koa-title">{{ticketInfo.tourCode}}</view>
-        <view class="koa-desc">{{ticketInfo.title}}</view>
+        <view class="koa-title">{{ticketInfo.title.replace(ticketInfo.ticketCode, '').replace(ticketInfo.tourCode, '')}}</view>
+        <view class="koa-desc">{{ticketInfo.tourCode || ticketInfo.ticketCode}}</view>
+      </view>
+      <view class="uni-panel uni-panel-h" v-if="ticketInfo.introduce">
+        <template v-html="ticketInfo.introduce"></template>
       </view>
       <view class="uni-panel">
         <uni-list>
