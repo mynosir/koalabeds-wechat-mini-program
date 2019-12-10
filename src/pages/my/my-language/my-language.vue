@@ -24,6 +24,7 @@
   </view>
 </template>
 <script>
+import { GETCITYS } from "../../../store/types";
 export default {
   components: {},
   data() {
@@ -64,6 +65,7 @@ export default {
       }).then(res => {
         this.$i18n.locale = this.selected;
         this.$store.commit("setLanguage", this.selected);
+        this.$store.dispatch(GETCITYS);
         uni.reLaunch({
           url: "/pages/index/home/home"
         });

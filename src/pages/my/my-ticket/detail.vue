@@ -10,7 +10,10 @@
           <view>{{$t("pages.myticketDetail.orderNumber")}}:</view>
           <view>{{order.outTradeNo}}</view>
         </uni-list-item>
-        <uni-list-item :show-arrow="false" :title="$t('pages.myticketDetail.orderDate')+order.date" />
+        <uni-list-item
+          :show-arrow="false"
+          :title="$t('pages.myticketDetail.orderDate')+order.date"
+        />
       </uni-list>
     </view>
     <view class="uni-panel">
@@ -56,9 +59,13 @@
             <text>{{order.guestEmail}}</text>
           </view>
         </uni-list-item>
-        <uni-list-item :show-arrow="false" :showExtra="true" :title="$t('pages.ticketBook.Passport')">
-          <view slot="extra">
-            <text>{{order.passport}}</text>
+        <uni-list-item
+          :show-arrow="false"
+          :showExtra="true"
+          :title="$t('pages.ticketBook.Passport')"
+        >
+          <view slot="extra" v-if="nationalityList['1']">
+            <text>{{nationalityList[order.passport] || order.passport}}</text>
           </view>
         </uni-list-item>
         <uni-list-item :show-arrow="false" :showExtra="true" :title="$t('pages.ticketBook.Hotel')">
@@ -101,15 +108,38 @@ export default {
   },
   data() {
     return {
+      nationalityList: {},
+      orderId: null,
       order: {},
       statusText: this.$t("pages.myticket.statusText")
     };
   },
   onLoad(options) {
-    this.orderId = options.id || "11";
+    this.orderId = options.id;
+    if (!this.orderId) {
+      this.errorOut();
+    }
     this.getOrderDetail();
   },
   methods: {
+    getGraylineNationalityList() {
+      this.$fetch({
+        url:
+          this.$store.state.domain +
+          "api/get?actionxm=getGraylineNationalityList",
+        showLoading: true
+      }).then(res => {
+        if (res.status == 0 && res.data) {
+          this.nationalityList = res.data.nationalityList;
+          console.log(
+            "国籍",
+            this.nationalityList,
+            this.nationalityList[this.order.passport]
+          );
+          this.$forceUpdate();
+        }
+      });
+    },
     errorOut() {
       uni.showToast({
         icon: "none",
@@ -147,9 +177,9 @@ export default {
           : new Date();
         this.order = res.data;
         this.order.extinfo = extinfo;
-        this.order.date = date.format('yyyy/MM/dd');
+        this.order.date = date.format("yyyy/MM/dd");
         this.order.discount = extinfo.discount || 0;
-        this.$forceUpdate();
+        this.getGraylineNationalityList();
       });
     }
   }

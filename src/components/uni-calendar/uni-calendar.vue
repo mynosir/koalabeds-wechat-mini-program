@@ -214,7 +214,8 @@
 			 * @param {Object} date 日
 			 */
 			isDisableBefore(year, month, date) {
-				const nowDate = this.date || new Date()
+				// const nowDate = this.date || new Date()
+				const nowDate = new Date()
 				const time = year + '-' + month + '-' + date
 				let startDate = false
 				let endDate = false
@@ -251,7 +252,7 @@
 			 * 返回今天
 			 */
 			backtoday() {
-				this.getMonthAll(0, this.date)
+				this.getMonthAll(0, '')
 			},
 			/**
 			 * 切换前一月 || 后一月

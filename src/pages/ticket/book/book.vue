@@ -10,7 +10,10 @@
           :key="item.id"
         >
           <view>
-            <view class="panel" style="font-size:32upx">{{ticketInfo.title.replace(ticketInfo.ticketCode, '').replace(ticketInfo.tourCode, '')}}</view>
+            <view
+              class="panel"
+              style="font-size:32upx"
+            >{{ticketInfo.title.replace(ticketInfo.ticketCode, '').replace(ticketInfo.tourCode, '')}}</view>
             <view>{{item.title}}</view>
           </view>
           <view slot="extra">
@@ -37,7 +40,7 @@
             <view class="koa-form-item__right">{{$t("pages.ticketBook.Hotel")}}</view>
             <view class="uni-flex-item">
               <picker @change="hotelChange" :value="hotelSelectIndex" :range="hotelList">
-                <view>{{hotelList[hotelSelectIndex]}}</view>
+                <view style="padding-left:25upx;">{{hotelList[hotelSelectIndex]}}</view>
               </picker>
             </view>
             <view>
@@ -60,14 +63,14 @@
         </uni-list-item>
         <uni-list-item :showArrow="false">
           <view class="uni-flex" style="align-items:center">
-            <view class="koa-form-item__right">{{$t('pages.ticketBook.Passport')}}</view>
+            <view class="koa-form-item__right">{{$t("pages.ticketBook.Passport")}}</view>
             <view class="uni-flex-item">
-              <input
-                class="uni-input"
-                focus
-                :placeholder="$t('pages.ticketBook.Passport')"
-                v-model="userInfo.passport"
-              />
+              <picker @change="nationChange" :value="nationSelectIndex" :range="nationalityList">
+                <view style="padding-left:25upx;">{{nationalityList[nationSelectIndex]}}</view>
+              </picker>
+            </view>
+            <view>
+              <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
             </view>
           </view>
         </uni-list-item>
@@ -108,7 +111,12 @@
             <uni-icons :size="20" class="uni-icon-wrapper" color="#bbb" type="arrowright" />
           </view>
         </uni-list-item>
-        <uni-list-item :showArrow="true" :showExtra="true" @click="showPop('termInfo')" v-if="ticketInfo.clause">
+        <uni-list-item
+          :showArrow="true"
+          :showExtra="true"
+          @click="showPop('termInfo')"
+          v-if="ticketInfo.clause"
+        >
           <view>
             {{$t("pages.hotelBook.termsText")}}
             <text style="color:#02b90b">" {{$t("pages.hotelBook.bookingTerms")}}"</text>
@@ -123,11 +131,7 @@
     </view>
     <view class="uni-panel">
       <uni-list>
-        <uni-list-item
-          :showArrow="false"
-          :showExtra="true"
-          style="font-size:24upx"
-        >
+        <uni-list-item :showArrow="false" :showExtra="true" style="font-size:24upx">
           <view>{{$t("pages.ticketBook.Merchandise")}}</view>
           <view slot="extra" class="uni-product-price-original">￥{{ticketSum}}</view>
         </uni-list-item>
@@ -215,8 +219,7 @@
         <view class="popup-close" @tap="closePopup('termInfo')">
           <uni-icons type="close" color="#ccc" size="30" />
         </view>
-        <view class="koa-pop-content" v-html="ticketInfo.clause">
-        </view>
+        <view class="koa-pop-content" v-html="ticketInfo.clause"></view>
         <button type="primary" @tap="setTerms">{{$t("global.Agree")}}</button>
       </view>
     </uni-popup>
@@ -258,7 +261,10 @@ export default {
         email: ""
       },
       hotelSelectIndex: 0,
-      hotelList: []
+      hotelList: [],
+      nationSelectIndex: 0,
+      nationalityList: [],
+      objectNationlity: null
     };
   },
   computed: {
@@ -299,6 +305,7 @@ export default {
   onLoad() {
     this.getCoupons();
     this.getHotels();
+    this.getGraylineNationalityList();
   },
   methods: {
     hotelChange(e) {
@@ -372,6 +379,30 @@ export default {
     },
     changeChildNum(value) {
       this.ticket.child.ticketNum = value;
+    },
+    nationChange(e) {
+      this.nationSelectIndex = e.target.value;
+      this.userInfo.passport = this.objectNationlity[this.nationSelectIndex].id;
+    },
+    getGraylineNationalityList() {
+      this.$fetch({
+        url:
+          this.$store.state.domain +
+          "api/get?actionxm=getGraylineNationalityList"
+      }).then(res => {
+        if (res.status == 0 && res.data) {
+          const nationalityList = res.data.nationalityList;
+          this.objectNationlity = Object.keys(nationalityList).map(key => {
+            return {
+              id: key,
+              name: nationalityList[key]
+            };
+          });
+          this.nationalityList = Object.keys(nationalityList).map(
+            key => nationalityList[key]
+          );
+        }
+      });
     },
     testPay() {
       let subQty = {};

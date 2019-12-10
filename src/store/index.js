@@ -26,40 +26,40 @@ const endDate = new Date(now);
 
 Vue.use(Vuex)
 const mobile = wx.getSystemInfoSync();
-
-const store = new Vuex.Store({
-	state: {
-		refreshSearch: 'Y', //在搜索界面是否重新刷新
-		language: uni.getStorageSync('language') || 'zh-cn',
-		domain,
-		hasLogin: false,
-		userInfo: null,
-		citys: [],
-		activeCity: null,
-		cityName: '',
-		openid: null,
-		selectedAddress: null,
-		hotel: {
-			search: '',
-			startDate,
-			endDate,
-			dayCount,
-			selectHotel: {},
-			guestInfo: {
-				adult: 1,
-				child: 0
-			},
-			roomInfo: {},
-			keymaps,
+const INIT_STATE = {
+	refreshSearch: 'Y', //在搜索界面是否重新刷新
+	language: uni.getStorageSync('language') || 'zh-cn',
+	domain,
+	hasLogin: false,
+	userInfo: null,
+	citys: [],
+	activeCity: null,
+	cityName: '',
+	openid: null,
+	selectedAddress: null,
+	hotel: {
+		search: '',
+		startDate,
+		endDate,
+		dayCount,
+		selectHotel: {},
+		guestInfo: {
+			adult: 1,
+			child: 0
 		},
-		ticket: {
-			image: '',
-			validDate: startDate,
-			ticketInfo: null
-		},
-		hotelTemps: [], //用来缓存酒店，优化查询
-		isIphoneX: mobile.model.indexOf("iPhone X") >= 0
+		roomInfo: {},
+		keymaps,
 	},
+	ticket: {
+		image: '',
+		validDate: startDate,
+		ticketInfo: null
+	},
+	hotelTemps: [], //用来缓存酒店，优化查询
+	isIphoneX: mobile.model.indexOf("iPhone X") >= 0
+}
+const store = new Vuex.Store({
+	state: INIT_STATE,
 	mutations: {
 		[LOGIN]: (state, userInfo) => {
 			state.userInfo = userInfo;
@@ -90,6 +90,8 @@ const store = new Vuex.Store({
 		},
 		setCityList(state, citys) {
 			state.citys = citys
+			state.activeCity = null
+			state.cityName = ''
 		},
 		setHotelDate(state, date) {
 			console.log(date)

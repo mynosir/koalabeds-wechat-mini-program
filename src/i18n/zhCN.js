@@ -108,10 +108,10 @@ export default {
         ticketBook: {
             Hotel: '自取酒店',
             Name: '姓名',
-            Passport: '护照ID',
+            Passport: '国籍',
             Email: 'Email',
             nameInputTip: "请输入姓名",
-            passportInputTip: "请输入护照",
+            passportInputTip: "请选择您的国籍",
             mailInputTip: "请输入邮箱",
             hotelSelectTip: "请选择一家酒店",
             Merchandise: '门票原价',
