@@ -161,14 +161,6 @@
         <button type="primary" style="border-radius:0;" @tap="bookTicket">{{$t('global.Booking')}}</button>
       </view>
     </view>
-
-    <uni-calendar
-      ref="calendar"
-      :disableBefore="true"
-      :date="validDate"
-      @change="change"
-      @confirm="change"
-    />
     <!-- 优惠券选择详情 -->
     <uni-popup ref="coupon" type="bottom">
       <view class="popup-title">{{$t("global.selectCoupon")}}</view>
@@ -223,6 +215,13 @@
         <button type="primary" @tap="setTerms">{{$t("global.Agree")}}</button>
       </view>
     </uni-popup>
+    <uni-calendar
+      ref="calendar"
+      :disableBefore="true"
+      :date="validDate"
+      @change="change"
+      @confirm="change"
+    />
   </view>
 </template>
 
@@ -262,7 +261,7 @@ export default {
       },
       hotelSelectIndex: 0,
       hotelList: [],
-      nationSelectIndex: 0,
+      nationSelectIndex: 45,
       nationalityList: [],
       objectNationlity: null
     };
@@ -372,7 +371,7 @@ export default {
       });
     },
     change(e) {
-      this.validDate = e.fulldate;
+      this.$store.commit("setTicketDate", new Date(e.fulldate));
     },
     changeAdultNum(value) {
       this.ticket.adult.ticketNum = value;

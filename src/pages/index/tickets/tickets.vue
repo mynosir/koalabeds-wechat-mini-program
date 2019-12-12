@@ -67,6 +67,7 @@ export default {
       ]).then(res => {
         console.log("getGraylineProductList", res);
         this.list = [...res[0].data, ...res[1].data];
+        this.$forceUpdate();
       });
     }
   }
