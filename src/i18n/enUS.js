@@ -50,7 +50,8 @@ export default {
             recommendTitle: 'Recommend',
             totalNights: 'Total {dayCount} nights',
             getAll: 'Get All',
-            cityName: 'Choose City'
+            cityName: 'Choose City',
+            ticketWelcome: 'Login Get Coupons'
         },
         my: {
             wechat: 'Wechat Authorization',

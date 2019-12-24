@@ -53,7 +53,7 @@
     </view>
     <view class="uni-panel uni-panel-h">
       <uni-card :title="$t('pages.home.couponTitle')" :isFull="true" :isShadow="false">
-        <view class="panel-scroll" :scroll-x="true" style="margin-top:20upx">
+        <view class="panel-scroll" :scroll-x="true" style="margin-top:20upx" v-if="hasLogin">
           <view class="ticke-box" v-for="item in coupons" :key="item.id">
             <ticket
               :status="item.status"
@@ -66,6 +66,13 @@
             ></ticket>
           </view>
         </view>
+        <button
+          type="primary"
+          open-type="getUserInfo"
+          @getuserinfo="mpGetUserInfo"
+          style="margin:20upx"
+          v-else
+        >{{$t("pages.home.ticketWelcome")}}</button>
       </uni-card>
     </view>
     <view class="uni-panel uni-panel-h">
@@ -267,6 +274,7 @@ export default {
         return;
       }
       this.$store.commit("LOGIN", result.detail.userInfo);
+      this.getCoupons();
     },
     input({ value }) {
       this.searchContent = value;

@@ -8,7 +8,16 @@
     <view style="margin:0 -30upx">
       <view class="koa-ticket--line"></view>
     </view>
-    <view class="koa-ticket--btn" v-if="!footer || footer == ''">{{footerText[status]}}</view>
+    <template v-if="!footer || footer == ''">
+      <view class="koa-ticket--btn" v-if="hasLogin">{{footerText[status]}}</view>
+      <button
+        class="koa-ticket--btn"
+        type="primary"
+        open-type="getUserInfo"
+        @getuserinfo="mpGetUserInfo"
+        v-else
+      >{{footerText[status]}}</button>
+    </template>
     <view class="koa-ticket--btn footer" v-else>{{footer}}</view>
   </view>
 </template>
@@ -49,7 +58,10 @@ export default {
   computed: {
     footerText() {
       return this.$t("components.ticket.footerText");
-    }
+    },
+    hasLogin(){
+      return this.$store.state.hasLogin
+    } 
   },
   data() {
     const classes = {
@@ -62,6 +74,19 @@ export default {
     };
   },
   methods: {
+    mpGetUserInfo(result) {
+      if (result.detail.errMsg !== "getUserInfo:ok") {
+        uni.showModal({
+          title: this.$t("global.getUserError"),
+          content: this.$t("global.getUserErrMsg", {
+            errMsg: result.detail.errMsg
+          }),
+          showCancel: false
+        });
+        return;
+      }
+      this.$store.commit("LOGIN", result.detail.userInfo);
+    },
     onClick() {
       if (!this.canClick) {
         return;
@@ -172,6 +197,15 @@ export default {
   padding-top: 10upx;
   font-size: 28upx;
   text-align: center;
+  background:none;
+}
+button.koa-ticket--btn{
+  border:0;
+  background:none !important;
+}
+button.koa-ticket--btn:after{
+  border:0;
+  border-radius: 0;
 }
 .footer {
   color: rgb(78, 82, 96);

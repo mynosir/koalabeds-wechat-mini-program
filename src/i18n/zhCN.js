@@ -49,7 +49,8 @@ export default {
             recommendTitle: '推荐酒店',
             totalNights: '总共 {dayCount} 晚',
             getAll: '全部获取',
-            cityName: '选择城市'
+            cityName: '选择城市',
+            ticketWelcome: '登录领取优惠券'
         },
         my: {
             wechat: '微信授权登录',

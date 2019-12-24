@@ -89,7 +89,12 @@
           <view style="margin:10upx 0;font-size:32upx">{{selectRoom.roomTypeName}}</view>
           <view class="page-section swiper">
             <view class="page-section-spacing">
-              <swiper class="swiper" :indicator-dots="true" :style="'height:'+swiperHeight+'px'">
+              <swiper
+                class="swiper"
+                :current="swiperIndex"
+                :indicator-dots="true"
+                :style="'height:'+swiperHeight+'px'"
+              >
                 <swiper-item v-for="(item, index) in selectRoom.roomTypePhotos" :key="index">
                   <image style="width: 100%; " :src="item.image" mode="widthFix" @load="imgLoad" />
                 </swiper-item>
@@ -188,12 +193,7 @@ export default {
     const endDate = now.toString().substr(4, 6);
     return {
       showCaledar: false,
-      swiperSetting: {
-        indicatordots: true,
-        autoplay: true,
-        interval: 3000, //每隔毫秒自动播放
-        duration: 500 //动画时间
-      },
+      swiperIndex: 1,
       hotelInfo: null,
       list: [],
       selectRoom: null,
@@ -343,6 +343,7 @@ export default {
     showProduct(item) {
       this.selectRoom = item;
       this.showPop("popup");
+      this.swiperIndex = 0;
     },
     changeAdultNum(value) {
       this.$store.commit("setGuestInfo", {
