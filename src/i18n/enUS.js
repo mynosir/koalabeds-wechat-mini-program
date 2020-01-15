@@ -85,7 +85,7 @@ export default {
         },
         hotelBook: {
             roomInfo: 'Room Info',
-            termsText: 'I have read an book terms',
+            termsText: 'I have read',
             Name: 'Name',
             Phone: 'Phone',
             Email: 'Email',

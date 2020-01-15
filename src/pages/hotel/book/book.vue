@@ -160,7 +160,7 @@
           <uni-list-item :showArrow="false" :showExtra="true" @click="showPop('termInfo')">
             <view>
               {{$t("pages.hotelBook.termsText")}}
-              <text style="color:#02b90b">" {{$t("pages.hotelBook.bookingTerms")}}"</text>
+              <text style="color:#02b90b">{{$t("pages.hotelBook.bookingTerms")}}</text>
             </view>
             <view slot="extra">
               <label class="radio">
@@ -659,46 +659,49 @@ export default {
       });
     },
     testPay() {
+      const params = {
+        openid: this.$store.state.openid,
+        propertyID: this.hotelInfo.propertyID,
+        startDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
+        endDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
+        guestFirstName: this.userInfo.name,
+        guestLastName: this.userInfo.name,
+        guestCountry:
+          country[this.$store.state.userInfo.country] || country["China"],
+        guestZip: "000000",
+        guestEmail: this.userInfo.email,
+        guestPhone: this.userInfo.phone,
+        rooms: {
+          roomTypeID: this.roomInfo.roomTypeID,
+          quantity: 1,
+          roomTypeName: this.roomInfo.roomTypeName,
+          rate: this.roomInfo.roomRate
+        },
+        rooms_roomTypeName: this.roomInfo.roomTypeName,
+        rooms_roomTypeImg: this.roomInfo.roomTypePhotos[0].thumb,
+        rooms_roomTypeDesc: this.roomInfo.roomTypeDescription,
+        adults: {
+          roomTypeID: this.roomInfo.roomTypeID,
+          quantity: this.$store.state.hotel.guestInfo.adult || "0",
+          rate: this.roomInfo.roomRate
+        },
+        children: {
+          roomTypeID: this.roomInfo.roomTypeID,
+          quantity: this.$store.state.hotel.guestInfo.child,
+          rate: this.roomInfo.roomRate
+        },
+        unRoomRate: this.roomInfo.roomRate,
+        frontend_total: this.grandTotal,
+        extinfo: ""
+      }
+      if(this.selectCoupon){
+        params.coupon_id = this.selectCoupon.id 
+      }
       this.$fetch({
         url: this.$store.state.domain + "api/post?actionxm=getPay",
         method: "post",
         data: {
-          params: JSON.stringify({
-            openid: this.$store.state.openid,
-            propertyID: this.hotelInfo.propertyID,
-            startDate: this.$store.state.hotel.startDate.format("yyyy-MM-dd"),
-            endDate: this.$store.state.hotel.endDate.format("yyyy-MM-dd"),
-            guestFirstName: this.userInfo.name,
-            guestLastName: this.userInfo.name,
-            guestCountry:
-              country[this.$store.state.userInfo.country] || country["China"],
-            guestZip: "000000",
-            guestEmail: this.userInfo.email,
-            guestPhone: this.userInfo.phone,
-            rooms: {
-              roomTypeID: this.roomInfo.roomTypeID,
-              quantity: 1,
-              roomTypeName: this.roomInfo.roomTypeName,
-              rate: this.roomInfo.roomRate
-            },
-            rooms_roomTypeName: this.roomInfo.roomTypeName,
-            rooms_roomTypeImg: this.roomInfo.roomTypePhotos[0].thumb,
-            rooms_roomTypeDesc: this.roomInfo.roomTypeDescription,
-            adults: {
-              roomTypeID: this.roomInfo.roomTypeID,
-              quantity: this.$store.state.hotel.guestInfo.adult || "0",
-              rate: this.roomInfo.roomRate
-            },
-            children: {
-              roomTypeID: this.roomInfo.roomTypeID,
-              quantity: this.$store.state.hotel.guestInfo.child,
-              rate: this.roomInfo.roomRate
-            },
-            unRoomRate: this.roomInfo.roomRate,
-            frontend_total: this.grandTotal,
-            coupon_id: this.selectCoupon ? this.selectCoupon.id : "",
-            extinfo: ""
-          })
+          params: JSON.stringify(params)
         },
         showLoading: true
       }).then(res => {

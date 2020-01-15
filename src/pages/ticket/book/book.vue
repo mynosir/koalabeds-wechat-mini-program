@@ -35,7 +35,7 @@
     </view>
     <view class="uni-panel">
       <uni-list>
-        <uni-list-item :showArrow="false">
+        <uni-list-item :showArrow="false" style="display:none">
           <view class="uni-flex" style="align-items:center">
             <view class="koa-form-item__right">{{$t("pages.ticketBook.Hotel")}}</view>
             <view class="uni-flex-item">
@@ -112,14 +112,14 @@
           </view>
         </uni-list-item>
         <uni-list-item
-          :showArrow="true"
+          :showArrow="false"
           :showExtra="true"
           @click="showPop('termInfo')"
           v-if="ticketInfo.clause"
         >
           <view>
-            {{$t("pages.hotelBook.termsText")}}
-            <text style="color:#02b90b">" {{$t("pages.hotelBook.bookingTerms")}}"</text>
+            {{$t("pages.hotelBook.termsText")}} "
+            <text style="color:#02b90b">{{$t("pages.hotelBook.bookingTerms")}}</text>"
           </view>
           <view slot="extra">
             <label class="radio">
@@ -400,6 +400,9 @@ export default {
           this.nationalityList = Object.keys(nationalityList).map(
             key => nationalityList[key]
           );
+          this.userInfo.passport = this.objectNationlity[
+            this.nationSelectIndex
+          ].id;
         }
       });
     },
@@ -410,29 +413,32 @@ export default {
       });
       this.ticketInfo.thumb = this.ticketImg;
       this.ticketInfo.discount = this.discount;
+      const params = {
+        openid: this.$store.state.openid,
+        type: this.ticketInfo.type,
+        productId: this.ticketInfo.productId,
+        date: this.validDate,
+        subQty,
+        travelTime: "",
+        title: "Mrs",
+        hotel: this.hotelList[this.hotelSelectIndex],
+        firstName: this.userInfo.name,
+        lastName: this.userInfo.name,
+        passport: this.userInfo.passport,
+        guestEmail: this.userInfo.email,
+        totalPrice: this.ticketSum,
+        frontend_total: this.ticketSum,
+        telephone: "",
+        extinfo: JSON.stringify(this.ticketInfo)
+      };
+      if(this.selectCoupon){
+        params.coupon_id = this.selectCoupon.id;
+      }
       this.$fetch({
         url: this.$store.state.domain + "api/post?actionxm=getGraylinePay",
         method: "post",
         data: {
-          params: JSON.stringify({
-            openid: this.$store.state.openid,
-            type: this.ticketInfo.type,
-            productId: this.ticketInfo.productId,
-            date: this.validDate,
-            subQty,
-            travelTime: "",
-            title: "Mrs",
-            hotel: this.hotelList[this.hotelSelectIndex],
-            firstName: this.userInfo.name,
-            lastName: this.userInfo.name,
-            passport: this.userInfo.passport,
-            guestEmail: this.userInfo.email,
-            totalPrice: this.ticketSum,
-            frontend_total: this.ticketSum,
-            telephone: "",
-            coupon_id: this.selectCoupon ? this.selectCoupon.id : "",
-            extinfo: JSON.stringify(this.ticketInfo)
-          })
+          params: JSON.stringify(params)
         },
         showLoading: true
       }).then(res => {

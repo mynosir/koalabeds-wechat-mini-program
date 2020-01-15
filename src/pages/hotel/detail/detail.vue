@@ -291,13 +291,13 @@ export default {
       });
     },
     goMap() {
-      const { latitude, longitude } = WSCoordinate.transformFromWGSToGCJ(
-        Number(this.hotelInfo.propertyLatitude),
-        Number(this.hotelInfo.propertyLongitude)
-      );
+      // const { latitude, longitude } = WSCoordinate.transformFromWGSToGCJ(
+      //   Number(this.hotelInfo.propertyLatitude),
+      //   Number(this.hotelInfo.propertyLongitude)
+      // );
       wx.openLocation({
-        latitude: Number(latitude),
-        longitude: Number(longitude),
+        latitude: Number(this.hotelInfo.propertyLatitude),
+        longitude: Number(this.hotelInfo.propertyLongitude),
         name: this.hotelInfo.propertyName,
         address: `${this.hotelInfo.propertyAddress1} ${this.hotelInfo.propertyAddress2} ${this.hotelInfo.propertyCity} ${this.hotelInfo.propertyState}`,
         scale: 18

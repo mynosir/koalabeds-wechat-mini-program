@@ -13,7 +13,7 @@
         <view class="koa-desc">{{ticketInfo.tourCode || ticketInfo.ticketCode}}</view>
       </view>
       <view class="uni-panel uni-panel-h" v-if="ticketInfo.introduce">
-        <template v-html="ticketInfo.introduce"></template>
+        <view v-html="ticketInfo.introduce"></view>
       </view>
       <view class="uni-panel">
         <uni-list>

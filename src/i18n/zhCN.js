@@ -24,7 +24,7 @@ export default {
         Cancel: '取消',
         Confirm: '确认',
         Completed: '完成',
-        hotelGuest: '{adult}成人 {child} 兒童', 
+        hotelGuest: '{adult}成人 {child} 兒童',
         Coupon: "优惠券",
         selectCoupon: '选择优惠券',
         selectCouponIt: '确认选择',
@@ -84,11 +84,11 @@ export default {
         },
         hotelBook: {
             roomInfo: '房间信息',
-            termsText: '我已阅读条款与合同',
+            termsText: "我已阅读",
             Name: '姓名',
             Phone: '电话',
             Email: 'Email',
-            bookingTerms: '条款与合同',
+            bookingTerms: "条款与合同",
             nameInputTip: "请输入姓名",
             phoneInputTip: "请输入电话",
             mailInputTip: "请输入邮箱",
@@ -195,8 +195,8 @@ export default {
             Reviews: "评论",
             More: '更多'
         },
-        unicalendar:{
-            backtoday:'回到今天'
+        unicalendar: {
+            backtoday: '回到今天'
         }
     }
 

@@ -85,7 +85,7 @@
             @tap="goHotel(item.propertyID)"
           >
             <view class="recommend-image">
-              <image :src="item.propertyImageThumb" mode="widthFix" />
+              <image :src="item.propertyImageThumb" style="width:100%;height:100%" />
             </view>
             <view class="recommend-text">{{item.propertyName}}</view>
           </view>
